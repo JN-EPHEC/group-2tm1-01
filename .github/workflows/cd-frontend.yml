@@ -41,6 +41,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 54321
           script: |
-            sudo rm -rf /var/www/html/dev3/*
-            sudo mv /home/etudiant/temp_dev3/* /var/www/html/dev3/
-            sudo chmod -R 755 /var/www/html/dev3
+            rm -rf /var/www/html/dev3/*
+            mv /home/etudiant/temp_dev3/* /var/www/html/dev3/
+            chmod -R 755 /var/www/html/dev3
