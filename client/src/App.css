@@ -1,4 +1,34 @@
-.btn-group .btn {
+:root {
+  --mint-green: #98ff98;
+  --dark-mint-green: #3cb371;
+  --light-gray: #f8f9fa;
+  --white: #ffffff;
+}
+
+body {
+  background-color: var(--light-gray);
+}
+
+.navbar.bg-primary {
+  background-color: var(--dark-mint-green) !important;
+}
+
+.btn-primary {
+  background-color: var(--dark-mint-green);
+  border-color: var(--dark-mint-green);
+}
+
+.btn-primary:hover {
+  background-color: #2e8b57;
+  border-color: #2e8b57;
+}
+
+main.container {
+  padding: 2rem;
+  background-color: var(--white);
+  border-radius: 0.5rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}.btn-group .btn {
   margin-left: 5px;
 }
 
