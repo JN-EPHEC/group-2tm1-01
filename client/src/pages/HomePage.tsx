@@ -6,7 +6,7 @@ const HomePage = () => {
       <div className="container-fluid py-5">
         <h1 className="display-5 fw-bold">Bienvenue chez votre kinÃ©sithÃ©rapeute</h1>
         <p className="col-md-8 fs-4">
-          Prenez rendez-vous en ligne, consultez nos produits et gÃ©rez votre espace personnel en toute simplicitÃ©.
+          Prenez rendez-vous en ligne, consultez nos produits.
         </p>
         <button className="btn btn-primary btn-lg" type="button">Prendre rendez-vous</button>
       </div>
