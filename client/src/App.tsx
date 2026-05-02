@@ -10,6 +10,7 @@ import AdminExpensePage from './pages/admin/ExpensePage';
 import AdminProductPage from './pages/admin/ProductPage';
 import ClientAppointmentPage from './pages/client/AppointmentPage';
 import ClientProductPage from './pages/client/ProductPage';
+import ClientCartPage from './pages/client/CartPage';
 import './App.css';
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
           <Route path="/admin/produits" element={<AdminProductPage />} />
           <Route path="/client/rendez-vous" element={<ClientAppointmentPage />} />
           <Route path="/client/produits" element={<ClientProductPage />} />
+          <Route path="/client/panier" element={<ClientCartPage />} />
         </Routes>
       </main>
     </Router>

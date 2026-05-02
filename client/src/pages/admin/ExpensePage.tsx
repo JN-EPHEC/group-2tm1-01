@@ -3,8 +3,8 @@
 const ExpensePage = () => {
   return (
     <div>
-      <h1>Page des dÃ©penses</h1>
-      {/* Contenu de la page des dÃ©penses ici */}
+      <h1>Page des dépenses</h1>
+      {/* Contenu de la page des dépenses ici */}
     </div>
   );
 };
