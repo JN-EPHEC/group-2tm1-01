@@ -8,7 +8,8 @@ const HomePage = () => {
         <div className="container-fluid py-5">
           <h1 className="display-5 fw-bold">Bienvenue chez votre kinésithérapeute</h1>
           <p className="col-md-8 fs-4 mt-3">
-            Prenez rendez-vous en ligne, consultez nos produits de soin et gérez votre suivi de rééducation en toute simplicité.
+            "Prenez soin de vous en toute liberté. De la prise de rendez-vous en ligne au suivi personnalisé de votre rééducation, 
+            accédez à tout notre univers en un instant."
           </p>
           <div className="mt-4">
             <Link to="/client/rendez-vous" className="btn btn-primary btn-lg me-3">Prendre rendez-vous</Link>
@@ -24,7 +25,9 @@ const HomePage = () => {
         </div>
         <div className="col-md-8 offset-md-2 text-center text-muted">
           <p className="lead">
-            [Zone d'explication : Remplissez ici avec votre présentation. Par exemple : Spécialiste en kinésithérapie globale et thérapie manuelle, je vous accompagne dans votre rééducation...]
+            "Spécialiste de la kinésithérapie globale et de la thérapie manuelle, je mets mon expertise au service de votre santé. Mon approche repose sur 
+            un diagnostic précis et un accompagnement personnalisé, visant à restaurer votre mobilité et à soulager vos douleurs durablement. Chaque séance 
+            est conçue pour répondre à vos besoins spécifiques, dans un cadre bienveillant et moderne."
           </p>
         </div>
       </div>
@@ -35,7 +38,7 @@ const HomePage = () => {
         <div className="col-md-4">
           <div className="card h-100 shadow-sm border-0 bg-white">
             <div className="card-body">
-              <h3 className="card-title h5 text-primary mb-3">🕒 Horaires d'ouverture</h3>
+              <h3 className="card-title h5 text-primary mb-3">Horaires d'ouverture</h3>
               <ul className="list-unstyled mt-3 text-muted">
                 <li className="d-flex justify-content-between mb-2"><strong>Lundi :</strong> <span>[08:00 - 18:00]</span></li>
                 <li className="d-flex justify-content-between mb-2"><strong>Mardi :</strong> <span>[08:00 - 18:00]</span></li>
@@ -53,9 +56,8 @@ const HomePage = () => {
             <div className="card-body">
               <h3 className="card-title h5 text-primary mb-3">📞 Contact</h3>
               <div className="mt-3 text-muted">
-                <p className="mb-2"><strong>Téléphone :</strong> <br/> [04XX XX XX XX]</p>
+                <p className="mb-2"><strong>Téléphone :</strong> <br/> [XXXX XX XX XX]</p>
                 <p className="mb-2"><strong>Email :</strong> <br/> [votre.email@kine.be]</p>
-                <p className="mb-2"><strong>Urgences :</strong> <br/> [Texte pour les urgences]</p>
               </div>
             </div>
           </div>
@@ -66,8 +68,8 @@ const HomePage = () => {
           <div className="card h-100 shadow-sm border-0 bg-white">
             <div className="card-body d-flex flex-column">
               <h3 className="card-title h5 text-primary mb-3">📍 Plan d'accès</h3>
-              <p className="mb-2 text-muted fw-bold">[Votre adresse complète ici]</p>
-              <p className="mb-2 text-muted small">[Instructions: 2ème étage, parking dispo, etc.]</p>
+              <p className="mb-2 text-muted fw-bold">[adresse]</p>
+              <p className="mb-2 text-muted small">[Instructions: si c'est un place particulière]</p>
               <div className="bg-light text-muted d-flex align-items-center justify-content-center flex-grow-1 rounded border" style={{ minHeight: '150px' }}>
                 [Zone d'intégration carte Google Maps]
               </div>

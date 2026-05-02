@@ -49,17 +49,16 @@
                     <input type="text" className="form-control" placeholder="Ex: Dupont" />
                   </div>
                   <div className="col-12">
-                    <label className="form-label">Contact (Email ou Téléphone)</label>
-                    <input type="text" className="form-control" placeholder="Pour confirmer ou vous prévenir" />
+                    <label className="form-label">Contact</label>
+                    <input type="text" className="form-control"  />
                   </div>
                   <div className="col-12">
                     <label className="form-label fw-bold mt-2">Zone à traiter / Endroit blessé</label>
                     <textarea 
                       className="form-control" 
                       rows={4} 
-                      placeholder="Comment puis-je vous aider ? (ex: Douleur épaule droite depuis 1 mois, cheville gonflée, lumbago...)"
+                      placeholder="Détaillez ici vos besoins afin de planifier une séance adpatée"
                     ></textarea>
-                    <div className="form-text text-muted">Aidez-nous à préparer votre séance en décrivant brièvement votre problème.</div>
                   </div>
                   <div className="col-12 mt-4 text-end">
                     <button type="submit" className="btn btn-primary btn-lg">Confirmer le rendez-vous</button>

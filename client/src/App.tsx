@@ -19,9 +19,9 @@ function App() {
   const [isAdmin] = useState(true); 
 
   return (
-    <Router>
+    <Router basename="/dev3">
       <Navbar isAdmin={isAdmin} />
-      <main className="container">
+      <main className="container-fluid px-4 mt-4">
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
