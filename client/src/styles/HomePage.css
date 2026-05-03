@@ -1,0 +1,36 @@
+.hero-section {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('/dev3/img/pexels-yankrukov-5793895.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  
+  /* Remplacements Bootstrap (p-5, mb-4, shadow-sm) */
+  padding: 3rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.hero-content {
+  /* Remplacement Bootstrap (py-5, text-white) */
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+  color: white;
+}
+
+.hero-title {
+  /* Remplacement Bootstrap (display-5, fw-bold) */
+  font-size: calc(1.525rem + 3.3vw); /* ou par exemple: 3.5rem */
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.hero-subtitle {
+  /* Remplacement Bootstrap (fs-4, mt-3) */
+  font-size: 1.5rem;
+  margin-top: 1rem;
+}
+
+.hero-buttons {
+  /* Remplacement Bootstrap (mt-4) */
+  margin-top: 2rem;
+}

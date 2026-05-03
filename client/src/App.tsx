@@ -11,7 +11,7 @@ import AdminProductPage from './pages/admin/ProductPage';
 import ClientAppointmentPage from './pages/client/AppointmentPage';
 import ClientProductPage from './pages/client/ProductPage';
 import ClientCartPage from './pages/client/CartPage';
-import './App.css';
+import './styles/App.css';
 
 function App() {
   // Pour la démo, on simule si l'utilisateur est un admin ou non.

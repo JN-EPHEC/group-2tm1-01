@@ -1,17 +1,18 @@
 ﻿import { Link } from 'react-router-dom';
+import '../styles/HomePage.css';
 
 const HomePage = () => {
   return (
     <div>
       {/* Section Héro */}
-      <div className="p-5 mb-4 bg-light rounded-3 shadow-sm">
-        <div className="container-fluid py-5">
-          <h1 className="display-5 fw-bold">Bienvenue chez votre kinésithérapeute</h1>
-          <p className="col-md-8 fs-4 mt-3">
+      <div className="rounded-3 hero-section">
+        <div className="container-fluid hero-content">
+          <h1 className="hero-title">Bienvenue chez votre kinésithérapeute</h1>
+          <p className="col-md-8 hero-subtitle">
             "Prenez soin de vous en toute liberté. De la prise de rendez-vous en ligne au suivi personnalisé de votre rééducation, 
             accédez à tout notre univers en un instant."
           </p>
-          <div className="mt-4">
+          <div className="hero-buttons">
             <Link to="/client/rendez-vous" className="btn btn-primary btn-lg me-3">Prendre rendez-vous</Link>
             <Link to="/client/produits" className="btn btn-outline-primary btn-lg">Voir la boutique</Link>
           </div>

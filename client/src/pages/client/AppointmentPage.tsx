@@ -53,7 +53,7 @@
                     <input type="text" className="form-control"  />
                   </div>
                   <div className="col-12">
-                    <label className="form-label fw-bold mt-2">Zone à traiter / Endroit blessé</label>
+                    <label className="form-label fw-bold mt-2">Votre message</label>
                     <textarea 
                       className="form-control" 
                       rows={4} 

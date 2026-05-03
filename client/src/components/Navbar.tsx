@@ -1,5 +1,6 @@
 ﻿
 import { Link, NavLink } from 'react-router-dom';
+import '../styles/Navbar.css';
 
 interface NavbarProps {
   isAdmin: boolean;
@@ -7,10 +8,22 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ isAdmin }) => {
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+    <nav className="navbar navbar-expand-lg custom-navbar">
       <div className="container-fluid">
-        <Link className="navbar-brand" to="/">Kiné-Web</Link>
-        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <Link className="navbar-brand custom-navbar-brand d-flex align-items-center" to="/">
+          <div 
+            className="me-2 rounded-circle overflow-hidden bg-white d-flex justify-content-center align-items-center"
+            style={{ width: '70px', height: '70px', flexShrink: 0 }}
+          >
+            <img 
+              src="/dev3/img/logo.png" 
+              alt="Logo" 
+              style={{ width: '100%', height: '100%', objectFit: 'cover', transform: 'scale(1.4)' }} 
+            />
+          </div>
+          Kiné-Web
+        </Link>
+        <button className="navbar-toggler custom-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className="collapse navbar-collapse" id="navbarNav">
