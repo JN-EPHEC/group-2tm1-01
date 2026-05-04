@@ -25,7 +25,7 @@ const RegisterPage = () => {
                 <button type="submit" className="btn btn-primary">S'inscrire</button>
               </div>
               <p className="mt-3 text-center">
-                DÃ©jÃ  un compte ? <Link to="/login">Connectez-vous</Link>
+                Déjà un compte ? <Link to="/login">Connectez-vous</Link>
               </p>
             </form>
           </div>

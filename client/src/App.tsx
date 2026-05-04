@@ -10,7 +10,8 @@ import AdminExpensePage from './pages/admin/ExpensePage';
 import AdminProductPage from './pages/admin/ProductPage';
 import ClientAppointmentPage from './pages/client/AppointmentPage';
 import ClientProductPage from './pages/client/ProductPage';
-import './App.css';
+import ClientCartPage from './pages/client/CartPage';
+import './styles/App.css';
 
 function App() {
   // Pour la démo, on simule si l'utilisateur est un admin ou non.
@@ -18,9 +19,9 @@ function App() {
   const [isAdmin] = useState(true); 
 
   return (
-    <Router>
+    <Router basename="/dev3">
       <Navbar isAdmin={isAdmin} />
-      <main className="container">
+      <main className="container-fluid px-4 mt-4">
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
@@ -31,6 +32,7 @@ function App() {
           <Route path="/admin/produits" element={<AdminProductPage />} />
           <Route path="/client/rendez-vous" element={<ClientAppointmentPage />} />
           <Route path="/client/produits" element={<ClientProductPage />} />
+          <Route path="/client/panier" element={<ClientCartPage />} />
         </Routes>
       </main>
     </Router>
