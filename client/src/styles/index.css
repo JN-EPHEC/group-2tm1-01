@@ -6,12 +6,9 @@
 }
 
 :root {
-  /* --- VOS POLICES MANUELLES --- */
-  /* Modifiez ces lignes pour changer la police partout */
   --font-principale: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   --font-titre: 'Georgia', serif;
 
-  /* --- VOS COULEURS MANUELLES --- */
   --couleur-texte: #333333;
   --couleur-fond: #f5f5f5;
 

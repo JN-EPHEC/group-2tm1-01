@@ -1,4 +1,4 @@
-﻿const ProductPage = () => {
+﻿§§const ProductPage = () => {
   return (
     <div className="pb-5">
       <h1 className="mb-4">Nos Produits et Matériel</h1>
