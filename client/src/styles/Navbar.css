@@ -1,0 +1,39 @@
+.custom-navbar {
+  background-color: #afd6f8; 
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.custom-navbar .nav-link {
+  font-size: 1.15rem;
+  /* Gérer la couleur du lien */
+  color: #162531 !important; 
+  font-weight: 500;
+}
+
+.custom-navbar-brand {
+  font-size: 1.75rem !important;
+  color: #000000 !important; 
+  font-weight: bold;
+}
+
+.custom-navbar .nav-link:hover {
+  /* Couleur au survol */
+  color: #96a0af !important;
+}
+
+/* Style de la page active courante */
+.custom-navbar .nav-link.active {
+  color: #ffffff !important;
+  font-weight: bold;
+  border-bottom: 2px solid #ffffff; 
+}
+
+/* Modifie la couleur de l'icône menu */
+.custom-toggler {
+  border-color: rgba(0,0,0,0.1) !important;
+}
+.custom-toggler .navbar-toggler-icon {
+  filter: invert(1);
+}

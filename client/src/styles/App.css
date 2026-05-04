@@ -1,0 +1,31 @@
+:root {
+  --mint-green: #afd6f8;
+  --dark-mint-green: #afd6f8;
+  --light-gray: #f8f9fa;
+  --white: #ffffff;
+}
+
+body {
+  background-color: var(--light-gray);
+}
+
+.navbar.bg-primary {
+  background-color: var(--dark-mint-green) !important;
+}
+
+.btn-primary {
+  background-color: var(--dark-mint-green);
+  border-color: var(--dark-mint-green);
+}
+
+.btn-primary:hover {
+  background-color: #afd6f8;
+  border-color: #afd6f8;
+}
+
+main.container {
+  padding: 2rem;
+  background-color: var(--white);
+  border-radius: 0.5rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
