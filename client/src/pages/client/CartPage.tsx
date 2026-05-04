@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import '../../styles/shop.css';
 
 const CartPage = () => {
   return (
@@ -15,13 +16,12 @@ const CartPage = () => {
                 <div className="col-6">Produit</div>
                 <div className="col-2 text-center">Quantité</div>
                 <div className="col-2 text-end">Prix</div>
-                <div className="col-2 text-end">Action</div>
               </div>
 
               {/* Ligne Produit 1 */}
               <div className="row align-items-center mb-3 pb-3 border-bottom">
                 <div className="col-12 col-md-6 d-flex align-items-center mb-3 mb-md-0">
-                  <div className="bg-light rounded text-center text-muted d-flex align-items-center justify-content-center me-3" style={{ width: '60px', height: '60px' }}>
+                  <div className="bg-light rounded text-center text-muted d-flex align-items-center justify-content-center me-3 cart-item-image">
                     [Img]
                   </div>
                   <div>
@@ -31,7 +31,7 @@ const CartPage = () => {
                 </div>
                 
                 <div className="col-6 col-md-2 d-flex justify-content-center">
-                  <div className="input-group input-group-sm" style={{ width: "90px" }}>
+                  <div className="input-group input-group-sm qty-input-group">
                     <button className="btn btn-outline-secondary">-</button>
                     <input type="text" className="form-control text-center" value="2" readOnly />
                     <button className="btn btn-outline-secondary">+</button>
@@ -43,14 +43,14 @@ const CartPage = () => {
                 </div>
                 
                 <div className="col-3 col-md-2 text-end">
-                  <button className="btn btn-sm btn-outline-danger" title="Supprimer">🗑️</button>
+                  <button className="btn btn-sm btn-outline-danger" title="Supprimer">Supprimer</button>
                 </div>
               </div>
 
               {/* Ligne Produit 2 */}
               <div className="row align-items-center mb-0">
                 <div className="col-12 col-md-6 d-flex align-items-center mb-3 mb-md-0">
-                  <div className="bg-light rounded text-center text-muted d-flex align-items-center justify-content-center me-3" style={{ width: '60px', height: '60px' }}>
+                  <div className="bg-light rounded text-center text-muted d-flex align-items-center justify-content-center me-3 cart-item-image">
                     [Img]
                   </div>
                   <div>
@@ -59,7 +59,7 @@ const CartPage = () => {
                 </div>
                 
                 <div className="col-6 col-md-2 d-flex justify-content-center">
-                  <div className="input-group input-group-sm" style={{ width: "90px" }}>
+                  <div className="input-group input-group-sm qty-input-group">
                     <button className="btn btn-outline-secondary">-</button>
                     <input type="text" className="form-control text-center" value="1" readOnly />
                     <button className="btn btn-outline-secondary">+</button>
@@ -71,7 +71,7 @@ const CartPage = () => {
                 </div>
                 
                 <div className="col-3 col-md-2 text-end">
-                  <button className="btn btn-sm btn-outline-danger" title="Supprimer">🗑️</button>
+                  <button className="btn btn-sm btn-outline-danger" title="Supprimer">Supprimer</button>
                 </div>
               </div>
 
