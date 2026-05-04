@@ -6,7 +6,16 @@
 }
 
 :root {
-  font-family: system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+  /* --- VOS POLICES MANUELLES --- */
+  /* Modifiez ces lignes pour changer la police partout */
+  --font-principale: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --font-titre: 'Georgia', serif;
+
+  /* --- VOS COULEURS MANUELLES --- */
+  --couleur-texte: #333333;
+  --couleur-fond: #f5f5f5;
+
+  font-family: var(--font-principale);
   line-height: 1.6;
   font-weight: 400;
 
@@ -16,10 +25,14 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-titre); /* Les titres utiliseront Georgia */
+}
+
 body {
   margin: 0;
-  background-color: #f5f5f5;
-  color: #333;
+  background-color: var(--couleur-fond);
+  color: var(--couleur-texte);
   min-height: 100vh;
 }
 

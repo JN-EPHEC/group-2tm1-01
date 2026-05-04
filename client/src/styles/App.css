@@ -1,6 +1,6 @@
 :root {
-  --mint-green: #98ff98;
-  --dark-mint-green: #3cb371;
+  --mint-green: #afd6f8;
+  --dark-mint-green: #afd6f8;
   --light-gray: #f8f9fa;
   --white: #ffffff;
 }
@@ -19,8 +19,8 @@ body {
 }
 
 .btn-primary:hover {
-  background-color: #2e8b57;
-  border-color: #2e8b57;
+  background-color: #afd6f8;
+  border-color: #afd6f8;
 }
 
 main.container {
