@@ -1,5 +1,5 @@
 import { DataTypes, Model } from "sequelize";
-import sequelize from "../config/database.js";
+import { supabase as sequelize } from "../config/supabase";
 
 class Product extends Model {}
 

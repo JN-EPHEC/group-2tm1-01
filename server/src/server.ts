@@ -1,13 +1,12 @@
-import express from 'express';
-import sequelize from './config/database';
-import Product from './models/Product';
+import express from "express";
+import { supabase as sequelize } from "./config/supabase";
+import Product from "./models/Product";
 
 const app = express();
 app.use(express.json());
 
-
-// ROUTE DE TEST 
-app.get('/', (req, res) => {
+// ROUTE DE TEST
+app.get("/", (req, res) => {
   res.send("🚀 L'API du cabinet de kiné est en ligne et la DB est connectée !");
 });
 
