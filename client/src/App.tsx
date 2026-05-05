@@ -19,7 +19,7 @@ function App() {
   const [isAdmin] = useState(true); 
 
   return (
-    <Router basename="/dev3">
+    <Router>
       <Navbar isAdmin={isAdmin} />
       <main className="container-fluid px-4 mt-4">
         <Routes>

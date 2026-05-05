@@ -16,7 +16,7 @@ const Navbar: React.FC<NavbarProps> = ({ isAdmin }) => {
             style={{ width: '70px', height: '70px', flexShrink: 0 }}
           >
             <img 
-              src="/dev3/img/logo.png" 
+              src="/img/logo.png" 
               alt="Logo" 
               style={{ width: '100%', height: '100%', objectFit: 'cover', transform: 'scale(1.4)' }} 
             />
