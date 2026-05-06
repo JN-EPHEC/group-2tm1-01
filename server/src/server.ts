@@ -1,18 +1,25 @@
+import "dotenv/config";
 import express from "express";
-import { supabase as sequelize } from "./config/supabase";
-import Product from "./models/Product";
+import { supabase } from "./config/supabase";
 
 const app = express();
-app.use(express.json());
+console.log("ENV URL:", process.env.SUPABASE_URL);
 
-// ROUTE DE TEST
-app.get("/", (req, res) => {
-  res.send("🚀 L'API du cabinet de kiné est en ligne et la DB est connectée !");
+app.listen(3000, () => {
+  console.log("Server running on http://localhost:3000");
 });
 
-sequelize.sync().then(() => {
-  console.log("Connexion à la base de données SQLite établie.");
-  app.listen(3000, () => {
-    console.log("Serveur lancé sur http://localhost:3000");
-  });
+app.get("/", (req, res) => {
+  res.send("🚀 API kiné en ligne !");
+});
+
+app.get("/test-db", async (req, res) => {
+  const { data, error } = await supabase.from("products").select("*");
+
+  if (error) {
+    return res.status(500).json(error);
+  }
+
+  res.json(data);
+  console.log(error, data);
 });
