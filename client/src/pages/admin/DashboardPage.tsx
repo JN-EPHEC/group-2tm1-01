@@ -1,4 +1,17 @@
 ﻿import React, { useState, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
+// Remplacement de BarChart par AreaChart et ajout des composants nécessaires
+import { 
+  AreaChart, 
+  Area, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  Legend, 
+  ResponsiveContainer 
+} from 'recharts';
+import '../../styles/DashboardPage.css';
 
 type TransactionType = 'INCOME' | 'EXPENSE';
 type TransactionStatus = 'PAID' | 'PENDING';
@@ -10,26 +23,86 @@ interface Transaction {
   type: TransactionType;
   date: string;
   amount: number;
-  reference?: string; // N° attestation ou facture (surtout pour les entrées)
+  reference?: string;
   status: TransactionStatus;
   comment: string;
 }
 
 const DashboardPage: React.FC = () => {
-  // Navigation State
-  const [view, setView] = useState<'HOME' | 'SUMMARY' | 'YEARS_LIST' | 'YEAR_DETAIL'>('HOME');
-  const [selectedYear, setSelectedYear] = useState<number | null>(null);
-  const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  
+  // Navigation State from URL
+  const view = (searchParams.get('view') as 'HOME' | 'SUMMARY' | 'YEARS_LIST' | 'YEAR_DETAIL') || 'HOME';
+  const selectedYear = searchParams.get('year') ? parseInt(searchParams.get('year')!, 10) : null;
+  const selectedMonth = searchParams.get('month') ? parseInt(searchParams.get('month')!, 10) : null;
 
-  // Data State (Simulation de base de données)
+  // Helper pour l'URL
+  const updateDashboardView = (
+    newView: 'HOME' | 'SUMMARY' | 'YEARS_LIST' | 'YEAR_DETAIL',
+    newYear?: number | null,
+    newMonth?: number | null
+  ) => {
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set('view', newView);
+    
+    if (newYear !== undefined) {
+      if (newYear === null) newParams.delete('year');
+      else newParams.set('year', newYear.toString());
+    }
+    
+    if (newMonth !== undefined) {
+      if (newMonth === null) newParams.delete('month');
+      else newParams.set('month', newMonth.toString());
+    }
+    
+    setSearchParams(newParams);
+    setShowForm('NONE');
+  };
+
+  // Data State
   const [years, setYears] = useState<number[]>([2025, 2026]);
   const [newYearInput, setNewYearInput] = useState('');
   
-  const [transactions, setTransactions] = useState<Transaction[]>([
-    { id: '1', year: 2026, month: 5, type: 'INCOME', date: '2026-05-01', amount: 50.0, reference: 'ATT-001', status: 'PAID', comment: 'Consultation standard' },
-    { id: '2', year: 2026, month: 5, type: 'INCOME', date: '2026-05-04', amount: 50.0, reference: 'ATT-002', status: 'PENDING', comment: 'À payer' },
-    { id: '3', year: 2026, month: 5, type: 'EXPENSE', date: '2026-05-02', amount: 15.5, status: 'PAID', comment: 'Achat petit matériel' },
-  ]);
+  // Dashboard Chart State
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [showChart, setShowChart] = useState(false);
+  
+// --- À REMPLACER DANS DashboardPage.tsx ---
+
+const [transactions, setTransactions] = useState<Transaction[]>(() => {
+  const mockData: Transaction[] = [];
+  const year = 2026;
+
+  // Génère des données pour chaque mois de l'année
+  for (let month = 1; month <= 12; month++) {
+    // Revenus aléatoires (entre 2000€ et 4500€)
+    mockData.push({
+      id: `in-${month}`,
+      year,
+      month,
+      type: 'INCOME',
+      date: `${year}-${String(month).padStart(2, '0')}-05`,
+      amount: Math.floor(Math.random() * 2500) + 2000,
+      reference: `ATT-${year}-${month}`,
+      status: 'PAID',
+      comment: 'Consultations mensuelles'
+    });
+
+    // Dépenses aléatoires (entre 800€ et 1800€)
+    mockData.push({
+      id: `ex-${month}`,
+      year,
+      month,
+      type: 'EXPENSE',
+      date: `${year}-${String(month).padStart(2, '0')}-15`,
+      amount: Math.floor(Math.random() * 1000) + 800,
+      status: 'PAID',
+      comment: 'Charges et matériel'
+    });
+  }
+  return mockData;
+});
 
   // Form States
   const [showForm, setShowForm] = useState<'NONE' | 'INCOME' | 'EXPENSE'>('NONE');
@@ -55,8 +128,6 @@ const DashboardPage: React.FC = () => {
 
   const handleAddTransaction = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedYear) return;
-    
     const dateObj = new Date(formData.date);
     
     const newTx: Transaction = {
@@ -67,7 +138,7 @@ const DashboardPage: React.FC = () => {
       date: formData.date,
       amount: parseFloat(formData.amount),
       reference: showForm === 'INCOME' ? formData.reference : undefined,
-      status: showForm === 'INCOME' ? 'PENDING' : 'PAID', // Par défaut
+      status: showForm === 'INCOME' ? 'PENDING' : 'PAID',
       comment: formData.comment
     };
 
@@ -77,15 +148,13 @@ const DashboardPage: React.FC = () => {
   };
 
   const handleDelete = (id: string) => {
-    if (window.confirm('Attention : Voulez-vous vraiment supprimer cet élément ?')) {
+    if (window.confirm('Voulez-vous supprimer cet élément ?')) {
       setTransactions(transactions.filter(t => t.id !== id));
     }
   };
 
   const handleEdit = (_id: string) => {
-    if (window.confirm('Attention : Vous allez modifier cet élément. Procéder ?')) {
-      alert('Mode édition (à implémenter en détail). Vous pouvez basculer le statut depuis le tableau pour le moment.');
-    }
+    alert('Mode édition (à implémenter).');
   };
 
   const handleToggleStatus = (id: string) => {
@@ -97,7 +166,7 @@ const DashboardPage: React.FC = () => {
     }));
   };
 
-  // --- CALCULS & DONNEES DERIVEES ---
+  // --- CALCULS ---
 
   const currentYearTransactions = useMemo(() => {
     let txs = transactions.filter(t => t.year === selectedYear);
@@ -112,17 +181,16 @@ const DashboardPage: React.FC = () => {
     currentYearTransactions.filter(t => t.type === 'INCOME' && t.status === 'PENDING').reduce((acc, t) => acc + t.amount, 0)
   , [currentYearTransactions]);
 
-  // --- COMPOSANTS DE VEUES ---
+  // --- VUES ---
 
   const renderHome = () => (
     <div className="text-center mt-5">
-      <h2 className="mb-4">Bienvenue sur le tableau de bord de gestion financière</h2>
-      <p className="lead mb-5">Choisissez le mode d'affichage de vos entrées et sorties d'argent.</p>
+      <h2 className="mb-4">Bienvenue sur le tableau de bord</h2>
       <div className="d-flex justify-content-center gap-4">
-        <button className="btn btn-primary btn-lg px-4 py-3 shadow-sm" onClick={() => setView('SUMMARY')}>
+        <button className="btn btn-primary btn-lg px-4 py-3 shadow-sm" onClick={() => updateDashboardView('SUMMARY')}>
           Tableau récapitulatif
         </button>
-        <button className="btn btn-outline-primary btn-lg px-4 py-3 shadow-sm" onClick={() => setView('YEARS_LIST')}>
+        <button className="btn btn-outline-primary btn-lg px-4 py-3 shadow-sm" onClick={() => updateDashboardView('YEARS_LIST')}>
           Gérer par années
         </button>
       </div>
@@ -130,9 +198,31 @@ const DashboardPage: React.FC = () => {
   );
 
   const renderSummary = () => {
-    // Calcul des stats globales par année
+    const filteredTxs = transactions.filter(t => {
+      const txDate = new Date(t.date);
+      if (startDate && txDate < new Date(startDate)) return false;
+      if (endDate && txDate > new Date(endDate)) return false;
+      return true;
+    });
+
+    const statsMap = new Map<string, { interval: string, income: number, expense: number }>();
+    filteredTxs.forEach(t => {
+      const interval = `${t.year}-${String(t.month).padStart(2, '0')}`;
+      if (!statsMap.has(interval)) {
+        statsMap.set(interval, { interval, income: 0, expense: 0 });
+      }
+      const current = statsMap.get(interval)!;
+      if (t.type === 'INCOME') current.income += t.amount;
+      if (t.type === 'EXPENSE') current.expense += t.amount;
+    });
+    
+    const chartData = Array.from(statsMap.values()).map(d => ({
+      ...d,
+      total: d.income - d.expense
+    })).sort((a, b) => a.interval.localeCompare(b.interval));
+
     const statsByYear = years.map(y => {
-      const txs = transactions.filter(t => t.year === y);
+      const txs = filteredTxs.filter(t => t.year === y);
       const income = txs.filter(t => t.type === 'INCOME').reduce((sum, t) => sum + t.amount, 0);
       const expense = txs.filter(t => t.type === 'EXPENSE').reduce((sum, t) => sum + t.amount, 0);
       return { year: y, income, expense, balance: income - expense };
@@ -140,28 +230,79 @@ const DashboardPage: React.FC = () => {
 
     return (
       <div>
-        <button className="btn btn-secondary mb-4" onClick={() => setView('HOME')}>← Retour Accueil</button>
-        <h3 className="mb-4">Tableau récapitulatif global</h3>
+        <button className="btn btn-secondary mb-4" onClick={() => updateDashboardView('HOME')}>← Retour Accueil</button>
+        <h3 className="mb-4">Récapitulatif global</h3>
+
+        <div className="card shadow-sm mb-4 bg-light border-0">
+          <div className="card-body d-flex flex-wrap gap-3 align-items-end">
+            <div>
+              <label className="form-label text-muted small mb-1">Date de début</label>
+              <input type="date" className="form-control" value={startDate} onChange={e => setStartDate(e.target.value)} />
+            </div>
+            <div>
+              <label className="form-label text-muted small mb-1">Date de fin</label>
+              <input type="date" className="form-control" value={endDate} onChange={e => setEndDate(e.target.value)} />
+            </div>
+            <div>
+              <button 
+                className={`btn ${showChart ? 'btn-outline-primary' : 'btn-primary'}`}
+                onClick={() => setShowChart(!showChart)}
+              >
+                {showChart ? 'Cacher le graphique' : 'Voir le graphique'}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {showChart && (
+          <div className="card shadow-sm mb-4 border-0">
+            <div className="card-body">
+              <h5 className="card-title fw-bold mb-4">Flux Financiers</h5>
+              <div style={{ width: '100%', height: 400 }}>
+                <ResponsiveContainer>
+                  <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#2a8821" stopOpacity={0.3}/>
+                        <stop offset="95%" stopColor="#2a8821" stopOpacity={0}/>
+                      </linearGradient>
+                      <linearGradient id="colorExpense" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#c02737" stopOpacity={0.3}/>
+                        <stop offset="95%" stopColor="#c02737" stopOpacity={0}/>
+                      </linearGradient>
+                      <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#d1820c" stopOpacity={0.4}/>
+                        <stop offset="95%" stopColor="#d1820c" stopOpacity={0}/>
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                    <XAxis dataKey="interval" axisLine={false} tickLine={false} dy={10} />
+                    <YAxis axisLine={false} tickLine={false} />
+                    <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} />
+                    <Legend verticalAlign="top" height={36}/>
+                    <Area type="monotone" dataKey="total" name="Bilan" stroke="#d1820c" strokeWidth={3} fill="url(#colorTotal)" />
+                    <Area type="monotone" dataKey="income" name="Revenus" stroke="#2a8821" strokeWidth={2} fill="url(#colorIncome)" />
+                    <Area type="monotone" dataKey="expense" name="Dépenses" stroke="#c02737" strokeWidth={2} fill="url(#colorExpense)" />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="card shadow-sm">
           <div className="card-body">
-            <table className="table table-hover align-middle">
+            <table className="table table-hover">
               <thead className="table-light">
-                <tr>
-                  <th>Année</th>
-                  <th className="text-success">Total Entrées</th>
-                  <th className="text-danger">Total Sorties</th>
-                  <th>Bilan</th>
-                </tr>
+                <tr><th>Année</th><th>Entrées</th><th>Sorties</th><th>Bilan</th></tr>
               </thead>
               <tbody>
                 {statsByYear.map(stat => (
                   <tr key={stat.year}>
-                    <td className="fw-bold">{stat.year}</td>
+                    <td>{stat.year}</td>
                     <td className="text-success">+{stat.income.toFixed(2)} €</td>
                     <td className="text-danger">-{stat.expense.toFixed(2)} €</td>
-                    <td className={stat.balance >= 0 ? "fw-bold text-success" : "fw-bold text-danger"}>
-                      {stat.balance.toFixed(2)} €
-                    </td>
+                    <td className={stat.balance >= 0 ? "text-success fw-bold" : "text-danger fw-bold"}>{stat.balance.toFixed(2)} €</td>
                   </tr>
                 ))}
               </tbody>
@@ -174,42 +315,23 @@ const DashboardPage: React.FC = () => {
 
   const renderYearsList = () => (
     <div>
-      <button className="btn btn-secondary mb-4" onClick={() => setView('HOME')}>← Retour Accueil</button>
-      <h3 className="mb-4">Mes Années Comptables</h3>
-      
+      <button className="btn btn-secondary mb-4" onClick={() => updateDashboardView('HOME')}>← Retour</button>
+      <h3>Années Comptables</h3>
       <div className="row">
-        <div className="col-md-8">
-          <div className="d-flex flex-wrap gap-3 mb-4">
-            {years.sort((a,b) => b-a).map(y => (
-              <button 
-                key={y} 
-                className="btn btn-lg btn-outline-dark px-5 py-4 fw-bold shadow-sm"
-                onClick={() => { setSelectedYear(y); setView('YEAR_DETAIL'); setSelectedMonth(null); setShowForm('NONE'); }}
-              >
-                {y}
-              </button>
-            ))}
-          </div>
+        <div className="col-md-8 d-flex flex-wrap gap-3">
+          {years.map(y => (
+            <button key={y} className="btn btn-lg btn-outline-dark px-5 py-4 fw-bold" onClick={() => updateDashboardView('YEAR_DETAIL', y)}>
+              {y}
+            </button>
+          ))}
         </div>
-        
         <div className="col-md-4">
-          <div className="card shadow-sm border-0 bg-light">
-            <div className="card-body">
-              <h5 className="card-title">Créer une nouvelle année</h5>
-              <form onSubmit={handleCreateYear} className="mt-3">
-                <div className="input-group">
-                  <input 
-                    type="number" 
-                    className="form-control" 
-                    placeholder="Ex: 2027" 
-                    value={newYearInput}
-                    onChange={e => setNewYearInput(e.target.value)}
-                    required
-                  />
-                  <button className="btn btn-success" type="submit">Ajouter</button>
-                </div>
-              </form>
-            </div>
+          <div className="card shadow-sm p-3">
+            <h5>Ajouter une année</h5>
+            <form onSubmit={handleCreateYear} className="input-group">
+              <input type="number" className="form-control" value={newYearInput} onChange={e => setNewYearInput(e.target.value)} required />
+              <button className="btn btn-success" type="submit">Ajouter</button>
+            </form>
           </div>
         </div>
       </div>
@@ -219,137 +341,69 @@ const DashboardPage: React.FC = () => {
   const renderYearDetail = () => (
     <div>
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <button className="btn btn-secondary" onClick={() => setView('YEARS_LIST')}>← Retour aux années</button>
-        <h2 className="m-0">Gestion {selectedYear}</h2>
-        <div className="bg-warning text-dark px-4 py-2 rounded-3 fw-bold shadow-sm">
-          Total impayés : {unpaidTotal.toFixed(2)} €
+        <button className="btn btn-secondary" onClick={() => updateDashboardView('YEARS_LIST', null)}>← Retour</button>
+        <h2>Gestion {selectedYear}</h2>
+        <div className="bg-warning px-3 py-2 rounded fw-bold">Impayés : {unpaidTotal.toFixed(2)} €</div>
+      </div>
+
+      <div className="card shadow-sm mb-4 bg-light">
+        <div className="card-body d-flex gap-3">
+          <select className="form-select w-auto" value={selectedMonth || ''} onChange={e => updateDashboardView('YEAR_DETAIL', selectedYear, e.target.value ? parseInt(e.target.value, 10) : null)}>
+            <option value="">Tous les mois</option>
+            {['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'].map((m, i) => (
+              <option key={i+1} value={i+1}>{m}</option>
+            ))}
+          </select>
+          <input type="text" className="form-control" placeholder="Rechercher..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
+          <button className="btn btn-success" onClick={() => setShowForm('INCOME')}>+ Entrée</button>
+          <button className="btn btn-danger" onClick={() => setShowForm('EXPENSE')}>- Sortie</button>
         </div>
       </div>
 
-      {/* Barre d'outils (Filtres et Actions) */}
-      <div className="card shadow-sm mb-4 border-0 bg-light">
-        <div className="card-body d-flex flex-wrap justify-content-between align-items-center gap-3">
-          <div className="d-flex gap-3 align-items-center flex-grow-1">
-            <select 
-              className="form-select w-auto" 
-              value={selectedMonth || ''} 
-              onChange={e => setSelectedMonth(e.target.value ? parseInt(e.target.value) : null)}
-            >
-              <option value="">Tous les mois</option>
-              {[...Array(12)].map((_, i) => <option key={i+1} value={i+1}>Mois {i+1}</option>)}
-            </select>
-            
-            <input 
-              type="text" 
-              className="form-control w-auto flex-grow-1" 
-              placeholder="Rechercher par N° Attestation / Facture..." 
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              style={{ maxWidth: '400px' }}
-            />
-          </div>
-          
-          <div className="d-flex gap-2">
-            <button className="btn btn-success" onClick={() => setShowForm(showForm === 'INCOME' ? 'NONE' : 'INCOME')}>
-              + Ajouter Entrée
-            </button>
-            <button className="btn btn-danger" onClick={() => setShowForm(showForm === 'EXPENSE' ? 'NONE' : 'EXPENSE')}>
-              - Ajouter Sortie
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Formulaires d'ajout dynamically shown */}
       {showForm !== 'NONE' && (
-        <div className={`card shadow-sm mb-4 border-0 border-start border-4 ${showForm === 'INCOME' ? 'border-success' : 'border-danger'}`}>
+        <div className="card shadow-sm mb-4">
           <div className="card-body">
-            <h5 className="card-title mb-3">
-              {showForm === 'INCOME' ? '📥 Nouvelle Entrée d\'argent' : '📤 Nouvelle Sortie d\'argent'}
-            </h5>
+            <h5>Nouveau {showForm === 'INCOME' ? 'Revenu' : 'Dépense'}</h5>
             <form onSubmit={handleAddTransaction} className="row g-3">
-              <div className="col-md-3">
-                <label className="form-label">Date</label>
-                <input type="date" className="form-control" required value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} />
-              </div>
-              <div className="col-md-3">
-                <label className="form-label">Montant ({showForm === 'INCOME' ? '+' : '-'})</label>
-                <div className="input-group">
-                  <input type="number" step="0.01" min="0" className="form-control" required value={formData.amount} onChange={e => setFormData({...formData, amount: e.target.value})} />
-                  <span className="input-group-text">€</span>
-                </div>
-              </div>
-              {showForm === 'INCOME' && (
-                <div className="col-md-3">
-                  <label className="form-label">N° Attestion/Facture</label>
-                  <input type="text" className="form-control" required value={formData.reference} onChange={e => setFormData({...formData, reference: e.target.value})} />
-                </div>
-              )}
-              <div className={showForm === 'INCOME' ? "col-md-3" : "col-md-6"}>
-                <label className="form-label">Commentaires</label>
-                <input type="text" className="form-control" value={formData.comment} onChange={e => setFormData({...formData, comment: e.target.value})} />
-              </div>
-              <div className="col-12 text-end mt-4">
-                <button type="button" className="btn btn-outline-secondary me-2" onClick={() => setShowForm('NONE')}>Annuler</button>
-                <button type="submit" className={`btn ${showForm === 'INCOME' ? 'btn-success' : 'btn-danger'}`}>
-                  Enregistrer
-                </button>
+              <div className="col-md-3"><input type="date" className="form-control" required value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} /></div>
+              <div className="col-md-3"><input type="number" step="0.01" className="form-control" placeholder="Montant" required value={formData.amount} onChange={e => setFormData({...formData, amount: e.target.value})} /></div>
+              {showForm === 'INCOME' && <div className="col-md-3"><input type="text" className="form-control" placeholder="Référence" value={formData.reference} onChange={e => setFormData({...formData, reference: e.target.value})} /></div>}
+              <div className="col-md-3"><input type="text" className="form-control" placeholder="Commentaire" value={formData.comment} onChange={e => setFormData({...formData, comment: e.target.value})} /></div>
+              <div className="col-12 text-end">
+                <button type="button" className="btn btn-link" onClick={() => setShowForm('NONE')}>Annuler</button>
+                <button type="submit" className="btn btn-primary">Enregistrer</button>
               </div>
             </form>
           </div>
         </div>
       )}
 
-      {/* Tableau principal */}
-      <div className="card shadow-sm">
-        <div className="card-body p-0">
-          <div className="table-responsive">
-            <table className="table table-hover align-middle m-0">
-              <thead className="table-light">
-                <tr>
-                  <th className="px-3">Date</th>
-                  <th>Montant</th>
-                  <th>N° Ref</th>
-                  <th>Statut</th>
-                  <th>Commentaires</th>
-                  <th className="text-end px-3">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentYearTransactions.length === 0 ? (
-                  <tr><td colSpan={6} className="text-center py-4 text-muted">Aucune donnée trouvée.</td></tr>
-                ) : currentYearTransactions.map(tx => (
-                  <tr key={tx.id} style={{ backgroundColor: tx.type === 'INCOME' ? 'rgba(25, 135, 84, 0.05)' : 'rgba(220, 53, 69, 0.05)' }}>
-                    <td className="px-3">{new Date(tx.date).toLocaleDateString('fr-FR')}</td>
-                    <td className={`fw-bold ${tx.type === 'INCOME' ? 'text-success' : 'text-danger'}`}>
-                      {tx.type === 'INCOME' ? '+' : '-'}{tx.amount.toFixed(2)} €
-                    </td>
-                    <td>{tx.reference || '-'}</td>
-                    <td>
-                      {tx.type === 'INCOME' ? (
-                        <button 
-                          className={`btn btn-sm ${tx.status === 'PAID' ? 'btn-success' : 'btn-warning'}`}
-                          onClick={() => handleToggleStatus(tx.id)}
-                        >
-                          {tx.status === 'PAID' ? 'Payé' : 'En attente'}
-                        </button>
-                      ) : (
-                        <span className="badge bg-secondary">Réglé</span>
-                      )}
-                    </td>
-                    <td className="text-muted small" style={{maxWidth: '200px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
-                      {tx.comment}
-                    </td>
-                    <td className="text-end px-3">
-                      <button className="btn btn-sm btn-outline-secondary me-2" onClick={() => handleEdit(tx.id)}>✏️ Modif.</button>
-                      <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(tx.id)}>❌ Suppr.</button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+      <div className="table-responsive bg-white shadow-sm rounded">
+        <table className="table table-hover m-0">
+          <thead className="table-light">
+            <tr><th>Date</th><th>Montant</th><th>Ref</th><th>Statut</th><th>Actions</th></tr>
+          </thead>
+          <tbody>
+            {currentYearTransactions.map(tx => (
+              <tr key={tx.id} className={tx.type === 'INCOME' ? 'dashboard-row-income' : 'dashboard-row-expense'}>
+                <td>{new Date(tx.date).toLocaleDateString('fr-FR')}</td>
+                <td className={tx.type === 'INCOME' ? 'text-success fw-bold' : 'text-danger fw-bold'}>{tx.amount.toFixed(2)} €</td>
+                <td>{tx.reference || '-'}</td>
+                <td>
+                  {tx.type === 'INCOME' ? (
+                    <button className={`btn btn-sm ${tx.status === 'PAID' ? 'btn-success' : 'btn-warning'}`} onClick={() => handleToggleStatus(tx.id)}>
+                      {tx.status === 'PAID' ? 'Payé' : 'En attente'}
+                    </button>
+                  ) : <span className="badge bg-secondary">Réglé</span>}
+                </td>
+                <td>
+                  <button className="btn btn-sm btn-outline-secondary me-2" onClick={() => handleEdit(tx.id)}>Modifier</button>
+                  <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(tx.id)}>Supprimer</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

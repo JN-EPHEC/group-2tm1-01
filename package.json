@@ -14,6 +14,7 @@
     "concurrently": "^9.2.1"
   },
   "dependencies": {
+    "recharts": "^3.8.1",
     "sequelize": "^6.37.8",
     "sqlite3": "^6.0.1"
   }

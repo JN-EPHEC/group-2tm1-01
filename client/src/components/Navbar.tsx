@@ -12,13 +12,12 @@ const Navbar: React.FC<NavbarProps> = ({ isAdmin }) => {
       <div className="container-fluid">
         <Link className="navbar-brand custom-navbar-brand d-flex align-items-center" to="/">
           <div 
-            className="me-2 rounded-circle overflow-hidden bg-white d-flex justify-content-center align-items-center"
-            style={{ width: '70px', height: '70px', flexShrink: 0 }}
+            className="me-2 rounded-circle overflow-hidden bg-white d-flex justify-content-center align-items-center navbar-logo-container"
           >
             <img 
               src="/img/logo.png" 
               alt="Logo" 
-              style={{ width: '100%', height: '100%', objectFit: 'cover', transform: 'scale(1.4)' }} 
+              className="navbar-logo-img"
             />
           </div>
           Kiné-Web

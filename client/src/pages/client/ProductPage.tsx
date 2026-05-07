@@ -2,6 +2,7 @@
 import { Link } from 'react-router-dom';
 import '../../styles/shop.css';
 
+/*en attendant la partie back et la base de données,la page produits avec un panier fonctionnel en local.*/
 interface Product {
   id: number;
   name: string;
@@ -11,10 +12,10 @@ interface Product {
 }
 
 const PRODUCTS: Product[] = [
-  { id: 1, name: 'Gel chauffant', imgIcon: '🧴', desc: "Effet rapide pour la préparation à l'effort.", price: 15.00 },
-  { id: 2, name: 'Bande élastique', imgIcon: '🎗️', desc: "Idéal pour vos exercices à domicile.", price: 9.50 },
-  { id: 3, name: 'Haltères 2kg', imgIcon: '💪', desc: "Revêtement néoprène, prise en main facile.", price: 22.00 },
-  { id: 4, name: 'Pack de Froid', imgIcon: '🧊', desc: "Poche réutilisable chaud/froid.", price: 8.00 }
+  { id: 1, name: 'Gel chauffant', desc: "Effet rapide pour la préparation à l'effort.", price: 15.00 },
+  { id: 2, name: 'Bande élastique', desc: "Idéal pour vos exercices à domicile.", price: 9.50 },
+  { id: 3, name: 'Haltères 2kg', desc: "Revêtement néoprène, prise en main facile.", price: 22.00 },
+  { id: 4, name: 'Pack de Froid', desc: "Poche réutilisable chaud/froid.", price: 8.00 }
 ];
 
 const ProductPage = () => {
@@ -74,10 +75,6 @@ const ProductPage = () => {
                   <input className="form-check-input" type="radio" name="category" id="cat-mat" />
                   <label className="form-check-label" htmlFor="cat-mat">Matériel</label>
                 </div>
-                <div className="form-check">
-                  <input className="form-check-input" type="radio" name="category" id="cat-ort" />
-                  <label className="form-check-label" htmlFor="cat-ort">Orthèses</label>
-                </div>
               </div>
             </div>
           </div>
@@ -129,7 +126,7 @@ const ProductPage = () => {
           <div className="card shadow-sm border-0 bg-light sticky-top sticky-sidebar">
             <div className="card-body">
               <h5 className="card-title border-bottom border-secondary pb-3 mb-4 d-flex justify-content-between align-items-center">
-                <span>🛒 Mon Panier</span>
+                <span>Mon Panier</span>
                 <span className="badge bg-primary rounded-pill">{totalItems} {totalItems > 1 ? 'articles' : 'article'}</span>
               </h5>
               

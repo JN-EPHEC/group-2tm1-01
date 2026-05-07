@@ -34,3 +34,7 @@
   /* Remplacement Bootstrap (mt-4) */
   margin-top: 2rem;
 }
+
+.map-placeholder {
+  min-height: 150px;
+}
