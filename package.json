@@ -10,10 +10,12 @@
     "test:serveur": "npm test --prefix server"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
     "concurrently": "^9.2.1"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.105.3",
+    "cors": "^2.8.6",
     "sequelize": "^6.37.8",
     "sqlite3": "^6.0.1"
   }

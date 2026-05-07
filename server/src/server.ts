@@ -1,9 +1,16 @@
 import "dotenv/config";
 import express from "express";
 import { supabase } from "./config/supabase";
+import productRoutes from "./routes/product.routes";
+import cors from "cors";
 
 const app = express();
 console.log("ENV URL:", process.env.SUPABASE_URL);
+app.use(cors());
+
+app.use(express.json());
+
+app.use("/api/products", productRoutes);
 
 app.listen(3000, () => {
   console.log("Server running on http://localhost:3000");
