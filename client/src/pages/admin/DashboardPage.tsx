@@ -253,7 +253,6 @@ const [transactions, setTransactions] = useState<Transaction[]>(() => {
             </div>
           </div>
         </div>
-
         {showChart && (
           <div className="card shadow-sm mb-4 border-0">
             <div className="card-body">
