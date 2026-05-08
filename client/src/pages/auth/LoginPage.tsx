@@ -1,14 +1,26 @@
 ﻿
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
-const LoginPage = () => {
+interface LoginPageProps {
+  setIsAuthenticated: (val: boolean) => void;
+}
+
+const LoginPage = ({ setIsAuthenticated }: LoginPageProps) => {
+  const navigate = useNavigate();
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsAuthenticated(true);
+    navigate('/profil');
+  };
+
   return (
     <div className="row justify-content-center mt-5">
       <div className="col-md-6">
         <div className="card">
           <div className="card-body">
             <h1 className="card-title text-center mb-4">Connexion</h1>
-            <form>
+            <form onSubmit={handleLogin}>
               <div className="mb-3">
                 <label htmlFor="email" className="form-label">Adresse Email</label>
                 <input type="email" className="form-control" id="email" placeholder="nom@exemple.com" />

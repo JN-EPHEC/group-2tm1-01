@@ -10,9 +10,11 @@
     "test:serveur": "npm test --prefix server"
   },
   "devDependencies": {
+    "@types/react": "^19.2.14",
     "concurrently": "^9.2.1"
   },
   "dependencies": {
+    "recharts": "^3.8.1",
     "sequelize": "^6.37.8",
     "sqlite3": "^6.0.1"
   }
