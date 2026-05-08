@@ -9,9 +9,10 @@ export const getAppointments = async () => {
 };
 
 export const createAppointment = async (appointment: any) => {
+  const { date, time, status, notes } = appointment;
   const { data, error } = await supabase
     .from("appointments")
-    .insert([appointment])
+    .insert([{ date, time, status, notes,}])
     .select()
     .single();
 
