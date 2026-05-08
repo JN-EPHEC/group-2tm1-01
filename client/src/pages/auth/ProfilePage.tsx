@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 interface ProfilePageProps {
@@ -9,6 +9,20 @@ const ProfilePage = ({ setIsAuthenticated }: ProfilePageProps) => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'infos' | 'history' | 'appointments'>('infos');
   const [isEditing, setIsEditing] = useState(false);
+  const [profileImage, setProfileImage] = useState<string>("https://i.pravatar.cc/150?img=3");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setProfileImage(imageUrl);
+    }
+  };
+
+  const handleCameraClick = () => {
+    fileInputRef.current?.click();
+  };
 
   const handleLogout = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -34,14 +48,22 @@ const ProfilePage = ({ setIsAuthenticated }: ProfilePageProps) => {
             <div className="card-body">
               <div className="mb-3 position-relative d-inline-block">
                 <img 
-                  src="https://via.placeholder.com/150" 
+                  src={profileImage} 
                   alt="Profile" 
                   className="rounded-circle img-thumbnail" 
                   style={{ width: '120px', height: '120px', objectFit: 'cover' }}
                 />
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  ref={fileInputRef} 
+                  style={{ display: 'none' }} 
+                  onChange={handleImageChange} 
+                />
                 <button 
                   className="btn btn-sm btn-primary rounded-circle position-absolute bottom-0 end-0"
                   title="Changer la photo"
+                  onClick={handleCameraClick}
                 >
                   <i className="bi bi-camera"></i>
                 </button>
