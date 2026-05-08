@@ -1,0 +1,20 @@
+/* client/src/styles/shop.css */
+
+.sticky-sidebar {
+  top: 20px;
+  z-index: 1;
+}
+
+.product-image-placeholder {
+  height: 180px;
+  font-size: 2rem;
+}
+
+.qty-input-group {
+  width: 90px;
+}
+
+.cart-item-image {
+  width: 60px;
+  height: 60px;
+}

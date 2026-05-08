@@ -1,4 +1,14 @@
-﻿const AppointmentPage = () => {
+﻿import { useNavigate } from 'react-router-dom';
+
+const AppointmentPage = () => {
+  const navigate = useNavigate();
+
+  const handleConfirmAppointment = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Redirection vers login pour la confirmation du rendez-vous
+    navigate('/login');
+  };
+
   return (
     <div>
       <h1 className="mb-4">Prendre un rendez-vous</h1>
@@ -38,7 +48,7 @@
             <div className="card-body">
               <h4 className="card-title mb-4 text-primary">2. Vos informations</h4>
               
-              <form>
+              <form onSubmit={handleConfirmAppointment}>
                 <div className="row g-3">
                   <div className="col-sm-6">
                     <label className="form-label">Prénom</label>
