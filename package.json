@@ -10,7 +10,9 @@
     "test:serveur": "npm test --prefix server"
   },
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
+    "@types/swagger-ui-express": "^4.1.8",
     "concurrently": "^9.2.1"
   },
   "dependencies": {
@@ -20,6 +22,8 @@
     "concurrently": "^9.2.1",
     "recharts": "^3.8.1",
     "sequelize": "^6.37.8",
-    "sqlite3": "^6.0.1"
+    "sqlite3": "^6.0.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   }
 }

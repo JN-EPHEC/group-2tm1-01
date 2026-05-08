@@ -16,6 +16,7 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/jest": "^30.0.0",
@@ -30,6 +31,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.105.3",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "dev3-fullstack-tp1": "file:..",
     "dotenv": "^17.4.2",
