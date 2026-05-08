@@ -1,4 +1,4 @@
-﻿import React, { useState, useMemo } from 'react';
+﻿import React, { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 // Remplacement de BarChart par AreaChart et ajout des composants nécessaires
 import { 
@@ -68,41 +68,20 @@ const DashboardPage: React.FC = () => {
   const [endDate, setEndDate] = useState('');
   const [showChart, setShowChart] = useState(false);
   
-// --- À REMPLACER DANS DashboardPage.tsx ---
+// --- FETCH TRANSACTIONS API ---
 
-const [transactions, setTransactions] = useState<Transaction[]>(() => {
-  const mockData: Transaction[] = [];
-  const year = 2026;
+const [transactions, setTransactions] = useState<Transaction[]>([]);
 
-  // Génère des données pour chaque mois de l'année
-  for (let month = 1; month <= 12; month++) {
-    // Revenus aléatoires (entre 2000€ et 4500€)
-    mockData.push({
-      id: `in-${month}`,
-      year,
-      month,
-      type: 'INCOME',
-      date: `${year}-${String(month).padStart(2, '0')}-05`,
-      amount: Math.floor(Math.random() * 2500) + 2000,
-      reference: `ATT-${year}-${month}`,
-      status: 'PAID',
-      comment: 'Consultations mensuelles'
-    });
-
-    // Dépenses aléatoires (entre 800€ et 1800€)
-    mockData.push({
-      id: `ex-${month}`,
-      year,
-      month,
-      type: 'EXPENSE',
-      date: `${year}-${String(month).padStart(2, '0')}-15`,
-      amount: Math.floor(Math.random() * 1000) + 800,
-      status: 'PAID',
-      comment: 'Charges et matériel'
-    });
-  }
-  return mockData;
-});
+  useEffect(() => {
+    fetch('http://localhost:3000/api/transactions')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setTransactions(data);
+        }
+      })
+      .catch(err => console.error("Erreur de chargement des transactions", err));
+  }, []);
 
   // Form States
   const [showForm, setShowForm] = useState<'NONE' | 'INCOME' | 'EXPENSE'>('NONE');
@@ -126,44 +105,66 @@ const [transactions, setTransactions] = useState<Transaction[]>(() => {
     }
   };
 
-  const handleAddTransaction = (e: React.FormEvent) => {
+  const handleAddTransaction = async (e: React.FormEvent) => {
     e.preventDefault();
     const dateObj = new Date(formData.date);
     
-    const newTx: Transaction = {
-      id: Date.now().toString(),
+    const newTx = {
       year: dateObj.getFullYear(),
       month: dateObj.getMonth() + 1,
       type: showForm === 'INCOME' ? 'INCOME' : 'EXPENSE',
       date: formData.date,
       amount: parseFloat(formData.amount),
-      reference: showForm === 'INCOME' ? formData.reference : undefined,
+      reference: showForm === 'INCOME' ? formData.reference : null,
       status: showForm === 'INCOME' ? 'PENDING' : 'PAID',
       comment: formData.comment
     };
 
-    setTransactions([...transactions, newTx]);
-    setShowForm('NONE');
-    setFormData({ date: '', amount: '', reference: '', comment: '' });
+    try {
+      const res = await fetch('http://localhost:3000/api/transactions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newTx)
+      });
+      const savedTx = await res.json();
+      setTransactions([savedTx, ...transactions]);
+      setShowForm('NONE');
+      setFormData({ date: '', amount: '', reference: '', comment: '' });
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (window.confirm('Voulez-vous supprimer cet élément ?')) {
-      setTransactions(transactions.filter(t => t.id !== id));
+      try {
+        await fetch(`http://localhost:3000/api/transactions/${id}`, { method: 'DELETE' });
+        setTransactions(transactions.filter(t => t.id !== id));
+      } catch (err) {
+        console.error(err);
+      }
     }
   };
 
   const handleEdit = (_id: string) => {
-    alert('Mode édition (à implémenter).');
+    alert('Mode édition (à implémenter en base).');
   };
 
-  const handleToggleStatus = (id: string) => {
-    setTransactions(transactions.map(t => {
-      if (t.id === id && t.type === 'INCOME') {
-        return { ...t, status: t.status === 'PAID' ? 'PENDING' : 'PAID' };
-      }
-      return t;
-    }));
+  const handleToggleStatus = async (id: string) => {
+    const txToUpdate = transactions.find(t => t.id === id);
+    if (!txToUpdate || txToUpdate.type !== 'INCOME') return;
+
+    const newStatus = txToUpdate.status === 'PAID' ? 'PENDING' : 'PAID';
+    try {
+      await fetch(`http://localhost:3000/api/transactions/${id}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus })
+      });
+      setTransactions(transactions.map(t => t.id === id ? { ...t, status: newStatus } : t));
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   // --- CALCULS ---

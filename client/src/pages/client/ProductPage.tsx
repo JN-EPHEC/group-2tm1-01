@@ -1,8 +1,7 @@
-﻿import { useState } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../../styles/shop.css';
 
-/*en attendant la partie back et la base de données,la page produits avec un panier fonctionnel en local.*/
 interface Product {
   id: number;
   name: string;
@@ -11,15 +10,18 @@ interface Product {
   price: number;
 }
 
-const PRODUCTS: Product[] = [
-  { id: 1, name: 'Gel chauffant', desc: "Effet rapide pour la préparation à l'effort.", price: 15.00 },
-  { id: 2, name: 'Bande élastique', desc: "Idéal pour vos exercices à domicile.", price: 9.50 },
-  { id: 3, name: 'Haltères 2kg', desc: "Revêtement néoprène, prise en main facile.", price: 22.00 },
-  { id: 4, name: 'Pack de Froid', desc: "Poche réutilisable chaud/froid.", price: 8.00 }
-];
-
 const ProductPage = () => {
+  const [products, setProducts] = useState<Product[]>([]);
   const [cart, setCart] = useState<{ [id: number]: number }>({});
+
+  useEffect(() => {
+    fetch('http://localhost:3000/api/products')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) setProducts(data);
+      })
+      .catch(err => console.error("Erreur chargement produits:", err));
+  }, []);
 
   const updateQuantity = (productId: number, delta: number) => {
     setCart(prev => {
@@ -38,7 +40,7 @@ const ProductPage = () => {
 
   const getSubtotal = () => {
     return Object.entries(cart).reduce((total, [id, qty]) => {
-      const product = PRODUCTS.find(p => p.id === parseInt(id));
+      const product = products.find(p => p.id === parseInt(id));
       return total + (product ? product.price * qty : 0);
     }, 0);
   };
@@ -83,7 +85,7 @@ const ProductPage = () => {
         {/* Zone des produits */}
         <div className="col-lg-7 col-md-9">
           <div className="row g-4">
-            {PRODUCTS.map(product => {
+            {products.map(product => {
               const qty = cart[product.id] || 0;
               return (
                 <div className="col-xl-4 col-sm-6" key={product.id}>
@@ -135,7 +137,7 @@ const ProductPage = () => {
               ) : (
                 <>
                   {Object.entries(cart).map(([id, qty]) => {
-                    const product = PRODUCTS.find(p => p.id === parseInt(id));
+                    const product = products.find(p => p.id === parseInt(id));
                     if (!product) return null;
                     return (
                       <div key={id} className="mb-3 pb-2 border-bottom border-white">

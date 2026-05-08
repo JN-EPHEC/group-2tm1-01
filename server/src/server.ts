@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express";
 import { supabase } from "./config/supabase";
 import productRoutes from "./routes/product.routes";
+import transactionRoutes from "./routes/transaction.routes";
 import cors from "cors";
 
 const app = express();
@@ -11,6 +12,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/products", productRoutes);
+app.use("/api/transactions", transactionRoutes);
 
 app.listen(3000, () => {
   console.log("Server running on http://localhost:3000");
