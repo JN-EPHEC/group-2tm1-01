@@ -22,25 +22,19 @@ export const protect = async (
 
   try {
 
-    const authHeader =
-      req.headers.authorization;
+    // On récupère le token via les cookies
+    let token = req.cookies?.access_token;
 
-    if (!authHeader) {
-
-      return res.status(401).json({
-        error: "Token manquant",
-      });
-
+    // Alternative: si le token vient du header Authorization (Bearer ...)
+    if (!token && req.headers.authorization?.startsWith("Bearer ")) {
+      token = req.headers.authorization.split(" ")[1];
     }
-
-    const token = req.cookies?.access_token;
 
     if (!token) {
 
       return res.status(401).json({
         error: "Token invalide",
       });
-
     }
 
     const { data, error } =
