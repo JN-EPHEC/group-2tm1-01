@@ -1,5 +1,4 @@
-﻿
-import { Link, useNavigate } from 'react-router-dom';
+﻿import { Link, useNavigate } from 'react-router-dom';
 
 interface LoginPageProps {
   setIsAuthenticated: (val: boolean) => void;
