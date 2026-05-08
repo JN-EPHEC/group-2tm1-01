@@ -1,4 +1,54 @@
-﻿const ProductPage = () => {
+﻿import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import '../../styles/shop.css';
+
+/*en attendant la partie back et la base de données,la page produits avec un panier fonctionnel en local.*/
+interface Product {
+  id: number;
+  name: string;
+  imgIcon: string;
+  desc: string;
+  price: number;
+}
+
+const PRODUCTS: Product[] = [
+  { id: 1, name: 'Gel chauffant', desc: "Effet rapide pour la préparation à l'effort.", price: 15.00 },
+  { id: 2, name: 'Bande élastique', desc: "Idéal pour vos exercices à domicile.", price: 9.50 },
+  { id: 3, name: 'Haltères 2kg', desc: "Revêtement néoprène, prise en main facile.", price: 22.00 },
+  { id: 4, name: 'Pack de Froid', desc: "Poche réutilisable chaud/froid.", price: 8.00 }
+];
+
+const ProductPage = () => {
+  const [cart, setCart] = useState<{ [id: number]: number }>({});
+
+  const updateQuantity = (productId: number, delta: number) => {
+    setCart(prev => {
+      const currentQty = prev[productId] || 0;
+      const newQty = Math.max(0, currentQty + delta); // Empêche d'aller en dessous de 0
+
+      const newCart = { ...prev };
+      if (newQty === 0) {
+        delete newCart[productId]; // Retire du panier si quantité = 0
+      } else {
+        newCart[productId] = newQty;
+      }
+      return newCart;
+    });
+  };
+
+  const getSubtotal = () => {
+    return Object.entries(cart).reduce((total, [id, qty]) => {
+      const product = PRODUCTS.find(p => p.id === parseInt(id));
+      return total + (product ? product.price * qty : 0);
+    }, 0);
+  };
+
+  const subtotal = getSubtotal();
+  const tax = subtotal * 0.21; // TVA 21%
+  const total = subtotal + tax;
+
+  const totalItems = Object.values(cart).reduce((sum, qty) => sum + qty, 0);
+
   return (
     <div className="pb-5">
       <h1 className="mb-4">Nos Produits et Matériel</h1>
