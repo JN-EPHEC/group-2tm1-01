@@ -19,6 +19,11 @@
     "@supabase/supabase-js": "^2.105.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
+    "@types/react": "^19.2.14",
+    "concurrently": "^9.2.1"
+  },
+  "dependencies": {
+    "recharts": "^3.8.1",
     "sequelize": "^6.37.8",
     "sqlite3": "^6.0.1",
     "swagger-jsdoc": "^6.2.8",

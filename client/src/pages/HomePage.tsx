@@ -55,7 +55,7 @@ const HomePage = () => {
         <div className="col-md-4">
           <div className="card h-100 shadow-sm border-0 bg-white">
             <div className="card-body">
-              <h3 className="card-title h5 text-primary mb-3">📞 Contact</h3>
+              <h3 className="card-title h5 text-primary mb-3">Contact</h3>
               <div className="mt-3 text-muted">
                 <p className="mb-2"><strong>Téléphone :</strong> <br/> [XXXX XX XX XX]</p>
                 <p className="mb-2"><strong>Email :</strong> <br/> [votre.email@kine.be]</p>
@@ -68,10 +68,9 @@ const HomePage = () => {
         <div className="col-md-4">
           <div className="card h-100 shadow-sm border-0 bg-white">
             <div className="card-body d-flex flex-column">
-              <h3 className="card-title h5 text-primary mb-3">📍 Plan d'accès</h3>
+              <h3 className="card-title h5 text-primary mb-3">Plan d'accès</h3>
               <p className="mb-2 text-muted fw-bold">[adresse]</p>
-              <p className="mb-2 text-muted small">[Instructions: si c'est un place particulière]</p>
-              <div className="bg-light text-muted d-flex align-items-center justify-content-center flex-grow-1 rounded border" style={{ minHeight: '150px' }}>
+              <div className="bg-light text-muted d-flex align-items-center justify-content-center flex-grow-1 rounded border map-placeholder">
                 [Zone d'intégration carte Google Maps]
               </div>
             </div>
