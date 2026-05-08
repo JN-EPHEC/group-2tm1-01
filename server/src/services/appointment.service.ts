@@ -9,10 +9,27 @@ export const getAppointments = async () => {
 };
 
 export const createAppointment = async (appointment: any) => {
-  const { date, time, status, notes } = appointment;
+  const {
+    date,
+    time,
+    status,
+    notes,
+    firstName,
+    lastName,
+    contact
+  } = appointment;
+
   const { data, error } = await supabase
     .from("appointments")
-    .insert([{ date, time, status, notes,}])
+    .insert([{
+      date,
+      time,
+      status,
+      notes,
+      first_name: firstName,
+      last_name: lastName,
+      contact
+    }])
     .select()
     .single();
 
