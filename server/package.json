@@ -23,6 +23,7 @@
     "@types/node": "^25.2.0",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.8",
+    "@types/ws": "^8.18.1",
     "ts-jest": "^29.4.6",
     "ts-node": "^10.9.2",
     "tsx": "^4.21.0",
@@ -32,6 +33,7 @@
     "@supabase/supabase-js": "^2.105.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
+    "dev3-fullstack-tp1": "file:..",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "pg": "^8.20.0",
@@ -39,6 +41,7 @@
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7",
     "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.1"
+    "swagger-ui-express": "^5.0.1",
+    "ws": "^8.20.0"
   }
 }

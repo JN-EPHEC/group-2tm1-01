@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express";
 import { supabase } from "./config/supabase";
 import productRoutes from "./routes/product.routes";
+import transactionRoutes from "./routes/transaction.routes";
 import cors from "cors";
 import { swaggerUi, swaggerSpec, } from "./config/swagger";
 import authRoutes from "./routes/auth.route.js";
@@ -33,6 +34,7 @@ app.use(
 );
 
 app.use("/api/products", productRoutes);
+app.use("/api/transactions", transactionRoutes);
 
 app.use("/api/auth", authRoutes);
 
