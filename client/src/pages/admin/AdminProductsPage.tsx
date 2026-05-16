@@ -36,26 +36,37 @@ const AdminProductsPage: React.FC = () => {
       fetch(`http://localhost:3000/api/products/${formData.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(formData)
       })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error('Erreur de modification');
+        return res.json();
+      })
       .then(updatedProd => {
         setProducts(products.map(p => p.id === updatedProd.id ? updatedProd : p));
-      });
+        setFormData({ name: '', price: 0, description: '', category: '' });
+        setIsEditing(false);
+      })
+      .catch(err => alert(err.message));
     } else {
       fetch(`http://localhost:3000/api/products`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(formData)
       })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error('Erreur de création ou problème de permissions');
+        return res.json();
+      })
       .then(newProd => {
         setProducts([...products, newProd]);
-      });
+        setFormData({ name: '', price: 0, description: '', category: '' });
+        setIsEditing(false);
+      })
+      .catch(err => alert(err.message));
     }
-    // Réinitialiser le formulaire
-    setFormData({ name: '', price: 0, description: '', category: '' });
-    setIsEditing(false);
   };
 
   const handeEditClick = (prod: Product) => {
@@ -63,18 +74,41 @@ const AdminProductsPage: React.FC = () => {
     setIsEditing(true);
   };
 
+  const [productToDelete, setProductToDelete] = useState<number | null>(null);
+
   const handleDeleteClick = (id: number) => {
-    if (confirm('Voulez-vous vraiment supprimer ce produit ?')) {
-      fetch(`http://localhost:3000/api/products/${id}`, { method: 'DELETE' })
+    setProductToDelete(id);
+  };
+
+  const confirmDelete = () => {
+    if (productToDelete !== null) {
+      fetch(`http://localhost:3000/api/products/${productToDelete}`, {
+        method: 'DELETE',
+        credentials: 'include'
+      })
       .then(() => {
-        setProducts(products.filter(p => p.id !== id));
+        setProducts(products.filter(p => p.id !== productToDelete));
+        setProductToDelete(null);
       });
     }
+  };
+
+  const cancelDelete = () => {
+    setProductToDelete(null);
   };
 
   return (
     <div className="container mt-4">
       <h2>Gestion des Produits</h2>
+      {productToDelete !== null && (
+        <div className="alert alert-warning d-flex justify-content-between align-items-center">
+          <span>Voulez-vous vraiment supprimer ce produit ?</span>
+          <div>
+            <button className="btn btn-danger btn-sm me-2" onClick={confirmDelete}>Oui, supprimer</button>
+            <button className="btn btn-secondary btn-sm" onClick={cancelDelete}>Annuler</button>
+          </div>
+        </div>
+      )}
       <div className="row mt-4">
         <div className="col-md-4">
           <div className="card">
@@ -91,7 +125,20 @@ const AdminProductsPage: React.FC = () => {
                 </div>
                 <div className="mb-3">
                   <label className="form-label">Catégorie</label>
-                  <input type="text" className="form-control" name="category" value={formData.category || ''} onChange={handleInputChange} />
+                  <select 
+                    className="form-select" 
+                    name="category" 
+                    value={formData.category || ''} 
+                    onChange={handleInputChange as any} 
+                    required
+                  >
+                    <option value="" disabled>-- Sélectionner une catégorie --</option>
+                    <option value="Soins et Massages">Soins et Massages</option>
+                    <option value="Équipement Sportif">Équipement Sportif</option>
+                    <option value="Accessoires">Accessoires</option>
+                    <option value="Vêtements">Vêtements</option>
+                    <option value="Nutrition">Nutrition</option>
+                  </select>
                 </div>
                 <div className="mb-3">
                   <label className="form-label">Description</label>
@@ -121,8 +168,8 @@ const AdminProductsPage: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {products.map(p => (
-                    <tr key={p.id}>
+                  {products.map((p, index) => (
+                    <tr key={p.id ? `${p.id}-${index}` : `fallback-${index}`}>
                       <td>{p.id}</td>
                       <td>{p.name}</td>
                       <td>{p.category}</td>

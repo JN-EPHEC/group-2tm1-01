@@ -14,9 +14,7 @@ export const createAppointment = async (appointment: any) => {
     time,
     status,
     notes,
-    firstName,
-    lastName,
-    contact
+    log_id // ID du patient (lié à auth/profiles)
   } = appointment;
 
   const { data, error } = await supabase
@@ -25,11 +23,22 @@ export const createAppointment = async (appointment: any) => {
       date,
       time,
       status,
-      notes,
-      first_name: firstName,
-      last_name: lastName,
-      contact
+      note: notes,
+      log_id
     }])
+    .select()
+    .single();
+
+  if (error) throw error;
+
+  return data;
+};
+
+export const updateAppointmentStatus = async (id: number, status: string) => {
+  const { data, error } = await supabase
+    .from("appointments")
+    .update({ status })
+    .eq("id", id)
     .select()
     .single();
 

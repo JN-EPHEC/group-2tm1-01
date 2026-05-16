@@ -21,6 +21,12 @@ const ProductPage = () => {
         if (Array.isArray(data)) setProducts(data);
       })
       .catch(err => console.error("Erreur chargement produits:", err));
+      
+    // Charger le panier depuis le localStorage
+    const savedCart = localStorage.getItem('cart');
+    if (savedCart) {
+      setCart(JSON.parse(savedCart));
+    }
   }, []);
 
   const updateQuantity = (productId: number, delta: number) => {
@@ -33,6 +39,7 @@ const ProductPage = () => {
       } else {
         newCart[productId] = newQty;
       }
+      localStorage.setItem('cart', JSON.stringify(newCart)); // Sauvegarde
       return newCart;
     });
   };

@@ -32,7 +32,7 @@ function App() {
           <Route path="/admin/produits" element={<AdminProductsPage />} />
           <Route path="/admin/commandes" element={<AdminOrdersPage />} />
           <Route path="/admin/rendez-vous" element={<AdminAppointmentsPage />} />
-          <Route path="/client/rendez-vous" element={<ClientAppointmentPage />} />
+          <Route path="/client/rendez-vous" element={<ClientAppointmentPage isAuthenticated={isAuthenticated} />} />
           <Route path="/client/produits" element={<ClientProductPage />} />
           <Route path="/client/panier" element={<ClientCartPage isAuthenticated={isAuthenticated} />} />
         </Routes>

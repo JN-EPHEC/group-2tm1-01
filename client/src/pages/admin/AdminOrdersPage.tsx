@@ -6,7 +6,7 @@ interface Order {
   customerName: string;
   date: string;
   total: number;
-  status: 'PENDING' | 'PREPARING' | 'READY' | 'DELIVERED';
+  status: 'pending' | 'paid' | 'shipped' | 'cancelled';
   items: string; // Simplifié pour l'affichage ("2x Crème, 1x Bande")
 }
 
@@ -44,10 +44,10 @@ const AdminOrdersPage: React.FC = () => {
 
   const getStatusBadge = (status: Order['status']) => {
     switch (status) {
-      case 'PENDING': return <span className="badge bg-warning text-dark">À préparer</span>;
-      case 'PREPARING': return <span className="badge bg-info text-dark">En cours</span>;
-      case 'READY': return <span className="badge bg-primary">Prêt</span>;
-      case 'DELIVERED': return <span className="badge bg-success">Livré</span>;
+      case 'pending': return <span className="badge bg-warning text-dark">En attente</span>;
+      case 'paid': return <span className="badge bg-info text-dark">Payé</span>;
+      case 'shipped': return <span className="badge bg-primary">Expédié</span>;
+      case 'cancelled': return <span className="badge bg-danger">Annulé</span>;
       default: return null;
     }
   };
@@ -86,10 +86,10 @@ const AdminOrdersPage: React.FC = () => {
                       value={o.status}
                       onChange={(e) => handleStatusChange(o.id, e.target.value as Order['status'])}
                     >
-                      <option value="PENDING">À préparer</option>
-                      <option value="PREPARING">En cours</option>
-                      <option value="READY">Prêt / À récupérer</option>
-                      <option value="DELIVERED">Livré</option>
+                      <option value="pending">En attente</option>
+                      <option value="paid">Payé</option>
+                      <option value="shipped">Expédié</option>
+                      <option value="cancelled">Annulé</option>
                     </select>
                   </td>
                 </tr>

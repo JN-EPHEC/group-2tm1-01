@@ -1,233 +1,112 @@
-import { useState } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../../styles/shop.css';
 
-interface CartPageProps {
-  isAuthenticated?: boolean;
-}
+interface Product { id: number; name: string; imgIcon: string; desc: string; price: number; }
+interface CartPageProps { isAuthenticated?: boolean; }
 
 const CartPage = ({ isAuthenticated = false }: CartPageProps) => {
   const [step, setStep] = useState<'cart' | 'checkout' | 'success'>('cart');
   const [paymentMethod, setPaymentMethod] = useState<'CB' | 'PAYPAL' | 'BANCONTACT' | ''>('');
   const [errorValue, setErrorValue] = useState<string>('');
+  const [products, setProducts] = useState<Product[]>([]);
+  const [cart, setCart] = useState<{ [id: number]: number }>({});
 
-  const handleCheckoutClick = () => {
-    if (!isAuthenticated) {
-      setErrorValue("Vous devez être connecté pour passer une commande. Veuillez vous identifier ou créer un compte.");
-      return;
-    }
-    setErrorValue("");
+  useEffect(() => {
+    fetch('http://localhost:3000/api/products').then(res => res.json()).then(data => {
+      if (Array.isArray(data)) setProducts(data);
+    });
+    const savedCart = localStorage.getItem('cart');
+    if (savedCart) setCart(JSON.parse(savedCart));
+  }, []);
+
+  const updateQty = (id: number, delta: number) => {
+    setCart(prev => {
+      const sq = prev[id] || 0;
+      const nq = Math.max(0, sq + delta);
+      const nc = { ...prev };
+      if (nq === 0) delete nc[id]; else nc[id] = nq;
+      localStorage.setItem('cart', JSON.stringify(nc));
+      return nc;
+    });
+  };
+
+  const getSub = () => Object.entries(cart).reduce((tot, [id, qt]) => {
+    const p = products.find(prod => prod.id === parseInt(id));
+    return tot + (p ? p.price * qt : 0);
+  }, 0);
+
+  const sub = getSub(); const tax = sub * 0.21; const tot = sub + tax;
+
+  const handleCheckout = () => {
+    if (!isAuthenticated) { setErrorValue('Veuillez vous connecter pour valider la commande.'); return; }
     setStep('checkout');
   };
 
-  const handlePaymentSimulation = (e: React.FormEvent) => {
+  const handlePay = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!paymentMethod) {
-      setErrorValue("Veuillez sélectionner un mode de paiement.");
-      return;
-    }
-    setErrorValue("");
-    setStep('success');
+    if (!paymentMethod) { setErrorValue('Veuillez choisir un moyen de paiement.'); return; }
+    localStorage.removeItem('cart'); setCart({}); setStep('success');
   };
 
   if (step === 'success') {
     return (
       <div className="container text-center py-5">
-        <div className="mb-4">
-          <i className="bi bi-check-circle text-success" style={{ fontSize: '4rem' }}></i>
-        </div>
-        <h1 className="mb-3 text-success">Merci pour votre commande !</h1>
-        <p className="lead mb-4">Votre paiement a été simulé avec succès. (Mode projet)</p>
-        <Link to="/client/produits" className="btn btn-primary btn-lg">Retourner à la boutique</Link>
+        <h1 className="text-success mb-4">Commande réussie !</h1>
+        <Link to="/client/produits" className="btn btn-primary">Retour à la boutique</Link>
       </div>
     );
   }
 
+  const entries = Object.entries(cart);
+
   return (
     <div>
       <h1 className="mb-4">Mon Panier</h1>
-      
-      {errorValue && step === 'cart' && (
-        <div className="alert alert-danger" role="alert">
-          {errorValue} <Link to="/login" className="alert-link">Se connecter</Link>.
+      {errorValue && <div className="alert alert-danger">{errorValue}</div>}
+      {entries.length === 0 ? (
+        <div className="alert alert-info">Panier vide. <Link to="/client/produits">Boutique</Link></div>
+      ) : (
+        <div className="row">
+          <div className="col-lg-8">
+            <div className="card shadow-sm border-0 mb-4">
+              <div className="card-body">
+                {step === 'cart' ? entries.map(([idStr, qt]) => {
+                  const id = parseInt(idStr); const p = products.find(x => x.id === id);
+                  if (!p) return null;
+                  return (
+                    <div key={id} className="row align-items-center mb-3 pb-3 border-bottom">
+                      <div className="col-6"><h6>{p.name}</h6></div>
+                      <div className="col-2 text-center">
+                        <button className="btn btn-sm btn-light" onClick={() => updateQty(id, -1)}>-</button>
+                        <span className="mx-2">{qt}</span>
+                        <button className="btn btn-sm btn-light" onClick={() => updateQty(id, 1)}>+</button>
+                      </div>
+                      <div className="col-4 text-end">{(p.price * qt).toFixed(2)} €</div>
+                    </div>
+                  );
+                }) : (
+                  <form onSubmit={handlePay}>
+                    <h4>Paiement</h4>
+                    <div className="form-check"><input type="radio" onChange={() => setPaymentMethod('CB')} className="form-check-input"/> <label>Carte Bancaire</label></div>
+                    <div className="form-check"><input type="radio" onChange={() => setPaymentMethod('PAYPAL')} className="form-check-input"/> <label>PayPal</label></div>
+                    <button className="btn btn-success mt-3">Payer {tot.toFixed(2)} €</button>
+                  </form>
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="col-lg-4">
+            <div className="card shadow-sm border-0"><div className="card-body">
+              <h5>Résumé</h5>
+              <div className="d-flex justify-content-between"><span>HT</span><span>{sub.toFixed(2)} €</span></div>
+              <div className="d-flex justify-content-between"><span>TVA</span><span>{tax.toFixed(2)} €</span></div>
+              <div className="d-flex justify-content-between fw-bold mt-2 pt-2 border-top"><span>TTC</span><span>{tot.toFixed(2)} €</span></div>
+              {step === 'cart' && <button className="btn btn-primary w-100 mt-3" onClick={handleCheckout}>Valider la commande</button>}
+            </div></div>
+          </div>
         </div>
       )}
-
-      <div className="row g-4">
-        {step === 'cart' ? (
-          <div className="col-lg-8">
-            <div className="card shadow-sm border-0 mb-4">
-              <div className="card-body">
-                
-                {/* Entête du tableau (caché sur petit écran) */}
-                <div className="row text-muted fw-bold pb-2 mb-3 border-bottom d-none d-md-flex">
-                  <div className="col-6">Produit</div>
-                  <div className="col-2 text-center">Quantité</div>
-                  <div className="col-2 text-end">Prix</div>
-                </div>
-
-                {/* Ligne Produit 1 */}
-                <div className="row align-items-center mb-3 pb-3 border-bottom">
-                  <div className="col-12 col-md-6 d-flex align-items-center mb-3 mb-md-0">
-                    <div className="bg-light rounded text-center text-muted d-flex align-items-center justify-content-center me-3 cart-item-image">
-                      [Img]
-                    </div>
-                    <div>
-                      <h6 className="mb-0">[Gel chauffant]</h6>
-                      <small className="text-muted">[Texte court promo ou type]</small>
-                    </div>
-                  </div>
-                  
-                  <div className="col-6 col-md-2 d-flex justify-content-center">
-                    <div className="input-group input-group-sm qty-input-group">
-                      <button className="btn btn-outline-secondary">-</button>
-                      <input type="text" className="form-control text-center" value="2" readOnly />
-                      <button className="btn btn-outline-secondary">+</button>
-                    </div>
-                  </div>
-                  
-                  <div className="col-3 col-md-2 text-end fw-bold">
-                    [30.00] €
-                  </div>
-                  
-                  <div className="col-3 col-md-2 text-end">
-                    <button className="btn btn-sm btn-outline-danger" title="Supprimer">Supprimer</button>
-                  </div>
-                </div>
-
-                {/* Ligne Produit 2 */}
-                <div className="row align-items-center mb-0">
-                  <div className="col-12 col-md-6 d-flex align-items-center mb-3 mb-md-0">
-                    <div className="bg-light rounded text-center text-muted d-flex align-items-center justify-content-center me-3 cart-item-image">
-                      [Img]
-                    </div>
-                    <div>
-                      <h6 className="mb-0">[Bande élastique]</h6>
-                    </div>
-                  </div>
-                  
-                  <div className="col-6 col-md-2 d-flex justify-content-center">
-                    <div className="input-group input-group-sm qty-input-group">
-                      <button className="btn btn-outline-secondary">-</button>
-                      <input type="text" className="form-control text-center" value="1" readOnly />
-                      <button className="btn btn-outline-secondary">+</button>
-                    </div>
-                  </div>
-                  
-                  <div className="col-3 col-md-2 text-end fw-bold">
-                    [9.50] €
-                  </div>
-                  
-                  <div className="col-3 col-md-2 text-end">
-                    <button className="btn btn-sm btn-outline-danger" title="Supprimer">Supprimer</button>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="col-lg-8">
-            <div className="card shadow-sm border-0 mb-4">
-              <div className="card-body">
-                <h4 className="card-title text-primary mb-4">1. Identité & Livraison</h4>
-                <form onSubmit={handlePaymentSimulation}>
-                  <div className="row g-3 mb-4">
-                    <div className="col-md-6">
-                      <label className="form-label">Prénom</label>
-                      <input type="text" className="form-control" required />
-                    </div>
-                    <div className="col-md-6">
-                      <label className="form-label">Nom</label>
-                      <input type="text" className="form-control" required />
-                    </div>
-                    <div className="col-12">
-                      <label className="form-label">Adresse Email</label>
-                      <input type="email" className="form-control" required />
-                    </div>
-                    <div className="col-12">
-                      <label className="form-label">Adresse de livraison</label>
-                      <input type="text" className="form-control" placeholder="Rue, Numéro, Ville, Code Postal" required />
-                    </div>
-                  </div>
-
-                  {errorValue && (
-                    <div className="alert alert-danger" role="alert">
-                      {errorValue}
-                    </div>
-                  )}
-
-                  <h4 className="card-title text-primary mb-4">2. Choix du mode de paiement</h4>
-                  <div className="d-flex flex-wrap gap-3 mb-4">
-                    <div 
-                      className={`border rounded p-3 text-center flex-fill ${paymentMethod === 'CB' ? 'border-primary bg-primary text-white shadow' : 'bg-light text-muted'}`} 
-                      style={{ cursor: 'pointer', transition: 'all 0.2s' }}
-                      onClick={() => setPaymentMethod('CB')}
-                    >
-                      <i className="bi bi-credit-card fs-2 d-block mb-2"></i>
-                      <span className="fw-bold">Carte Bancaire</span>
-                    </div>
-                    <div 
-                      className={`border rounded p-3 text-center flex-fill ${paymentMethod === 'PAYPAL' ? 'border-primary bg-primary text-white shadow' : 'bg-light text-muted'}`} 
-                      style={{ cursor: 'pointer', transition: 'all 0.2s' }}
-                      onClick={() => setPaymentMethod('PAYPAL')}
-                    >
-                      <i className="bi bi-paypal fs-2 d-block mb-2"></i>
-                      <span className="fw-bold">PayPal</span>
-                    </div>
-                    <div 
-                      className={`border rounded p-3 text-center flex-fill ${paymentMethod === 'BANCONTACT' ? 'border-primary bg-primary text-white shadow' : 'bg-light text-muted'}`} 
-                      style={{ cursor: 'pointer', transition: 'all 0.2s' }}
-                      onClick={() => setPaymentMethod('BANCONTACT')}
-                    >
-                      <i className="bi bi-phone fs-2 d-block mb-2"></i>
-                      <span className="fw-bold">Bancontact / Payconiq</span>
-                    </div>
-                  </div>
-
-                  <div className="text-end mt-4">
-                    <button type="button" className="btn btn-outline-secondary me-2" onClick={() => setStep('cart')}>Retour au panier</button>
-                    <button type="submit" className="btn btn-success btn-lg">Simuler le paiement</button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        )}
-        
-        {/* Résumé de commande */}
-        <div className="col-lg-4">
-          <div className="card shadow-sm border-0 bg-light">
-            <div className="card-body">
-              <h5 className="card-title border-bottom border-secondary pb-3 mb-4">Résumé de la commande</h5>
-              
-              <div className="d-flex justify-content-between mb-2">
-                <span className="text-muted">Sous-total (3 articles)</span>
-                <span>[39.50] €</span>
-              </div>
-              <div className="d-flex justify-content-between mb-4 border-bottom border-secondary pb-3">
-                <span className="text-muted">TVA (21%)</span>
-                <span>[8.29] €</span>
-              </div>
-              
-              <div className="d-flex justify-content-between mb-4">
-                <strong className="fs-5">Total TTC</strong>
-                <strong className="fs-5 text-primary">[47.79] €</strong>
-              </div>
-              
-              {step === 'cart' && (
-                <button 
-                  className="btn btn-primary w-100 mb-3 btn-lg"
-                  onClick={handleCheckoutClick}
-                >
-                  Valider mon panier
-                </button>
-              )}
-              <Link to="/client/produits" className="btn btn-outline-secondary w-100">Continuer mes achats</Link>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };

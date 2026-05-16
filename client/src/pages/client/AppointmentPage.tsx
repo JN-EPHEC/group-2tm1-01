@@ -8,7 +8,11 @@ interface AppointmentType {
   status: string;
 }
 
-const AppointmentPage = () => {
+interface AppointmentPageProps {
+  isAuthenticated: boolean;
+}
+
+const AppointmentPage = ({ isAuthenticated }: AppointmentPageProps) => {
   const navigate = useNavigate();
   
   const [appointments, setAppointments] = useState<AppointmentType[]>([]);
@@ -29,7 +33,9 @@ const AppointmentPage = () => {
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/appointments');
+        const response = await fetch('http://localhost:3000/api/appointments', {
+          credentials: 'include'
+        });
         if (response.ok) {
           const data = await response.json();
           setAppointments(data);
@@ -50,6 +56,11 @@ const AppointmentPage = () => {
     e.preventDefault();
     setError('');
 
+    if (!isAuthenticated) {
+      setError("Vous devez être connecté pour prendre un rendez-vous.");
+      return;
+    }
+
     if (!selectedDate || !selectedTime) {
       setError("Veuillez sélectionner une date et une heure.");
       return;
@@ -62,21 +73,24 @@ const AppointmentPage = () => {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify({
           date: selectedDate,
           time: selectedTime,
           status: 'booked',
           notes: formData.message,
-          // Vous pourrez ajouter l'ID de l'utilisateur une fois l'auth connectée
-          // user_id: currentUserId,
         }),
       });
 
       if (response.ok) {
-        // Redirection vers login pour la confirmation du rendez-vous
-        navigate('/login');
+        // Redirection vers le profil
+        navigate('/profil');
       } else {
-        setError("Erreur lors de la création du rendez-vous");
+        if (response.status === 401) {
+          setError("Vous devez être connecté pour prendre un rendez-vous.");
+        } else {
+          setError("Erreur lors de la création du rendez-vous");
+        }
       }
     } catch (error) {
       console.error("Erreur serveur", error);

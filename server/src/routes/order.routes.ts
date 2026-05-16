@@ -157,6 +157,7 @@ router.post("/", protect, orderController.createOrder);
  *         description: Erreur serveur
  */
 router.patch("/:id/status", orderController.updateOrderStatus);
+router.put("/:id/status", orderController.updateOrderStatus);
 
 /**
  * @swagger

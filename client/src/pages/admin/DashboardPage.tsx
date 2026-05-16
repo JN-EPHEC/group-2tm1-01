@@ -68,16 +68,26 @@ const DashboardPage: React.FC = () => {
   const [endDate, setEndDate] = useState('');
   const [showChart, setShowChart] = useState(false);
   
-// --- FETCH TRANSACTIONS API ---
+  // --- FETCH TRANSACTIONS API ---
 
-const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
 
   useEffect(() => {
     fetch('http://localhost:3000/api/transactions')
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
-          setTransactions(data);
+          // Mapping pour ajouter year et month depuis date
+          const formattedTxs = data.map(tx => {
+            const d = new Date(tx.date || new Date());
+            return {
+              ...tx,
+              year: d.getFullYear(),
+              month: d.getMonth() + 1,
+              reference: tx.comment || '', // On utilise comment comme reference
+            };
+          });
+          setTransactions(formattedTxs);
         }
       })
       .catch(err => console.error("Erreur de chargement des transactions", err));
@@ -107,27 +117,34 @@ const [transactions, setTransactions] = useState<Transaction[]>([]);
 
   const handleAddTransaction = async (e: React.FormEvent) => {
     e.preventDefault();
-    const dateObj = new Date(formData.date);
     
-    const newTx = {
-      year: dateObj.getFullYear(),
-      month: dateObj.getMonth() + 1,
+    // Objet envoyé à l'API (strictement les colonnes existantes dans la base de données)
+    const newTxToSubmit = {
       type: showForm === 'INCOME' ? 'INCOME' : 'EXPENSE',
       date: formData.date,
       amount: parseFloat(formData.amount),
-      reference: showForm === 'INCOME' ? formData.reference : null,
       status: showForm === 'INCOME' ? 'PENDING' : 'PAID',
-      comment: formData.comment
+      comment: formData.comment || formData.reference // On sauvegarde reference dans comment
     };
 
     try {
       const res = await fetch('http://localhost:3000/api/transactions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newTx)
+        body: JSON.stringify(newTxToSubmit)
       });
       const savedTx = await res.json();
-      setTransactions([savedTx, ...transactions]);
+      
+      // Adaptation pour l'état React interne
+      const dateObj = new Date(savedTx.date || formData.date);
+      const adaptedTx = {
+        ...savedTx,
+        year: dateObj.getFullYear(),
+        month: dateObj.getMonth() + 1,
+        reference: savedTx.comment || formData.reference,
+      };
+
+      setTransactions([adaptedTx, ...transactions]);
       setShowForm('NONE');
       setFormData({ date: '', amount: '', reference: '', comment: '' });
     } catch (err) {
@@ -135,11 +152,22 @@ const [transactions, setTransactions] = useState<Transaction[]>([]);
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (window.confirm('Voulez-vous supprimer cet élément ?')) {
+  const [txToDelete, setTxToDelete] = useState<string | null>(null);
+  const [showEditAlert, setShowEditAlert] = useState<boolean>(false);
+
+  const handleDelete = (id: string) => {
+    setTxToDelete(id);
+  };
+
+  const confirmDeleteTx = async () => {
+    if (txToDelete) {
       try {
-        await fetch(`http://localhost:3000/api/transactions/${id}`, { method: 'DELETE' });
-        setTransactions(transactions.filter(t => t.id !== id));
+        await fetch(`http://localhost:3000/api/transactions/${txToDelete}`, { 
+          method: 'DELETE',
+          credentials: 'include'
+        });
+        setTransactions(transactions.filter(t => t.id !== txToDelete));
+        setTxToDelete(null);
       } catch (err) {
         console.error(err);
       }
@@ -147,7 +175,8 @@ const [transactions, setTransactions] = useState<Transaction[]>([]);
   };
 
   const handleEdit = (_id: string) => {
-    alert('Mode édition (à implémenter en base).');
+    setShowEditAlert(true);
+    setTimeout(() => setShowEditAlert(false), 3000);
   };
 
   const handleToggleStatus = async (id: string) => {
@@ -157,10 +186,16 @@ const [transactions, setTransactions] = useState<Transaction[]>([]);
     const newStatus = txToUpdate.status === 'PAID' ? 'PENDING' : 'PAID';
     try {
       await fetch(`http://localhost:3000/api/transactions/${id}/status`, {
-        method: 'PATCH',
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ status: newStatus })
       });
+      setTransactions(transactions.map(t => t.id === id ? { ...t, status: newStatus } : t));
+    } catch (err) {
+      console.error(err);
+    }
+  };
       setTransactions(transactions.map(t => t.id === id ? { ...t, status: newStatus } : t));
     } catch (err) {
       console.error(err);
@@ -260,7 +295,7 @@ const [transactions, setTransactions] = useState<Transaction[]>([]);
             <div className="card-body">
               <h5 className="card-title fw-bold mb-4">Flux Financiers</h5>
               <div style={{ width: '100%', height: 400 }}>
-                <ResponsiveContainer>
+                <ResponsiveContainer width="100%" height={400}>
                   <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                     <defs>
                       <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
@@ -411,6 +446,20 @@ const [transactions, setTransactions] = useState<Transaction[]>([]);
 
   return (
     <div className="container-fluid py-2">
+      {txToDelete && (
+        <div className="alert alert-warning d-flex justify-content-between align-items-center">
+          <span>Voulez-vous vraiment supprimer cet élément ?</span>
+          <div>
+            <button className="btn btn-danger btn-sm me-2" onClick={confirmDeleteTx}>Oui, supprimer</button>
+            <button className="btn btn-secondary btn-sm" onClick={() => setTxToDelete(null)}>Annuler</button>
+          </div>
+        </div>
+      )}
+      {showEditAlert && (
+        <div className="alert alert-info">
+          Mode édition (à implémenter en base).
+        </div>
+      )}
       {view === 'HOME' && renderHome()}
       {view === 'SUMMARY' && renderSummary()}
       {view === 'YEARS_LIST' && renderYearsList()}

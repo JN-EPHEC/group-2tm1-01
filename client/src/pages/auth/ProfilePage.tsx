@@ -22,6 +22,9 @@ const ProfilePage = ({ setIsAuthenticated }: ProfilePageProps) => {
     adresse: ''
   });
 
+  const [appointments, setAppointments] = useState<any[]>([]);
+  const [orders, setOrders] = useState<any[]>([]);
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -39,9 +42,11 @@ const ProfilePage = ({ setIsAuthenticated }: ProfilePageProps) => {
             adresse: data.user_metadata?.adresse || ''
           });
           
-          // Génération d'une jolie photo de profil par défaut avec la première lettre si pas de photo
           const displayName = data.user_metadata?.prenom || data.email || 'User';
           setProfileImage(`https://ui-avatars.com/api/?name=${displayName}&background=0D8ABC&color=fff&size=150`);
+
+          // Fetch user history
+          fetchHistory(data.id);
         }
       } catch (error) {
         console.error('Erreur lors de la récupération du profil', error);
@@ -49,6 +54,27 @@ const ProfilePage = ({ setIsAuthenticated }: ProfilePageProps) => {
         setLoading(false);
       }
     };
+
+    const fetchHistory = async (userId: string) => {
+      try {
+        const [ordersRes, apptsRes] = await Promise.all([
+          fetch('http://localhost:3000/api/orders'),
+          fetch('http://localhost:3000/api/appointments')
+        ]);
+        
+        if (ordersRes.ok) {
+          const ordersData = await ordersRes.json();
+          setOrders(ordersData.filter((o: any) => o.log_id === userId));
+        }
+        if (apptsRes.ok) {
+          const apptsData = await apptsRes.json();
+          setAppointments(apptsData.filter((a: any) => a.log_id === userId));
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
     fetchUser();
   }, []);
 
@@ -210,32 +236,36 @@ const ProfilePage = ({ setIsAuthenticated }: ProfilePageProps) => {
               {activeTab === 'history' && (
                 <div>
                   <h4 className="mb-4 text-primary">Historique d'achats</h4>
-                  <div className="table-responsive">
-                    <table className="table table-hover align-middle">
-                      <thead className="table-light">
-                        <tr>
-                          <th>N° Commande</th>
-                          <th>Date</th>
-                          <th>Montant</th>
-                          <th>Statut</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>#CMD-84920</td>
-                          <td>05/05/2026</td>
-                          <td>47.79 €</td>
-                          <td><span className="badge bg-success">Livrée</span></td>
-                        </tr>
-                        <tr>
-                          <td>#CMD-84112</td>
-                          <td>12/04/2026</td>
-                          <td>15.00 €</td>
-                          <td><span className="badge bg-success">Livrée</span></td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
+                  {orders.length === 0 ? (
+                    <p className="text-muted">Aucune commande pour le moment.</p>
+                  ) : (
+                    <div className="table-responsive">
+                      <table className="table table-hover align-middle">
+                        <thead className="table-light">
+                          <tr>
+                            <th>N° Commande</th>
+                            <th>Date</th>
+                            <th>Montant</th>
+                            <th>Statut</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {orders.map((order) => (
+                            <tr key={order.id}>
+                              <td>#CMD-{order.id}</td>
+                              <td>{new Date(order.order_date).toLocaleDateString('fr-FR')}</td>
+                              <td>{order.total} €</td>
+                              <td>
+                                <span className={`badge ${order.status === 'pending' ? 'bg-warning' : 'bg-success'}`}>
+                                  {order.status}
+                                </span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -243,22 +273,25 @@ const ProfilePage = ({ setIsAuthenticated }: ProfilePageProps) => {
               {activeTab === 'appointments' && (
                 <div>
                   <h4 className="mb-4 text-primary">Mes rendez-vous</h4>
-                  <div className="list-group">
-                    <div className="list-group-item list-group-item-action d-flex justify-content-between align-items-center mb-2 border rounded">
-                      <div>
-                        <h6 className="mb-1">Séance de Kiné Sportive</h6>
-                        <small className="text-muted"><i className="bi bi-clock me-1"></i> Demain à 10:30</small>
-                      </div>
-                      <span className="badge bg-primary rounded-pill">À venir</span>
+                  {appointments.length === 0 ? (
+                    <p className="text-muted">Aucun rendez-vous planifié.</p>
+                  ) : (
+                    <div className="list-group">
+                      {appointments.map((appt) => (
+                        <div key={appt.id} className={`list-group-item list-group-item-action d-flex justify-content-between align-items-center mb-2 border rounded ${appt.status === 'cancelled' ? 'bg-light' : ''}`}>
+                          <div>
+                            <h6 className={`mb-1 ${appt.status === 'cancelled' ? 'text-muted' : ''}`}>
+                              {appt.note || 'Séance'}
+                            </h6>
+                            <small className="text-muted"><i className="bi bi-clock me-1"></i> {appt.date} à {appt.time}</small>
+                          </div>
+                          <span className={`badge rounded-pill ${appt.status === 'cancelled' ? 'bg-secondary' : 'bg-primary'}`}>
+                            {appt.status}
+                          </span>
+                        </div>
+                      ))}
                     </div>
-                    <div className="list-group-item list-group-item-action d-flex justify-content-between align-items-center mb-2 border rounded bg-light">
-                      <div>
-                        <h6 className="mb-1 text-muted">Bilan Initial</h6>
-                        <small className="text-muted"><i className="bi bi-clock me-1"></i> 10 Avril 2026</small>
-                      </div>
-                      <span className="badge bg-secondary rounded-pill">Terminé</span>
-                    </div>
-                  </div>
+                  )}
                 </div>
               )}
 

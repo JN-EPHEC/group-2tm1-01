@@ -49,20 +49,14 @@ export const getOrderById = async (id: number) => {
   return data;
 };
 
-export const createOrder = async (userId: number, order: any) => {
+export const createOrder = async (userId: string, order: any) => {
   const {
-    firstName,
-    lastName,
-    email,
     address,
     paymentMethod,
     items,
   } = order;
 
   if (
-    !firstName ||
-    !lastName ||
-    !email ||
     !address ||
     !paymentMethod
   ) {
@@ -92,53 +86,50 @@ export const createOrder = async (userId: number, order: any) => {
     total += itemTotal;
 
     orderItems.push({
-      product_id: product.id,
+      prod_id: product.id,
       quantity: item.quantity,
       price: product.price,
     });
   }
 
-  const tax = total * 0.2;
+  // Calcul de la taxe (ex: 21%)
+  const tax = total * 0.21;
 
-  const { data: createdOrder, error: orderError } = await supabase
+  // Création de la commande principale dans `orders`
+  const { data: newOrder, error: orderError } = await supabase
     .from("orders")
-    .insert([
-      {
-        user_id: userId,
-        total,
-        tax,
-        status: "pending",
-        payment_method: paymentMethod,
-        delivery_address: address,
-        order_date: new Date(),
-      },
-    ])
+    .insert([{
+      log_id: userId,
+      total: total,
+      tax: tax,
+      order_date: new Date().toISOString(),
+      status: 'pending',
+      delivery_address: address,
+      payment_method: paymentMethod
+    }])
     .select()
     .single();
 
-  if (orderError || !createdOrder) {
-    throw orderError;
+  if (orderError || !newOrder) {
+    throw new Error(orderError?.message || "Erreur création commande");
   }
 
-  const formattedItems = orderItems.map((item) => ({
-    order_id: createdOrder.id,
-    product_id: item.product_id,
-    quantity: item.quantity,
-    price: item.price,
+  // Ajout de l'ID de commande généré aux éléments du panier
+  const itemsToInsert = orderItems.map(item => ({
+    ...item,
+    order_id: newOrder.id
   }));
 
+  // Création des entrées dans `order_items`
   const { error: itemsError } = await supabase
     .from("order_items")
-    .insert(formattedItems);
+    .insert(itemsToInsert);
 
   if (itemsError) {
-    throw itemsError;
+    throw new Error(itemsError.message);
   }
 
-  return {
-    order: createdOrder,
-    items: formattedItems,
-  };
+  return newOrder;
 };
 
 export const updateOrderStatus = async (id: number, status: string) => {

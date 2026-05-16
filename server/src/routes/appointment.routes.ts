@@ -1,5 +1,6 @@
 import { Router } from "express";
 import * as appointmentController from "../controllers/appointment.controller";
+import { protect } from "../middlewares/auth.middleware";
 
 const router = Router();
 
@@ -86,7 +87,9 @@ router.get("/", appointmentController.getAppointments);
  *       500:
  *         description: Erreur serveur
  */
-router.post("/", appointmentController.createAppointment);
+router.post("/", protect, appointmentController.createAppointment);
+
+router.put("/:id/status", appointmentController.updateAppointmentStatus);
 
 export default router;
 
