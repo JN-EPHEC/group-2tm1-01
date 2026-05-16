@@ -9,6 +9,7 @@ import cors from "cors";
 import { swaggerUi, swaggerSpec, } from "./config/swagger";
 import authRoutes from "./routes/auth.route.js";
 import cookieParser from "cookie-parser";
+import cartRoutes from "./routes/cart.routes";
 
 const app = express();
 console.log("ENV URL:", process.env.SUPABASE_URL);
@@ -21,7 +22,6 @@ app.use(
 app.use(cookieParser());
 app.use(express.json());
 
-console.log("SWAGGER MOUNTED");
 app.use(
   "/api/docs",
   swaggerUi.serve,
@@ -39,6 +39,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/transactions", transactionRoutes);
 app.use("/api/appointments", appointmentRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/cart", cartRoutes);
 
 app.use("/api/auth", authRoutes);
 

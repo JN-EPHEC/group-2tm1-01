@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import {register,login, me,logout} from "../controllers/auth.controller.js";
+import {register, login, me, logout, refreshSession} from "../controllers/auth.controller.js";
 import {protect,} from "../middlewares/auth.middleware.js";
 
 const router = Router();
@@ -85,6 +85,32 @@ router.post(
   "/login",
   login
 );
+
+
+/**
+ * @swagger
+ * /api/auth/refresh:
+ *   post:
+ *     summary: Rafraîchir la session utilisateur
+ *     description: Génère un nouveau access token à partir du refresh token stocké dans les cookies HTTP-only.
+ *     tags: [Auth]
+ *     responses:
+ *       200:
+ *         description: Session rafraîchie avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 user:
+ *                   type: object
+ *                   description: Informations de l'utilisateur connecté
+ *       401:
+ *         description: Refresh token manquant ou invalide
+ *       500:
+ *         description: Erreur serveur
+ */
+router.post("/refresh", refreshSession);
 
 /**
  * @swagger
