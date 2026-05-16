@@ -16,10 +16,17 @@ export const getAppointments = async (req: Request, res: Response) => {
 
 export const createAppointment = async (req: Request, res: Response) => {
   try {
+
+    console.log(req.body);
+
     const appointment = await appointmentService.createAppointment(req.body);
 
     res.status(201).json(appointment);
+
   } catch (err: any) {
+
+    console.error(err);
+
     res.status(500).json({
       error: err.message,
     });

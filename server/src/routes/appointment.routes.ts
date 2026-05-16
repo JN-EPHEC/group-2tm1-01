@@ -52,22 +52,39 @@ router.get("/", appointmentController.getAppointments);
  *             type: object
  *             required:
  *               - date
- *               - patientName
+ *               - time
+ *               - firstName
+ *               - lastName
+ *               - contact
  *             properties:
  *               date:
  *                 type: string
- *                 example: "2026-05-08T10:00:00Z"
- *               patientName:
+ *                 example: "2026-05-08"
+ *               time:
  *                 type: string
- *                 example: "Jean Dupont"
- *               reason:
+ *                 example: "10:00"
+ *               status:
  *                 type: string
- *                 example: "Consultation douleur dos"
+ *                 example: "pending"
+ *               notes:
+ *                 type: string
+ *                 example: "Douleur au dos"
+ *               firstName:
+ *                 type: string
+ *                 example: "Jean"
+ *               lastName:
+ *                 type: string
+ *                 example: "Dupont"
+ *               contact:
+ *                 type: string
+ *                 example: "0470123456"
  *     responses:
  *       201:
- *         description: Rendez-vous créé
+ *         description: Rendez-vous créé avec succès
  *       400:
  *         description: Données invalides
+ *       500:
+ *         description: Erreur serveur
  */
 router.post("/", appointmentController.createAppointment);
 

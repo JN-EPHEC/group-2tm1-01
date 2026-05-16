@@ -68,16 +68,80 @@ export const login = async (
       throw new Error("Session introuvable");
     }
 
-    const token = data.session.access_token;
+    const accessToken = data.session.access_token;
+    const refreshToken = data.session.refresh_token;
 
-    res.cookie("access_token", token, {
+    res.cookie("access_token", accessToken, {
       httpOnly: true,
-      secure: true, // true en production HTTPS
+      secure: true,
       sameSite: "none",
       maxAge: 1000 * 60 * 60, // 1h
     });
 
+    res.cookie("refresh_token", refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 jours
+    });
+
     res.json({ user: data.user });
+
+  } catch (err: any) {
+
+    res.status(500).json({
+      error: err.message,
+    });
+
+  }
+};
+
+
+
+export const refreshSession = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+
+    const refreshToken = req.cookies.refresh_token;
+
+    if (!refreshToken) {
+      return res.status(401).json({
+        error: "Refresh token manquant",
+      });
+    }
+
+    const { data, error } = await supabase.auth.refreshSession({
+      refresh_token: refreshToken,
+    });
+
+    if (error || !data.session) {
+      return res.status(401).json({
+        error: "Session invalide",
+      });
+    }
+
+    const newAccessToken = data.session.access_token;
+    const newRefreshToken = data.session.refresh_token;
+
+    res.cookie("access_token", newAccessToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      maxAge: 1000 * 60 * 60,
+    });
+
+    res.cookie("refresh_token", newRefreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    });
+
+    res.json({
+      user: data.user,
+    });
 
   } catch (err: any) {
 
