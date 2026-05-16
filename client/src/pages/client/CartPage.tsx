@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import '../../styles/shop.css';
 
 const CartPage = () => {
-  const navigate = useNavigate();
   const [step, setStep] = useState<'cart' | 'checkout' | 'success'>('cart');
   const [createAccount, setCreateAccount] = useState(false);
 

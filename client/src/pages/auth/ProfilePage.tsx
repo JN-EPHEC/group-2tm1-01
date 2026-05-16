@@ -1,5 +1,5 @@
-import { useState, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface ProfilePageProps {
   setIsAuthenticated: (val: boolean) => void;
@@ -9,8 +9,48 @@ const ProfilePage = ({ setIsAuthenticated }: ProfilePageProps) => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'infos' | 'history' | 'appointments'>('infos');
   const [isEditing, setIsEditing] = useState(false);
-  const [profileImage, setProfileImage] = useState<string>("https://i.pravatar.cc/150?img=3");
+  const [profileImage, setProfileImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [formData, setFormData] = useState({
+    prenom: '',
+    nom: '',
+    email: '',
+    phone: '',
+    adresse: ''
+  });
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/api/auth/me', {
+          credentials: 'include' // Important pour envoyer le cookie "access_token"
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setUser(data);
+          setFormData({
+            prenom: data.user_metadata?.prenom || '',
+            nom: data.user_metadata?.nom || '',
+            email: data.email || '',
+            phone: data.phone || '',
+            adresse: data.user_metadata?.adresse || ''
+          });
+          
+          // Génération d'une jolie photo de profil par défaut avec la première lettre si pas de photo
+          const displayName = data.user_metadata?.prenom || data.email || 'User';
+          setProfileImage(`https://ui-avatars.com/api/?name=${displayName}&background=0D8ABC&color=fff&size=150`);
+        }
+      } catch (error) {
+        console.error('Erreur lors de la récupération du profil', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUser();
+  }, []);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -37,6 +77,17 @@ const ProfilePage = ({ setIsAuthenticated }: ProfilePageProps) => {
     }
   };
 
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  if (loading) {
+    return <div className="container py-4 text-center">Chargement du profil...</div>;
+  }
+
   return (
     <div className="container py-4">
       <h1 className="mb-4">Mon Profil</h1>
@@ -47,12 +98,21 @@ const ProfilePage = ({ setIsAuthenticated }: ProfilePageProps) => {
           <div className="card shadow-sm border-0 text-center">
             <div className="card-body">
               <div className="mb-3 position-relative d-inline-block">
-                <img 
-                  src={profileImage} 
-                  alt="Profile" 
-                  className="rounded-circle img-thumbnail" 
-                  style={{ width: '120px', height: '120px', objectFit: 'cover' }}
-                />
+                {profileImage ? (
+                  <img 
+                    src={profileImage} 
+                    alt="Profile" 
+                    className="rounded-circle img-thumbnail" 
+                    style={{ width: '120px', height: '120px', objectFit: 'cover' }}
+                  />
+                ) : (
+                  <div 
+                    className="rounded-circle img-thumbnail bg-secondary d-flex align-items-center justify-content-center text-white" 
+                    style={{ width: '120px', height: '120px', fontSize: '2rem' }}
+                  >
+                    <i className="bi bi-person"></i>
+                  </div>
+                )}
                 <input 
                   type="file" 
                   accept="image/*" 
@@ -68,8 +128,8 @@ const ProfilePage = ({ setIsAuthenticated }: ProfilePageProps) => {
                   <i className="bi bi-camera"></i>
                 </button>
               </div>
-              <h5 className="card-title">Jean Dupont</h5>
-              <p className="text-muted small">Membre depuis le 12 mai 2026</p>
+              <h5 className="card-title">{formData.prenom && formData.nom ? `${formData.prenom} ${formData.nom}` : formData.email?.split('@')[0]}</h5>
+              <p className="text-muted small">Membre depuis {user?.created_at ? new Date(user.created_at).toLocaleDateString('fr-FR') : '—'}</p>
               
               <div className="list-group list-group-flush text-start mt-4">
                 <button 
@@ -111,23 +171,23 @@ const ProfilePage = ({ setIsAuthenticated }: ProfilePageProps) => {
                     <div className="row g-3">
                       <div className="col-md-6">
                         <label className="form-label">Prénom</label>
-                        <input type="text" className="form-control" defaultValue="Jean" readOnly={!isEditing} />
+                        <input type="text" name="prenom" className="form-control" value={formData.prenom} onChange={handleInput} readOnly={!isEditing} />
                       </div>
                       <div className="col-md-6">
                         <label className="form-label">Nom</label>
-                        <input type="text" className="form-control" defaultValue="Dupont" readOnly={!isEditing} />
+                        <input type="text" name="nom" className="form-control" value={formData.nom} onChange={handleInput} readOnly={!isEditing} />
                       </div>
                       <div className="col-md-6">
                         <label className="form-label">Email</label>
-                        <input type="email" className="form-control" defaultValue="jean.dupont@example.com" readOnly={!isEditing} />
+                        <input type="email" name="email" className="form-control" value={formData.email} onChange={handleInput} readOnly={!isEditing} />
                       </div>
                       <div className="col-md-6">
                         <label className="form-label">Téléphone</label>
-                        <input type="tel" className="form-control" defaultValue="0470 12 34 56" readOnly={!isEditing} />
+                        <input type="tel" name="phone" className="form-control" value={formData.phone} onChange={handleInput} readOnly={!isEditing} placeholder="Aucun" />
                       </div>
                       <div className="col-12">
                         <label className="form-label">Adresse complète</label>
-                        <input type="text" className="form-control" defaultValue="Rue de la kiné 1, 1000 Bruxelles" readOnly={!isEditing} />
+                        <input type="text" name="adresse" className="form-control" value={formData.adresse} onChange={handleInput} readOnly={!isEditing} placeholder="Aucune" />
                       </div>
                       <div className="col-12 mt-4 text-end">
                         {!isEditing ? (

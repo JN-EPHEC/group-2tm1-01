@@ -1,7 +1,11 @@
 ﻿﻿import { useState } from "react";
 import { Link } from "react-router-dom";
 
-const LoginPage = () => {
+interface LoginPageProps {
+  setIsAuthenticated: (val: boolean) => void;
+}
+
+const LoginPage = ({ setIsAuthenticated }: LoginPageProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -25,6 +29,7 @@ const LoginPage = () => {
 
     if (res.ok) {
       alert("Connexion réussie");
+      setIsAuthenticated(true);
     } else {
       alert(data.error);
     }
