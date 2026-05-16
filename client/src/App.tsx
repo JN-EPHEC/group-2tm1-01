@@ -34,7 +34,7 @@ function App() {
           <Route path="/admin/rendez-vous" element={<AdminAppointmentsPage />} />
           <Route path="/client/rendez-vous" element={<ClientAppointmentPage />} />
           <Route path="/client/produits" element={<ClientProductPage />} />
-          <Route path="/client/panier" element={<ClientCartPage />} />
+          <Route path="/client/panier" element={<ClientCartPage isAuthenticated={isAuthenticated} />} />
         </Routes>
       </main>
     </Router>

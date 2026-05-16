@@ -2,13 +2,21 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../../styles/shop.css';
 
-const CartPage = () => {
+interface CartPageProps {
+  isAuthenticated?: boolean;
+}
+
+const CartPage = ({ isAuthenticated = false }: CartPageProps) => {
   const [step, setStep] = useState<'cart' | 'checkout' | 'success'>('cart');
-  const [createAccount, setCreateAccount] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<'CB' | 'PAYPAL' | 'BANCONTACT' | ''>('');
   const [errorValue, setErrorValue] = useState<string>('');
 
   const handleCheckoutClick = () => {
+    if (!isAuthenticated) {
+      setErrorValue("Vous devez être connecté pour passer une commande. Veuillez vous identifier ou créer un compte.");
+      return;
+    }
+    setErrorValue("");
     setStep('checkout');
   };
 
@@ -39,6 +47,12 @@ const CartPage = () => {
     <div>
       <h1 className="mb-4">Mon Panier</h1>
       
+      {errorValue && step === 'cart' && (
+        <div className="alert alert-danger" role="alert">
+          {errorValue} <Link to="/login" className="alert-link">Se connecter</Link>.
+        </div>
+      )}
+
       <div className="row g-4">
         {step === 'cart' ? (
           <div className="col-lg-8">
@@ -136,58 +150,6 @@ const CartPage = () => {
                       <input type="text" className="form-control" placeholder="Rue, Numéro, Ville, Code Postal" required />
                     </div>
                   </div>
-
-                  <div className="form-check mb-4">
-                    <input 
-                      className="form-check-input" 
-                      type="checkbox" 
-                      id="createAccount" 
-                      checked={createAccount}
-                      onChange={(e) => setCreateAccount(e.target.checked)}
-                    />
-                    <label className="form-check-label fw-bold" htmlFor="createAccount">
-                      Créer un compte pour suivre mes commandes futures
-                    </label>
-                  </div>
-
-                  {/* Champs supplémentaires si création de compte demandée */}
-                  {createAccount && (
-                    <div className="card border-primary bg-light mb-4">
-                      <div className="card-body">
-                        <h6 className="card-title text-primary"><i className="bi bi-person-plus me-2"></i>Informations de profil</h6>
-                        <div className="row g-3">
-                          <div className="col-md-6">
-                            <label className="form-label">Prénom</label>
-                            <input type="text" className="form-control" required />
-                          </div>
-                          <div className="col-md-6">
-                            <label className="form-label">Nom</label>
-                            <input type="text" className="form-control" required />
-                          </div>
-                          <div className="col-12">
-                            <label className="form-label">Adresse Email</label>
-                            <input type="email" className="form-control" required />
-                          </div>
-                          <div className="col-md-6">
-                            <label className="form-label">Téléphone</label>
-                            <input type="tel" className="form-control" required />
-                          </div>
-                          <div className="col-12">
-                            <label className="form-label">Adresse de livraison par défaut</label>
-                            <input type="text" className="form-control" placeholder="Rue, Numéro, Ville, Code Postal" required />
-                          </div>
-                          <div className="col-md-6">
-                            <label className="form-label">Mot de passe</label>
-                            <input type="password" className="form-control" required />
-                          </div>
-                          <div className="col-md-6">
-                            <label className="form-label">Confirmer le mot de passe</label>
-                            <input type="password" className="form-control" required />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
 
                   {errorValue && (
                     <div className="alert alert-danger" role="alert">
