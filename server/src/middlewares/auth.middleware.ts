@@ -4,60 +4,35 @@ import type {
   NextFunction,
 } from "express";
 
-import { supabase }
-from "../config/supabase.js";
+import { supabase } from "../config/supabase.js";
 
-export interface AuthRequest
-extends Request {
-
+export interface AuthRequest extends Request {
   user?: any;
-
 }
 
-export const protect = async (
-  req: AuthRequest,
-  res: Response,
-  next: NextFunction
-) => {
-
+export const protect = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-
-    // On récupère le token via les cookies
-    let token = req.cookies?.access_token;
-
-    // Alternative: si le token vient du header Authorization (Bearer ...)
-    if (!token && req.headers.authorization?.startsWith("Bearer ")) {
-      token = req.headers.authorization.split(" ")[1];
-    }
+    const token = req.cookies?.access_token;
 
     if (!token) {
-
-      return res.status(401).json({
-        error: "Token invalide",
-      });
+      return res.status(401).json({ error: "Token manquant" });
     }
 
-    const { data, error } =
-      await supabase.auth.getUser(token);
+    const { data, error } = await supabase.auth.getUser(token);
 
     if (error || !data.user) {
-
-      return res.status(401).json({
-        error: "Non autorisé",
-      });
-
+      return res.status(401).json({ error: "Non autorisé" });
     }
 
-    req.user = token;
+    // 🔥 équivalent de req.user = decoded JWT
+    req.user = {
+      id: data.user.id,
+      email: data.user.email,
+    };
 
     next();
 
   } catch (err: any) {
-
-    res.status(500).json({
-      error: err.message,
-    });
-
+    res.status(500).json({ error: err.message });
   }
-
 };

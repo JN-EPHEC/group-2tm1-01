@@ -1,5 +1,5 @@
 import type {Request, Response,} from "express";
-import {registerUser, loginUser, getCurrentUser, logoutUser,} from "../services/auth.service";
+import {registerUser, loginUser} from "../services/auth.service";
 import { supabase } from "../config/supabase";
 
 export const register = async (req: Request, res: Response) => {
@@ -178,6 +178,8 @@ export const logout = async (
   res: Response
 ) => {
     res.clearCookie("access_token");
+
+    res.clearCookie("refresh_token");
 
     res.json({ message: "Déconnexion réussie" });
 };
