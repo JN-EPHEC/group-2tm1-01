@@ -42,7 +42,17 @@ router.get("/", orderController.getOrders);
  */
 router.get("/:id", orderController.getOrderById);
 
-/**
+ /**
+ * @swagger
+ * /api/orders:
+ *   post:
+ *     summary: Créer une commande
+ *     tags: [Orders]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
  *             type: object
  *             required:
  *               - firstName
