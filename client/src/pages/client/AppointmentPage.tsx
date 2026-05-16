@@ -21,6 +21,7 @@ const AppointmentPage = () => {
     message: ''
   });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>('');
 
   const allSlots = ['09:00', '09:30', '10:00', '10:30', '11:00', '14:00', '14:30', '15:00'];
 
@@ -47,8 +48,10 @@ const AppointmentPage = () => {
 
   const handleConfirmAppointment = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
+
     if (!selectedDate || !selectedTime) {
-      alert("Veuillez sélectionner une date et une heure.");
+      setError("Veuillez sélectionner une date et une heure.");
       return;
     }
 
@@ -73,11 +76,11 @@ const AppointmentPage = () => {
         // Redirection vers login pour la confirmation du rendez-vous
         navigate('/login');
       } else {
-        alert("Erreur lors de la création du rendez-vous");
+        setError("Erreur lors de la création du rendez-vous");
       }
     } catch (error) {
       console.error("Erreur serveur", error);
-      alert("Erreur de connexion au serveur");
+      setError("Erreur de connexion au serveur");
     } finally {
       setLoading(false);
     }
@@ -93,6 +96,12 @@ const AppointmentPage = () => {
   return (
     <div>
       <h1 className="mb-4">Prendre un rendez-vous</h1>
+
+      {error && (
+        <div className="alert alert-danger" role="alert">
+          {error}
+        </div>
+      )}
       
       <div className="row g-4">
         {/* Étape 1 : Calendrier et Heures */}
@@ -108,7 +117,17 @@ const AppointmentPage = () => {
                   className="form-control shadow-sm" 
                   value={selectedDate}
                   onChange={(e) => {
-                    setSelectedDate(e.target.value);
+                    setError('');
+                    const dateValue = e.target.value;
+                    if (dateValue) {
+                      const day = new Date(dateValue).getDay();
+                      // 0 = Dimanche, 6 = Samedi
+                      if (day === 0 || day === 6) {
+                        setError("Le cabinet est fermé le week-end. Veuillez choisir un jour en semaine.");
+                        return;
+                      }
+                    }
+                    setSelectedDate(dateValue);
                     setSelectedTime(""); // Reset l'heure si on change de date
                   }}
                   min={new Date().toISOString().split('T')[0]} // Empêche de choisir une date passée
