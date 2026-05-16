@@ -5,6 +5,8 @@ import '../../styles/shop.css';
 const CartPage = () => {
   const [step, setStep] = useState<'cart' | 'checkout' | 'success'>('cart');
   const [createAccount, setCreateAccount] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<'CB' | 'PAYPAL' | 'BANCONTACT' | ''>('');
+  const [errorValue, setErrorValue] = useState<string>('');
 
   const handleCheckoutClick = () => {
     setStep('checkout');
@@ -12,6 +14,11 @@ const CartPage = () => {
 
   const handlePaymentSimulation = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!paymentMethod) {
+      setErrorValue("Veuillez sélectionner un mode de paiement.");
+      return;
+    }
+    setErrorValue("");
     setStep('success');
   };
 
@@ -182,19 +189,37 @@ const CartPage = () => {
                     </div>
                   )}
 
+                  {errorValue && (
+                    <div className="alert alert-danger" role="alert">
+                      {errorValue}
+                    </div>
+                  )}
+
                   <h4 className="card-title text-primary mb-4">2. Choix du mode de paiement</h4>
                   <div className="d-flex flex-wrap gap-3 mb-4">
-                    <div className="border rounded p-3 text-center flex-fill" style={{ cursor: 'pointer' }}>
+                    <div 
+                      className={`border rounded p-3 text-center flex-fill ${paymentMethod === 'CB' ? 'border-primary bg-primary text-white shadow' : 'bg-light text-muted'}`} 
+                      style={{ cursor: 'pointer', transition: 'all 0.2s' }}
+                      onClick={() => setPaymentMethod('CB')}
+                    >
                       <i className="bi bi-credit-card fs-2 d-block mb-2"></i>
-                      <span>Carte Bancaire</span>
+                      <span className="fw-bold">Carte Bancaire</span>
                     </div>
-                    <div className="border rounded p-3 text-center flex-fill" style={{ cursor: 'pointer' }}>
+                    <div 
+                      className={`border rounded p-3 text-center flex-fill ${paymentMethod === 'PAYPAL' ? 'border-primary bg-primary text-white shadow' : 'bg-light text-muted'}`} 
+                      style={{ cursor: 'pointer', transition: 'all 0.2s' }}
+                      onClick={() => setPaymentMethod('PAYPAL')}
+                    >
                       <i className="bi bi-paypal fs-2 d-block mb-2"></i>
-                      <span>PayPal</span>
+                      <span className="fw-bold">PayPal</span>
                     </div>
-                    <div className="border rounded p-3 text-center flex-fill" style={{ cursor: 'pointer' }}>
+                    <div 
+                      className={`border rounded p-3 text-center flex-fill ${paymentMethod === 'BANCONTACT' ? 'border-primary bg-primary text-white shadow' : 'bg-light text-muted'}`} 
+                      style={{ cursor: 'pointer', transition: 'all 0.2s' }}
+                      onClick={() => setPaymentMethod('BANCONTACT')}
+                    >
                       <i className="bi bi-phone fs-2 d-block mb-2"></i>
-                      <span>Bancontact / Payconiq</span>
+                      <span className="fw-bold">Bancontact / Payconiq</span>
                     </div>
                   </div>
 
