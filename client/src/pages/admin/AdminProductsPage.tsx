@@ -14,12 +14,16 @@ const AdminProductsPage: React.FC = () => {
   const [formData, setFormData] = useState<Partial<Product>>({ name: '', price: 0, description: '', category: '' });
 
   useEffect(() => {
-    // Remplacer par un vrai fetch API
-    // fetch('http://localhost:3000/api/products').then...
-    setProducts([
-      { id: 1, name: 'Bande élastique', price: 15.0, description: 'Bande pour rééducation', category: 'Equipement' },
-      { id: 2, name: 'Crème de massage', price: 25.5, description: 'Crème relaxante', category: 'Soins' }
-    ]);
+    fetch('http://localhost:3000/api/products')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setProducts(data);
+        } else {
+          console.error("Format inattendu:", data);
+        }
+      })
+      .catch(err => console.error("Erreur chargement produits:", err));
   }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -29,11 +33,25 @@ const AdminProductsPage: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (isEditing) {
-      // Fetch UPDATE product
-      console.log('Mise à jour du produit', formData);
+      fetch(`http://localhost:3000/api/products/${formData.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      })
+      .then(res => res.json())
+      .then(updatedProd => {
+        setProducts(products.map(p => p.id === updatedProd.id ? updatedProd : p));
+      });
     } else {
-      // Fetch CREATE product
-      console.log('Création du produit', formData);
+      fetch(`http://localhost:3000/api/products`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      })
+      .then(res => res.json())
+      .then(newProd => {
+        setProducts([...products, newProd]);
+      });
     }
     // Réinitialiser le formulaire
     setFormData({ name: '', price: 0, description: '', category: '' });
@@ -47,8 +65,10 @@ const AdminProductsPage: React.FC = () => {
 
   const handleDeleteClick = (id: number) => {
     if (confirm('Voulez-vous vraiment supprimer ce produit ?')) {
-      // Fetch DELETE product
-      setProducts(products.filter(p => p.id !== id));
+      fetch(`http://localhost:3000/api/products/${id}`, { method: 'DELETE' })
+      .then(() => {
+        setProducts(products.filter(p => p.id !== id));
+      });
     }
   };
 

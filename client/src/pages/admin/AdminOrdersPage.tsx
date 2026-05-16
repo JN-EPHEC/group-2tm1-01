@@ -14,16 +14,32 @@ const AdminOrdersPage: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
 
   useEffect(() => {
-    // Remplacer par un vrai fetch API
-    setOrders([
-      { id: 101, userId: '1', customerName: 'Jean Dupont', date: '2026-05-16', total: 45.0, status: 'PENDING', items: '2x Crème de massage' },
-      { id: 102, userId: '2', customerName: 'Marie Curie', date: '2026-05-15', total: 15.0, status: 'PREPARING', items: '1x Bande élastique' },
-    ]);
+    fetch('http://localhost:3000/api/orders')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          // Si tu as besoin d'adapter les clés par rapport au format backend :
+          // ex: setOrders(data.map(d => ({ id: d.id, userId: d.user_id, ... })))
+          setOrders(data);
+        }
+      })
+      .catch(err => console.error("Erreur chargement commandes:", err));
   }, []);
 
   const handleStatusChange = (id: number, newStatus: Order['status']) => {
-    // Appel API pour MAJ du statut
-    setOrders(orders.map(o => o.id === id ? { ...o, status: newStatus } : o));
+    fetch(`http://localhost:3000/api/orders/${id}/status`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: newStatus })
+    })
+      .then(res => {
+        if(res.ok) {
+          setOrders(orders.map(o => o.id === id ? { ...o, status: newStatus } : o));
+        } else {
+          console.error("Erreur mise à jour statut de la commande");
+        }
+      })
+      .catch(err => console.error("Erreur réseau:", err));
   };
 
   const getStatusBadge = (status: Order['status']) => {

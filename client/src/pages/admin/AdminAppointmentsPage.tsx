@@ -15,20 +15,28 @@ const AdminAppointmentsPage: React.FC = () => {
   const [selectedAppt, setSelectedAppt] = useState<AppointmentType | null>(null);
 
   useEffect(() => {
-    // Remplacer par fetch API
-    const todayStr = new Date().toISOString().split('T')[0];
-    const tomorrowStr = new Date(Date.now() + 86400000).toISOString().split('T')[0];
-    
-    setAppointments([
-      { id: 1, customerName: 'Alice Dubois', date: todayStr, time: '10:00', status: 'booked', notes: 'Première séance' },
-      { id: 2, customerName: 'Paul Martin', date: todayStr, time: '14:30', status: 'booked', notes: 'Suivi cheville' },
-      { id: 3, customerName: 'Lucie Bernard', date: tomorrowStr, time: '09:00', status: 'booked', notes: '' },
-      { id: 4, customerName: 'Marc', date: new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 15).toISOString().split('T')[0], time: '11:00', status: 'done', notes: 'Bilan' },
-    ]);
+    fetch('http://localhost:3000/api/appointments')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setAppointments(data);
+        }
+      })
+      .catch(err => console.error("Erreur chargement rendez-vous:", err));
   }, [currentMonth]);
 
   const handleStatusChange = (id: number, newStatus: AppointmentType['status']) => {
-    setAppointments(appointments.map(a => a.id === id ? { ...a, status: newStatus } : a));
+    fetch(`http://localhost:3000/api/appointments/${id}/status`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: newStatus })
+    })
+      .then(res => {
+        if(res.ok) {
+          setAppointments(appointments.map(a => a.id === id ? { ...a, status: newStatus } : a));
+        }
+      })
+      .catch(err => console.error(err));
   };
 
   const getDaysInMonth = (year: number, month: number) => {
