@@ -166,7 +166,24 @@ export const me = async (req: Request, res: Response) => {
       return res.status(401).json({ error: "Token invalide" });
     }
 
-    res.json(data.user);
+    // 🔥 Correction : On va chercher le prénom, nom, téléphone et adresse complémentaires dans la table profiles
+    const { data: profileData, error: profileError } = await supabase
+      .from("profiles")
+      .select("first_name, last_name, phone, address")
+      .eq("id", data.user.id)
+      .single();
+
+    res.json({
+      id: data.user.id,
+      email: data.user.email,
+      created_at: data.user.created_at,
+      user_metadata: {
+        prenom: profileData?.first_name || "",
+        nom: profileData?.last_name || "",
+        phone: profileData?.phone || "",
+        adresse: profileData?.address || ""
+      }
+    });
 
   } catch (err: any) {
     res.status(500).json({ error: err.message });

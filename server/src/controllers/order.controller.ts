@@ -2,9 +2,12 @@ import type { Request, Response } from "express";
 import * as orderService from "../services/order.service";
 import type { AuthRequest } from "../middlewares/auth.middleware";
 
-export const getOrders = async (req: Request, res: Response) => {
+export const getOrders = async (req: AuthRequest, res: Response) => {
   try {
-    const orders = await orderService.getOrders();
+    const userId = req.user?.id;
+
+    const orders = await orderService.getOrders(userId);
+    
     res.json(orders);
   } catch (err: any) {
     console.error(err);

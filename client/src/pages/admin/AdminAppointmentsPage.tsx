@@ -5,7 +5,7 @@ interface AppointmentType {
   customerName: string;
   date: string;
   time: string;
-  status: 'booked' | 'cancelled' | 'done';
+  status: 'pending' | 'booked' | 'cancelled' | 'done';
   notes: string;
 }
 
@@ -15,19 +15,23 @@ const AdminAppointmentsPage: React.FC = () => {
   const [selectedAppt, setSelectedAppt] = useState<AppointmentType | null>(null);
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/appointments', { credentials: 'include' }) // 👈 Inclus les credentials
+    fetch('http://localhost:3000/api/appointments', { credentials: 'include' })
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
-          const formattedAppts = data.map((a: any) => ({
-            id: a.id,
-            // Si le backend renvoie la jointure avec la table profiles :
-            customerName: a.profiles ? `${a.profiles.first_name} ${a.profiles.last_name}` : "Patient anonyme",
-            date: a.date,
-            time: a.time || a.hour, // s'adapte selon le nom de votre colonne heure
-            status: a.status,
-            notes: a.notes || ""
-          }));
+          const formattedAppts = data.map((a: any) => {
+            // 🔥 Sécurisation de la date : Extrait uniquement 'YYYY-MM-DD' si Supabase renvoie un ISO complet
+            const cleanDate = a.date && a.date.includes('T') ? a.date.split('T')[0] : a.date;
+
+            return {
+              id: a.id,
+              customerName: a.profiles ? `${a.profiles.first_name} ${a.profiles.last_name}` : "Patient anonyme",
+              date: cleanDate,
+              time: a.time || a.hour || "",
+              status: a.status || 'pending',
+              notes: a.notes || ""
+            };
+          });
           setAppointments(formattedAppts);
         }
       })
@@ -52,7 +56,6 @@ const AdminAppointmentsPage: React.FC = () => {
     return new Date(year, month + 1, 0).getDate();
   };
 
-  // 0 = Sunday, 1 = Monday... on ajuste pour avoir Lundi (0) à Dimanche (6)
   const getFirstDayOfMonth = (year: number, month: number) => {
     const day = new Date(year, month, 1).getDay();
     return day === 0 ? 6 : day - 1; 
@@ -101,10 +104,8 @@ const AdminAppointmentsPage: React.FC = () => {
             ))}
 
             {days.map(day => {
-              // Formater la date courante (ex: 2026-05-01)
               const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
               
-              // Trouver les rdv pour ce jour
               const dayAppts = appointments
                 .filter(a => a.date === dateStr)
                 .sort((a, b) => a.time.localeCompare(b.time));
@@ -115,27 +116,33 @@ const AdminAppointmentsPage: React.FC = () => {
                 <div key={day} className={`col border-bottom border-end p-2 ${isToday ? 'bg-primary bg-opacity-10' : ''}`} style={{ minHeight: '120px', minWidth: '14%' }}>
                   <div className="d-flex justify-content-between">
                     <span className={`fw-bold ${isToday ? 'text-primary' : ''}`}>{day}</span>
-                    <span className="badge bg-secondary rounded-pill">{dayAppts.length > 0 ? dayAppts.length : ''}</span>
+                    {dayAppts.length > 0 && <span className="badge bg-secondary rounded-pill">{dayAppts.length}</span>}
                   </div>
                   
                   <div className="mt-2 d-flex flex-column gap-1">
-                    {dayAppts.map(appt => (
-                      <div 
-                        key={appt.id} 
-                        className={`p-1 rounded small text-white lh-sm shadow-sm ${appt.status === 'booked' ? 'bg-primary' : appt.status === 'done' ? 'bg-success' : 'bg-danger'}`}
-                        title={appt.notes || 'Pas de notes'}
-                        style={{ fontSize: '0.75rem', cursor: 'pointer' }}
-                        onClick={() => setSelectedAppt(appt)}
-                      >
-                        <strong>{appt.time}</strong> {appt.customerName}
-                      </div>
-                    ))}
+                    {dayAppts.map(appt => {
+                      let badgeColor = 'bg-primary';
+                      if (appt.status === 'pending') badgeColor = 'bg-warning text-dark';
+                      else if (appt.status === 'done') badgeColor = 'bg-success';
+                      else if (appt.status === 'cancelled') badgeColor = 'bg-danger';
+
+                      return (
+                        <div 
+                          key={appt.id} 
+                          className={`p-1 rounded small lh-sm shadow-sm ${badgeColor}`}
+                          title={appt.notes || 'Pas de notes'}
+                          style={{ fontSize: '0.75rem', cursor: 'pointer' }}
+                          onClick={() => setSelectedAppt(appt)}
+                        >
+                          <strong>{appt.time}</strong> {appt.customerName}
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               );
             })}
             
-            {/* Remplir la fin de la grille pour avoir des lignes nettes */}
             {Array.from({ length: (7 - ((blanks.length + days.length) % 7)) % 7 }).map((_, i) => (
               <div key={`end-blank-${i}`} className="col border-bottom border-end bg-light opacity-50" style={{ minHeight: '120px', minWidth: '14%' }}></div>
             ))}
@@ -153,10 +160,10 @@ const AdminAppointmentsPage: React.FC = () => {
               </div>
               <div className="modal-body">
                 <p><strong>Client :</strong> {selectedAppt.customerName}</p>
-                <p><strong>Date & Heure :</strong> {new Date(selectedAppt.date).toLocaleDateString('fr-FR')} à {selectedAppt.time}</p>
-                <p><strong>Notes :</strong> {selectedAppt.notes || 'Aucune note'}</p>
+                <p><strong>Date & Heure :</strong> {selectedAppt.date} à {selectedAppt.time}</p>
+                <p><strong>Notes / Motif :</strong> {selectedAppt.notes || 'Aucune note fournie'}</p>
                 <div className="mb-3">
-                  <label className="form-label fw-bold">Statut</label>
+                  <label className="form-label fw-bold">Modifier le statut</label>
                   <select 
                     className="form-select" 
                     value={selectedAppt.status}
@@ -166,6 +173,7 @@ const AdminAppointmentsPage: React.FC = () => {
                       setSelectedAppt({ ...selectedAppt, status: newStatus });
                     }}
                   >
+                    <option value="pending">En attente</option>
                     <option value="booked">Confirmé</option>
                     <option value="done">Terminé</option>
                     <option value="cancelled">Annulé</option>

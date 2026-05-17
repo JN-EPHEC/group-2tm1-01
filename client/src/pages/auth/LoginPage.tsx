@@ -1,44 +1,51 @@
 ﻿﻿import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 interface LoginPageProps {
   setIsAuthenticated: (val: boolean) => void;
 }
 
 const LoginPage = ({ setIsAuthenticated }: LoginPageProps) => {
+  const navigate = useNavigate();
+  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault(); // Empêche le rechargement brut de la page vers l'API
 
-    const res = await fetch("http://localhost:3000/api/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({
-        email,
-        password,
-      }),
-    });
+    try {
+      const res = await fetch("http://localhost:3000/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // Important pour les sessions / cookies
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
 
-    const data = await res.json();
-    console.log("LOGIN RESPONSE:", data);
+      const data = await res.json();
+      console.log("LOGIN RESPONSE:", data);
 
-    if (res.ok) {
-      alert("Connexion réussie");
-      setIsAuthenticated(true);
-    } else {
-      alert(data.error);
+      if (res.ok) {
+        setIsAuthenticated(true);
+        navigate("/profil"); 
+      } else {
+        alert(data.error || "Identifiants incorrects");
+      }
+    } catch (err) {
+      console.error("Erreur de connexion:", err);
+      alert("Impossible de joindre le serveur.");
     }
   };
 
   return (
     <div className="row justify-content-center mt-5">
       <div className="col-md-6">
-        <div className="card">
+        <div className="card shadow-sm border-0">
           <div className="card-body">
             <h1 className="card-title text-center mb-4">Connexion</h1>
 
@@ -52,6 +59,7 @@ const LoginPage = ({ setIsAuthenticated }: LoginPageProps) => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="nom@exemple.com"
+                  required
                 />
               </div>
 
@@ -63,6 +71,7 @@ const LoginPage = ({ setIsAuthenticated }: LoginPageProps) => {
                   className="form-control"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  required
                 />
               </div>
 

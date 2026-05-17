@@ -1,7 +1,7 @@
 import { supabase } from "../config/supabase";
 
-export const getOrders = async () => {
-  const { data, error } = await supabase
+export const getOrders = async (userId?: string) => {
+  let query = supabase
     .from("orders")
     .select(`
       *,
@@ -17,11 +17,15 @@ export const getOrders = async () => {
           image_url
         )
       )
-    `)
-    .order("order_date", { ascending: false });
+    `);
+
+  if (userId) {
+    query = query.eq("log_id", userId);
+  }
+
+  const { data, error } = await query.order("order_date", { ascending: false });
 
   if (error) throw error;
-
   return data;
 };
 
@@ -93,23 +97,24 @@ export const createOrder = async (userId: string, order: any) => {
     });
   }
 
-  // Calcul de la taxe (ex: 21%)
-  const tax = total * 0.21;
+// Calcul de la taxe (ex: 21%)
+const tax = total * 0.21;
+const totalWithTax = total + tax; // 🔥 Calcul du total toutes taxes comprises (TTC)
 
-  // Création de la commande principale dans `orders`
-  const { data: newOrder, error: orderError } = await supabase
-    .from("orders")
-    .insert([{
-      log_id: userId,
-      total: total,
-      tax: tax,
-      order_date: new Date().toISOString(),
-      status: 'pending',
-      delivery_address: address,
-      payment_method: paymentMethod
-    }])
-    .select()
-    .single();
+// Création de la commande principale dans `orders`
+const { data: newOrder, error: orderError } = await supabase
+  .from("orders")
+  .insert([{
+    log_id: userId,
+    total: totalWithTax, // 🔥 Correction : On enregistre le total TTC en base de données
+    tax: tax,
+    order_date: new Date().toISOString(),
+    status: 'pending',
+    delivery_address: address,
+    payment_method: paymentMethod
+  }])
+  .select()
+  .single();
 
   if (orderError || !newOrder) {
     throw new Error(orderError?.message || "Erreur création commande");

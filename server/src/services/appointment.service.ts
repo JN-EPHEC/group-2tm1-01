@@ -1,12 +1,18 @@
 import { supabase } from "../config/supabase";
 
-export const getAppointments = async () => {
-  const { data, error } = await supabase
+export const getAppointments = async (userId?: string) => {
+  let query = supabase
     .from("appointments")
     .select(`
       *,
       profiles (first_name, last_name)
     `);
+
+  if (userId) {
+    query = query.eq("log_id", userId);
+  }
+
+  const { data, error } = await query;
 
   if (error) throw error;
   return data;
@@ -27,7 +33,7 @@ export const createAppointment = async (appointment: any) => {
       date,
       time,
       status,
-      note: notes,
+      notes: notes,
       log_id
     }])
     .select()

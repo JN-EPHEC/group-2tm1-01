@@ -27,7 +27,6 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage setIsAuthenticated={setIsAuthenticated} />} />
           <Route path="/register" element={<RegisterPage setIsAuthenticated={setIsAuthenticated} />} />
-          <Route path="/profil" element={<ProfilePage setIsAuthenticated={setIsAuthenticated} />} />
           <Route path="/admin" element={<AdminDashboardPage />} />
           <Route path="/admin/produits" element={<AdminProductsPage />} />
           <Route path="/admin/commandes" element={<AdminOrdersPage />} />
@@ -35,6 +34,9 @@ function App() {
           <Route path="/client/rendez-vous" element={<ClientAppointmentPage isAuthenticated={isAuthenticated} />} />
           <Route path="/client/produits" element={<ClientProductPage />} />
           <Route path="/client/panier" element={<ClientCartPage isAuthenticated={isAuthenticated} />} />
+          
+          {/* Ta route de profil, bien à sa place avec le bon chemin de ton projet */}
+          <Route path="/profil" element={<ProfilePage setIsAuthenticated={setIsAuthenticated} />} />
         </Routes>
       </main>
     </Router>

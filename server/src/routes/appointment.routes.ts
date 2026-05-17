@@ -37,7 +37,7 @@ const router = Router();
  *                   reason:
  *                     type: string
  */
-router.get("/", appointmentController.getAppointments);
+router.get("/", protect, appointmentController.getAppointments);
 
 /**
  * @swagger
@@ -89,7 +89,7 @@ router.get("/", appointmentController.getAppointments);
  */
 router.post("/", protect, appointmentController.createAppointment);
 
-router.put("/:id/status", appointmentController.updateAppointmentStatus);
+router.put("/:id/status", protect, appointmentController.updateAppointmentStatus);
 
 export default router;
 

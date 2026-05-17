@@ -1,20 +1,18 @@
 import type { Request, Response } from "express";
 import type { AuthRequest } from "../middlewares/auth.middleware";
-
 import * as appointmentService from "../services/appointment.service";
 
-export const getAppointments = async (req: Request, res: Response) => {
+export const getAppointments = async (req: AuthRequest, res: Response) => {
   try {
-    const appointments = await appointmentService.getAppointments();
+    const userId = req.user?.id; 
+
+    const appointments = await appointmentService.getAppointments(userId);
 
     res.json(appointments);
   } catch (err: any) {
-    res.status(500).json({
-      error: err.message,
-    });
+    res.status(500).json({ error: err.message });
   }
 };
-
 export const createAppointment = async (req: AuthRequest, res: Response) => {
   try {
     const userId = req.user?.id;

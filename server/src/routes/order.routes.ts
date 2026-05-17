@@ -30,7 +30,7 @@ const router = Router();
  *       500:
  *         description: Erreur serveur
  */
-router.get("/", orderController.getOrders);
+router.get("/", protect, orderController.getOrders);
 
 /**
  * @swagger
@@ -54,7 +54,7 @@ router.get("/", orderController.getOrders);
  *       500:
  *         description: Erreur serveur
  */
-router.get("/:id", orderController.getOrderById);
+router.get("/:id", protect, orderController.getOrderById);
 
 /**
  * @swagger
