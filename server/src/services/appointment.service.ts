@@ -1,10 +1,14 @@
 import { supabase } from "../config/supabase";
 
 export const getAppointments = async () => {
-  const { data, error } = await supabase.from("appointments").select("*");
+  const { data, error } = await supabase
+    .from("appointments")
+    .select(`
+      *,
+      profiles (first_name, last_name)
+    `);
 
   if (error) throw error;
-
   return data;
 };
 

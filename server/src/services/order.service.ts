@@ -5,6 +5,7 @@ export const getOrders = async () => {
     .from("orders")
     .select(`
       *,
+      profiles (first_name, last_name),
       order_items (
         id,
         quantity,

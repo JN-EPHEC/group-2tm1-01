@@ -15,11 +15,20 @@ const AdminAppointmentsPage: React.FC = () => {
   const [selectedAppt, setSelectedAppt] = useState<AppointmentType | null>(null);
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/appointments')
+    fetch('http://localhost:3000/api/appointments', { credentials: 'include' }) // 👈 Inclus les credentials
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
-          setAppointments(data);
+          const formattedAppts = data.map((a: any) => ({
+            id: a.id,
+            // Si le backend renvoie la jointure avec la table profiles :
+            customerName: a.profiles ? `${a.profiles.first_name} ${a.profiles.last_name}` : "Patient anonyme",
+            date: a.date,
+            time: a.time || a.hour, // s'adapte selon le nom de votre colonne heure
+            status: a.status,
+            notes: a.notes || ""
+          }));
+          setAppointments(formattedAppts);
         }
       })
       .catch(err => console.error("Erreur chargement rendez-vous:", err));

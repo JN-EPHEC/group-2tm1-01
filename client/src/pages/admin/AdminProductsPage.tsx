@@ -84,6 +84,7 @@ const AdminProductsPage: React.FC = () => {
     if (productToDelete !== null) {
       fetch(`http://localhost:3000/api/products/${productToDelete}`, {
         method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
         credentials: 'include'
       })
       .then(() => {

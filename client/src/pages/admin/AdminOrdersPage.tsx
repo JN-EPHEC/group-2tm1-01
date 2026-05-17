@@ -14,13 +14,24 @@ const AdminOrdersPage: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/orders')
+    fetch('http://localhost:3000/api/orders', { credentials: 'include' }) // 👈 Ajout de credentials obligatoire pour l'admin !
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
-          // Si tu as besoin d'adapter les clés par rapport au format backend :
-          // ex: setOrders(data.map(d => ({ id: d.id, userId: d.user_id, ... })))
-          setOrders(data);
+          // On adapte les données reçues du backend pour l'affichage du tableau
+          const formattedOrders = data.map((d: any) => ({
+            id: d.id,
+            userId: d.log_id || d.userId,
+            customerName: d.profiles ? `${d.profiles.first_name} ${d.profiles.last_name}` : "Client inconnu",
+            date: new Date(d.created_at || d.date).toLocaleDateString('fr-FR'),
+            total: Number(d.total_price || d.total || 0),
+            status: d.status,
+            // Si le backend inclut la jointure order_items :
+            items: d.order_items && Array.isArray(d.order_items) 
+              ? d.order_items.map((item: any) => `${item.quantity}x ${item.products?.name || 'Produit'}`).join(', ')
+              : "Aucun article" 
+          }));
+          setOrders(formattedOrders);
         }
       })
       .catch(err => console.error("Erreur chargement commandes:", err));
