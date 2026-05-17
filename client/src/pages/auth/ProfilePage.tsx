@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+/*import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 interface ProfilePageProps {
@@ -93,7 +93,7 @@ const ProfilePage = ({ setIsAuthenticated }: ProfilePageProps) => {
       <h1 className="mb-4">Mon Profil</h1>
 
       <div className="row">
-        {/* Sidebar/Menu Profile */}
+        {/* Sidebar/Menu Profile ----}
         <div className="col-md-3 mb-4">
           <div className="card shadow-sm border-0 text-center">
             <div className="card-body">
@@ -158,12 +158,12 @@ const ProfilePage = ({ setIsAuthenticated }: ProfilePageProps) => {
           </div>
         </div>
 
-        {/* Content Area */}
+        {/* Content Area ----}
         <div className="col-md-9">
           <div className="card shadow-sm border-0 h-100">
             <div className="card-body p-4">
               
-              {/* Tab: Informations */}
+              {/* Tab: Informations ----}
               {activeTab === 'infos' && (
                 <div>
                   <h4 className="mb-4 text-primary">Informations personnelles</h4>
@@ -206,7 +206,7 @@ const ProfilePage = ({ setIsAuthenticated }: ProfilePageProps) => {
                 </div>
               )}
 
-              {/* Tab: Historique d'achats */}
+              {/* Tab: Historique d'achats ----}
               {activeTab === 'history' && (
                 <div>
                   <h4 className="mb-4 text-primary">Historique d'achats</h4>
@@ -239,7 +239,7 @@ const ProfilePage = ({ setIsAuthenticated }: ProfilePageProps) => {
                 </div>
               )}
 
-              {/* Tab: Rendez-vous */}
+              {/* Tab: Rendez-vous -----}
               {activeTab === 'appointments' && (
                 <div>
                   <h4 className="mb-4 text-primary">Mes rendez-vous</h4>
@@ -272,3 +272,208 @@ const ProfilePage = ({ setIsAuthenticated }: ProfilePageProps) => {
 };
 
 export default ProfilePage;
+*/
+
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+interface AppointmentType {
+  id: number;
+  date: string;
+  time: string;
+  status: string;
+}
+
+interface AppointmentPageProps {
+  isAuthenticated: boolean;
+}
+
+const AppointmentPage = ({ isAuthenticated }: AppointmentPageProps) => {
+  const navigate = useNavigate();
+  
+  const [appointments, setAppointments] = useState<AppointmentType[]>([]);
+  const [selectedDate, setSelectedDate] = useState<string>("");
+  const [selectedTime, setSelectedTime] = useState<string>("");
+  
+  // State pour stocker les infos de l'utilisateur connecté
+  const [userProfile, setUserProfile] = useState({ prenom: '', nom: '', email: '' });
+  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>('');
+
+  const allSlots = ['09:00', '09:30', '10:00', '10:30', '11:00', '14:00', '14:30', '15:00'];
+
+  // Récupérer les rendez-vous existants ET les infos de l'utilisateur connecté
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // 1. Récupération des rendez-vous
+        const resAppts = await fetch('http://localhost:3000/api/appointments', { credentials: 'include' });
+        if (resAppts.ok) {
+          const data = await resAppts.json();
+          setAppointments(data);
+        }
+
+        // 2. Récupération de l'utilisateur connecté pour pré-remplir la page
+        const resUser = await fetch('http://localhost:3000/api/auth/me', { credentials: 'include' });
+        if (resUser.ok) {
+          const userData = await resUser.json();
+          setUserProfile({
+            prenom: userData.user_metadata?.prenom || '',
+            nom: userData.user_metadata?.nom || '',
+            email: userData.email || ''
+          });
+        }
+      } catch (error) {
+        console.error('Erreur lors de la récupération des données', error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const bookedSlots = appointments
+    .filter(app => app.date === selectedDate && app.status !== 'cancelled')
+    .map(app => app.time.substring(0, 5));
+
+  const handleConfirmAppointment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+
+    if (!isAuthenticated) {
+      setError("Vous devez être connecté pour prendre un rendez-vous.");
+      return;
+    }
+
+    if (!selectedDate || !selectedTime) {
+      setError("Veuillez sélectionner une date et une heure.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetch('http://localhost:3000/api/appointments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          date: selectedDate,
+          time: selectedTime,
+          status: 'booked',
+          notes: message,
+        }),
+      });
+
+      if (response.ok) {
+        navigate('/profil');
+      } else {
+        setError(response.status === 401 ? "Session expirée. Reconnectez-vous." : "Erreur lors de la création du rendez-vous");
+      }
+    } catch (error) {
+      setError("Erreur de connexion au serveur");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div>
+      <h1 className="mb-4">Prendre un rendez-vous</h1>
+
+      {error && <div className="alert alert-danger">{error}</div>}
+      
+      <div className="row g-4">
+        {/* Étape 1 : Date & Heure */}
+        <div className="col-md-5">
+          <div className="card shadow-sm h-100 border-0">
+            <div className="card-body">
+              <h4 className="card-title mb-4 text-primary">1. Date & Heure</h4>
+              <div className="mb-4">
+                <label className="form-label fw-bold">Sélectionner une date</label>
+                <input 
+                  type="date" 
+                  className="form-control shadow-sm" 
+                  value={selectedDate}
+                  onChange={(e) => {
+                    setError('');
+                    const dateValue = e.target.value;
+                    if (dateValue) {
+                      const day = new Date(dateValue).getDay();
+                      if (day === 0 || day === 6) {
+                        setError("Le cabinet est fermé le week-end.");
+                        return;
+                      }
+                    }
+                    setSelectedDate(dateValue);
+                    setSelectedTime("");
+                  }}
+                  min={new Date().toISOString().split('T')[0]}
+                />
+              </div>
+
+              <div>
+                <label className="form-label fw-bold">Créneaux disponibles</label>
+                <div className="d-flex flex-wrap gap-2">
+                  {selectedDate ? allSlots.map((slot) => {
+                    const isBooked = bookedSlots.includes(slot);
+                    return (
+                      <button 
+                        key={slot}
+                        type="button"
+                        className={`btn ${selectedTime === slot ? 'btn-primary' : 'btn-outline-primary'}`}
+                        disabled={isBooked}
+                        onClick={() => setSelectedTime(slot)}
+                      >
+                        {slot} {isBooked ? '(Réservé)' : ''}
+                      </button>
+                    );
+                  }) : <p className="text-muted small">Veuillez d'abord choisir une date</p>}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Étape 2 : Infos Patient (Lecture seule pour protéger ton profil !) */}
+        <div className="col-md-7">
+          <div className="card shadow-sm h-100 border-0">
+            <div className="card-body">
+              <h4 className="card-title mb-4 text-primary">2. Vos informations</h4>
+              <form onSubmit={handleConfirmAppointment}>
+                <div className="row g-3">
+                  <div className="col-sm-6">
+                    <label className="form-label">Prénom</label>
+                    <input type="text" className="form-control bg-light" value={userProfile.prenom} readOnly />
+                  </div>
+                  <div className="col-sm-6">
+                    <label className="form-label">Nom</label>
+                    <input type="text" className="form-control bg-light" value={userProfile.nom} readOnly />
+                  </div>
+                  <div className="col-12">
+                    <label className="form-label">Email de contact</label>
+                    <input type="text" className="form-control bg-light" value={userProfile.email} readOnly />
+                  </div>
+                  <div className="col-12">
+                    <label className="form-label fw-bold mt-2">Votre message / Motif de consultation</label>
+                    <textarea 
+                      className="form-control" 
+                      value={message} 
+                      onChange={(e) => setMessage(e.target.value)}
+                      rows={4} 
+                      placeholder="Détaillez vos besoins pour adapter la séance..."
+                    ></textarea>
+                  </div>
+                  <div className="col-12 mt-4 text-end">
+                    <button type="submit" className="btn btn-primary btn-lg" disabled={loading}>
+                      {loading ? 'Création...' : 'Confirmer le rendez-vous'}
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+export default AppointmentPage;
