@@ -196,11 +196,6 @@ const DashboardPage: React.FC = () => {
       console.error(err);
     }
   };
-      setTransactions(transactions.map(t => t.id === id ? { ...t, status: newStatus } : t));
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
   // --- CALCULS ---
 
