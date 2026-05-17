@@ -42,25 +42,6 @@ export const register = async (req: Request, res: Response) => {
       throw new Error(dbError.message);
     }
 
-    const accessToken = data.session?.access_token;
-    const refreshToken = data.session?.refresh_token;
-
-    if (accessToken && refreshToken) {
-      res.cookie("access_token", accessToken, {
-        httpOnly: true,
-        secure: false, // modifié pour localhost HTTP
-        sameSite: "lax", // modifié pour localhost HTTP
-        maxAge: 1000 * 60 * 60, // 1h
-      });
-
-      res.cookie("refresh_token", refreshToken, {
-        httpOnly: true,
-        secure: false,
-        sameSite: "lax",
-        maxAge: 1000 * 60 * 60 * 24 * 7, // 7 jours
-      });
-    }
-
     res.status(201).json({
       user: data.user,
     });
@@ -92,15 +73,15 @@ export const login = async (
 
     res.cookie("access_token", accessToken, {
       httpOnly: true,
-      secure: false, // modifiÃ© pour localhost HTTP
-      sameSite: "lax", // modifiÃ© pour localhost HTTP
+      secure: true,
+      sameSite: "none",
       maxAge: 1000 * 60 * 60, // 1h
     });
 
     res.cookie("refresh_token", refreshToken, {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: true,
+      sameSite: "none",
       maxAge: 1000 * 60 * 60 * 24 * 7, // 7 jours
     });
 
@@ -146,15 +127,15 @@ export const refreshSession = async (
 
     res.cookie("access_token", newAccessToken, {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: true,
+      sameSite: "none",
       maxAge: 1000 * 60 * 60,
     });
 
     res.cookie("refresh_token", newRefreshToken, {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: true,
+      sameSite: "none",
       maxAge: 1000 * 60 * 60 * 24 * 7,
     });
 
