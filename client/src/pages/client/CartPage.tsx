@@ -1,5 +1,5 @@
 ﻿import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import '../../styles/shop.css';
 
 interface BackendProduct {
@@ -19,7 +19,6 @@ interface CartItem {
 }
 
 const CartPage = () => {
-  const navigate = useNavigate();
   const [step, setStep] = useState<'cart' | 'checkout' | 'success'>('cart');
   const [products, setProducts] = useState<BackendProduct[]>([]);
   const [cartStorage, setCartStorage] = useState<{ [id: number]: number }>({});

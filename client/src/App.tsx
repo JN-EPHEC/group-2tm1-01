@@ -33,7 +33,7 @@ function App() {
           <Route path="/admin/rendez-vous" element={<AdminAppointmentsPage />} />
           <Route path="/client/rendez-vous" element={<ClientAppointmentPage isAuthenticated={isAuthenticated} />} />
           <Route path="/client/produits" element={<ClientProductPage />} />
-          <Route path="/client/panier" element={<ClientCartPage isAuthenticated={isAuthenticated} />} />
+          <Route path="/client/panier" element={<ClientCartPage />} />
           
           {/* Ta route de profil, bien à sa place avec le bon chemin de ton projet */}
           <Route path="/profil" element={<ProfilePage setIsAuthenticated={setIsAuthenticated} />} />

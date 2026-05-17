@@ -28,7 +28,6 @@ const ProfilePage = ({ setIsAuthenticated }: ProfilePageProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [profileImage, setProfileImage] = useState<string | null>(null);
 
-  const [user, setUser] = useState<any>(null);
   const [appointments, setAppointments] = useState<AppointmentType[]>([]);
   const [orders, setOrders] = useState<OrderType[]>([]);
   const [loading, setLoading] = useState(true);
@@ -51,7 +50,6 @@ const ProfilePage = ({ setIsAuthenticated }: ProfilePageProps) => {
         
         if (response.ok) {
           const userData = await response.json();
-          setUser(userData);
           setFormData({
             prenom: userData.user_metadata?.prenom || '',
             nom: userData.user_metadata?.nom || '',
