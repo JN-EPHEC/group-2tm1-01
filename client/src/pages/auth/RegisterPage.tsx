@@ -1,4 +1,4 @@
-Ôªøimport { useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 interface RegisterPageProps {
@@ -15,7 +15,7 @@ const RegisterPage = ({ setIsAuthenticated }: RegisterPageProps) => {
     const data = Object.fromEntries(formData.entries());
 
     try {
-      const res = await fetch('http://localhost:3000/api/auth/register', {
+      const res = await fetch('http://m1-4.ephec-ti.be:5000/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -46,12 +46,12 @@ const RegisterPage = ({ setIsAuthenticated }: RegisterPageProps) => {
       <div className="col-md-8">
         <div className="card shadow-sm border-0">
           <div className="card-body p-4">
-            <h2 className="card-title text-center text-primary mb-4">Cr√©er un compte</h2>
+            <h2 className="card-title text-center text-primary mb-4">CrÈer un compte</h2>
             {error && <div className="alert alert-danger">{error}</div>}
             <form onSubmit={handleRegister}>
               <div className="row g-3">
                 <div className="col-md-6">
-                  <label htmlFor="firstName" className="form-label">Pr√©nom</label>
+                  <label htmlFor="firstName" className="form-label">PrÈnom</label>
                   <input type="text" className="form-control" name="firstName" id="firstName" required />
                 </div>
                 <div className="col-md-6">
@@ -63,12 +63,12 @@ const RegisterPage = ({ setIsAuthenticated }: RegisterPageProps) => {
                   <input type="email" className="form-control" name="email" id="email" placeholder="nom@exemple.com" required />
                 </div>
                 <div className="col-md-6">
-                  <label htmlFor="phone" className="form-label">T√©l√©phone</label>
+                  <label htmlFor="phone" className="form-label">TÈlÈphone</label>
                   <input type="tel" className="form-control" name="phone" id="phone" required />
                 </div>
                 <div className="col-12">
-                  <label htmlFor="address" className="form-label">Adresse compl√®te</label>
-                  <input type="text" className="form-control" name="address" id="address" placeholder="Rue, Num√©ro, Bo√Æte, Code Postal, Ville" required />
+                  <label htmlFor="address" className="form-label">Adresse complËte</label>
+                  <input type="text" className="form-control" name="address" id="address" placeholder="Rue, NumÈro, BoÓte, Code Postal, Ville" required />
                 </div>
                 <div className="col-md-6">
                   <label htmlFor="password" className="form-label">Mot de passe</label>
@@ -84,7 +84,7 @@ const RegisterPage = ({ setIsAuthenticated }: RegisterPageProps) => {
                 <button type="submit" className="btn btn-primary btn-lg">S'inscrire</button>
               </div>
               <p className="mt-4 text-center">
-                D√©j√† un compte ? <Link to="/login" className="text-decoration-none fw-bold">Connectez-vous</Link>
+                DÈj‡ un compte ? <Link to="/login" className="text-decoration-none fw-bold">Connectez-vous</Link>
               </p>
             </form>
           </div>

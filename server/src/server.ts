@@ -14,7 +14,16 @@ const app = express();
 console.log("ENV URL:", process.env.SUPABASE_URL);
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://localhost:5174", "http://localhost:5175", "http://127.0.0.1:5173"],
+    origin: [
+      "http://localhost:5173", 
+      "http://localhost:5174", 
+      "http://localhost:5175", 
+      "http://127.0.0.1:5173",
+      "https://m1-4.ephec-ti.be:5173",
+      "http://m1-4.ephec-ti.be:5173",
+      "https://m1-4.ephec-ti.be",
+      "http://m1-4.ephec-ti.be"
+    ],
     credentials: true,
   })
 );

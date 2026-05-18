@@ -1,4 +1,4 @@
-ï»¿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../../styles/shop.css';
 
@@ -31,7 +31,7 @@ const CartPage = () => {
 
   // 1. Charger les produits du backend ET le panier du local storage
   useEffect(() => {
-    fetch('http://localhost:3000/api/products')
+    fetch('http://m1-4.ephec-ti.be:5000/api/products')
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) setProducts(data);
@@ -49,7 +49,7 @@ const CartPage = () => {
     }
   }, []);
 
-  // 2. Construire la liste des Ã©lÃ©ments du panier de maniÃ¨re dynamique
+  // 2. Construire la liste des éléments du panier de manière dynamique
   const cartItems: CartItem[] = Object.entries(cartStorage).map(([idStr, quantity]) => {
     const productId = parseInt(idStr);
     const product = products.find(p => p.id === productId);
@@ -62,7 +62,7 @@ const CartPage = () => {
     };
   }).filter(item => item.quantity > 0);
 
-  // Mettre Ã  jour les quantitÃ©s de maniÃ¨re synchronisÃ©e avec ProductPage
+  // Mettre à jour les quantités de manière synchronisée avec ProductPage
   const updateQuantity = (productId: number, delta: number) => {
     const currentQty = cartStorage[productId] || 0;
     const newQty = currentQty + delta;
@@ -85,7 +85,7 @@ const CartPage = () => {
     localStorage.setItem('cart', JSON.stringify(newCart));
   };
 
-  // Calculs financiers basÃ©s sur les donnÃ©es rÃ©elles du backend
+  // Calculs financiers basés sur les données réelles du backend
   const totalArticles = cartItems.reduce((acc, item) => acc + item.quantity, 0);
   const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
   const tax = subtotal * 0.21;
@@ -112,10 +112,10 @@ const CartPage = () => {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:3000/api/orders', {
+      const response = await fetch('http://m1-4.ephec-ti.be:5000/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include', // Transmet la session de l'utilisateur connectÃ©
+        credentials: 'include', // Transmet la session de l'utilisateur connecté
         body: JSON.stringify({
           address: address,
           paymentMethod: paymentMethod,
@@ -148,8 +148,8 @@ const CartPage = () => {
           <i className="bi bi-check-circle text-success" style={{ fontSize: '4rem' }}></i>
         </div>
         <h1 className="mb-3 text-success">Merci pour votre commande !</h1>
-        <p className="lead mb-4">Votre commande a Ã©tÃ© validÃ©e et enregistrÃ©e avec succÃ¨s.</p>
-        <Link to="/client/produits" className="btn btn-primary btn-lg">Retourner Ã  la boutique</Link>
+        <p className="lead mb-4">Votre commande a été validée et enregistrée avec succès.</p>
+        <Link to="/client/produits" className="btn btn-primary btn-lg">Retourner à la boutique</Link>
       </div>
     );
   }
@@ -168,7 +168,7 @@ const CartPage = () => {
                 
                 <div className="row text-muted fw-bold pb-2 mb-3 border-bottom d-none d-md-flex">
                   <div className="col-6">Produit</div>
-                  <div className="col-2 text-center">QuantitÃ©</div>
+                  <div className="col-2 text-center">Quantité</div>
                   <div className="col-2 text-end">Prix</div>
                 </div>
 
@@ -181,7 +181,7 @@ const CartPage = () => {
                     <div key={item.productId} className="row align-items-center mb-3 pb-3 border-bottom">
                       <div className="col-12 col-md-6 d-flex align-items-center mb-3 mb-md-0">
                         <div className="bg-light rounded text-center text-muted d-flex align-items-center justify-content-center me-3 cart-item-image" style={{ width: '60px', height: '60px' }}>
-                          ðŸ“¦
+                          ??
                         </div>
                         <div>
                           <h6 className="mb-0">{item.name}</h6>
@@ -198,7 +198,7 @@ const CartPage = () => {
                       </div>
                       
                       <div className="col-3 col-md-2 text-end fw-bold">
-                        {(item.price * item.quantity).toFixed(2)} â‚¬
+                        {(item.price * item.quantity).toFixed(2)} €
                       </div>
                       
                       <div className="col-3 col-md-2 text-end">
@@ -219,10 +219,10 @@ const CartPage = () => {
                 <form onSubmit={handlePaymentSubmit}>
                   <div className="row g-3 mb-4">
                     <div className="col-12">
-                      <label className="form-label">Adresse de livraison complÃ¨te</label>
+                      <label className="form-label">Adresse de livraison complète</label>
                       <textarea 
                         className="form-control" 
-                        placeholder="Rue, NumÃ©ro, Ville, Code Postal..." 
+                        placeholder="Rue, Numéro, Ville, Code Postal..." 
                         value={address}
                         onChange={(e) => setAddress(e.target.value)}
                         rows={3}
@@ -274,20 +274,20 @@ const CartPage = () => {
         <div className="col-lg-4">
           <div className="card shadow-sm border-0 bg-light">
             <div className="card-body">
-              <h5 className="card-title border-bottom border-secondary pb-3 mb-4">RÃ©sumÃ© de la commande</h5>
+              <h5 className="card-title border-bottom border-secondary pb-3 mb-4">Résumé de la commande</h5>
               
               <div className="d-flex justify-content-between mb-2">
                 <span className="text-muted">Sous-total ({totalArticles} articles)</span>
-                <span>{subtotal.toFixed(2)} â‚¬</span>
+                <span>{subtotal.toFixed(2)} €</span>
               </div>
               <div className="d-flex justify-content-between mb-4 border-bottom border-secondary pb-3">
                 <span className="text-muted">TVA (21%)</span>
-                <span>{tax.toFixed(2)} â‚¬</span>
+                <span>{tax.toFixed(2)} €</span>
               </div>
               
               <div className="d-flex justify-content-between mb-4">
                 <strong className="fs-5">Total TTC</strong>
-                <strong className="fs-5 text-primary">{totalTTC.toFixed(2)} â‚¬</strong>
+                <strong className="fs-5 text-primary">{totalTTC.toFixed(2)} €</strong>
               </div>
               
               {step === 'cart' && (
