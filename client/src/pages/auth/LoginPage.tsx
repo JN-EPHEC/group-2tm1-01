@@ -1,4 +1,4 @@
-?import { useState } from "react";
+ï»¿import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 interface LoginPageProps {
@@ -13,7 +13,7 @@ const LoginPage = ({ setIsAuthenticated, setIsAdmin }: LoginPageProps) => {
   const [password, setPassword] = useState("");
 
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault(); // Empêche le rechargement brut de la page vers l'API
+    e.preventDefault(); // Empï¿½che le rechargement brut de la page vers l'API
 
     try {
       const res = await fetch("http://m1-4.ephec-ti.be:5000/api/auth/login", {
