@@ -15,7 +15,7 @@ const RegisterPage = ({ setIsAuthenticated }: RegisterPageProps) => {
     const data = Object.fromEntries(formData.entries());
 
     try {
-      const res = await fetch('https://m1-4.ephec-ti.be:5000/api/auth/register', {
+      const res = await fetch('https://m1-4.ephec-ti.be:5173/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

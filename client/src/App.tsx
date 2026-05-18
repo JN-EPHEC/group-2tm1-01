@@ -24,7 +24,7 @@ function App() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await fetch('https://m1-4.ephec-ti.be:5000/api/auth/me', {
+        const response = await fetch('https://m1-4.ephec-ti.be:5173/api/auth/me', {
           credentials: 'include'
         });
         

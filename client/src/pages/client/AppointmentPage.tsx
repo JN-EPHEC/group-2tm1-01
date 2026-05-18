@@ -33,7 +33,7 @@ const AppointmentPage = ({ isAuthenticated }: AppointmentPageProps) => {
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
-        const response = await fetch('https://m1-4.ephec-ti.be:5000/api/appointments', {
+        const response = await fetch('https://m1-4.ephec-ti.be:5173/api/appointments', {
           credentials: 'include'
         });
         if (response.ok) {
@@ -68,7 +68,7 @@ const AppointmentPage = ({ isAuthenticated }: AppointmentPageProps) => {
 
     setLoading(true);
     try {
-      const response = await fetch('https://m1-4.ephec-ti.be:5000/api/appointments', {
+      const response = await fetch('https://m1-4.ephec-ti.be:5173/api/appointments', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
