@@ -20,18 +20,18 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Vérification de la session au chargement de l'application
+  // VÃ©rification de la session au chargement de l'application
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await fetch('http://m1-4.ephec-ti.be:5000/api/auth/me', {
+        const response = await fetch('https://m1-4.ephec-ti.be:5000/api/auth/me', {
           credentials: 'include'
         });
         
         if (response.ok) {
           const userData = await response.json();
           setIsAuthenticated(true);
-          // Supposons que le rôle est renvoyé dans les données utilisateur
+          // Supposons que le rÃ´le est renvoyÃ© dans les donnÃ©es utilisateur
           if (userData.user_metadata?.role === 'admin' || userData.role === 'admin') {
             setIsAdmin(true);
           }
@@ -40,7 +40,7 @@ function App() {
           setIsAdmin(false);
         }
       } catch (error) {
-        console.error('Erreur de vérification de session', error);
+        console.error('Erreur de vÃ©rification de session', error);
       } finally {
         setLoading(false);
       }
@@ -48,9 +48,9 @@ function App() {
     checkAuth();
   }, []);
 
-  // Handler de déconnexion pour ProfilePage ou Navbar s'ils l'appelaient
-  // La mise à jour d'état depuis LoginPage/ProfilePage devrait aussi ajuster isAdmin,
-  // ou l'on peut refaire un appel si l'état local ne suffit pas, mais une propagation via props est souvent utile.
+  // Handler de dÃ©connexion pour ProfilePage ou Navbar s'ils l'appelaient
+  // La mise Ã  jour d'Ã©tat depuis LoginPage/ProfilePage devrait aussi ajuster isAdmin,
+  // ou l'on peut refaire un appel si l'Ã©tat local ne suffit pas, mais une propagation via props est souvent utile.
 
   if (loading) {
     return <div>Chargement...</div>;
@@ -72,7 +72,7 @@ function App() {
           <Route path="/client/produits" element={<ClientProductPage />} />
           <Route path="/client/panier" element={<ClientCartPage />} />
           
-          {/* Ta route de profil, bien à sa place avec le bon chemin de ton projet */}
+          {/* Ta route de profil, bien Ã  sa place avec le bon chemin de ton projet */}
           <Route path="/profil" element={<ProfilePage setIsAuthenticated={setIsAuthenticated} setIsAdmin={setIsAdmin} />} />
         </Routes>
       </main>

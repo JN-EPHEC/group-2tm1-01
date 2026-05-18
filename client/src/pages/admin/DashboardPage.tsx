@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-// Remplacement de BarChart par AreaChart et ajout des composants nécessaires
+// Remplacement de BarChart par AreaChart et ajout des composants nï¿½cessaires
 import { 
   AreaChart, 
   Area, 
@@ -73,7 +73,7 @@ const DashboardPage: React.FC = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
   useEffect(() => {
-    fetch('http://m1-4.ephec-ti.be:5000/api/transactions')
+    fetch('https://m1-4.ephec-ti.be:5000/api/transactions')
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
@@ -118,7 +118,7 @@ const DashboardPage: React.FC = () => {
   const handleAddTransaction = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Objet envoyé à l'API (strictement les colonnes existantes dans la base de données)
+    // Objet envoyï¿½ ï¿½ l'API (strictement les colonnes existantes dans la base de donnï¿½es)
     const newTxToSubmit = {
       type: showForm === 'INCOME' ? 'INCOME' : 'EXPENSE',
       date: formData.date,
@@ -128,14 +128,14 @@ const DashboardPage: React.FC = () => {
     };
 
     try {
-      const res = await fetch('http://m1-4.ephec-ti.be:5000/api/transactions', {
+      const res = await fetch('https://m1-4.ephec-ti.be:5000/api/transactions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newTxToSubmit)
       });
       const savedTx = await res.json();
       
-      // Adaptation pour l'état React interne
+      // Adaptation pour l'ï¿½tat React interne
       const dateObj = new Date(savedTx.date || formData.date);
       const adaptedTx = {
         ...savedTx,
@@ -162,7 +162,7 @@ const DashboardPage: React.FC = () => {
   const confirmDeleteTx = async () => {
     if (txToDelete) {
       try {
-        await fetch(`http://m1-4.ephec-ti.be:5000/api/transactions/${txToDelete}`, { 
+        await fetch(`https://m1-4.ephec-ti.be:5000/api/transactions/${txToDelete}`, { 
           method: 'DELETE',
           credentials: 'include'
         });
@@ -185,7 +185,7 @@ const DashboardPage: React.FC = () => {
 
     const newStatus = txToUpdate.status === 'PAID' ? 'PENDING' : 'PAID';
     try {
-      await fetch(`http://m1-4.ephec-ti.be:5000/api/transactions/${id}/status`, {
+      await fetch(`https://m1-4.ephec-ti.be:5000/api/transactions/${id}/status`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -219,10 +219,10 @@ const DashboardPage: React.FC = () => {
       <h2 className="mb-4">Bienvenue sur le tableau de bord</h2>
       <div className="d-flex justify-content-center gap-4">
         <button className="btn btn-primary btn-lg px-4 py-3 shadow-sm" onClick={() => updateDashboardView('SUMMARY')}>
-          Tableau récapitulatif
+          Tableau rï¿½capitulatif
         </button>
         <button className="btn btn-outline-primary btn-lg px-4 py-3 shadow-sm" onClick={() => updateDashboardView('YEARS_LIST')}>
-          Gérer par années
+          Gï¿½rer par annï¿½es
         </button>
       </div>
     </div>
@@ -262,12 +262,12 @@ const DashboardPage: React.FC = () => {
     return (
       <div>
         <button className="btn btn-secondary mb-4" onClick={() => updateDashboardView('HOME')}>? Retour Accueil</button>
-        <h3 className="mb-4">Récapitulatif global</h3>
+        <h3 className="mb-4">Rï¿½capitulatif global</h3>
 
         <div className="card shadow-sm mb-4 bg-light border-0">
           <div className="card-body d-flex flex-wrap gap-3 align-items-end">
             <div>
-              <label className="form-label text-muted small mb-1">Date de début</label>
+              <label className="form-label text-muted small mb-1">Date de dï¿½but</label>
               <input type="date" className="form-control" value={startDate} onChange={e => setStartDate(e.target.value)} />
             </div>
             <div>
@@ -313,7 +313,7 @@ const DashboardPage: React.FC = () => {
                     <Legend verticalAlign="top" height={36}/>
                     <Area type="monotone" dataKey="total" name="Bilan" stroke="#d1820c" strokeWidth={3} fill="url(#colorTotal)" />
                     <Area type="monotone" dataKey="income" name="Revenus" stroke="#2a8821" strokeWidth={2} fill="url(#colorIncome)" />
-                    <Area type="monotone" dataKey="expense" name="Dépenses" stroke="#c02737" strokeWidth={2} fill="url(#colorExpense)" />
+                    <Area type="monotone" dataKey="expense" name="Dï¿½penses" stroke="#c02737" strokeWidth={2} fill="url(#colorExpense)" />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
@@ -325,15 +325,15 @@ const DashboardPage: React.FC = () => {
           <div className="card-body">
             <table className="table table-hover">
               <thead className="table-light">
-                <tr><th>Année</th><th>Entrées</th><th>Sorties</th><th>Bilan</th></tr>
+                <tr><th>Annï¿½e</th><th>Entrï¿½es</th><th>Sorties</th><th>Bilan</th></tr>
               </thead>
               <tbody>
                 {statsByYear.map(stat => (
                   <tr key={stat.year}>
                     <td>{stat.year}</td>
-                    <td className="text-success">+{stat.income.toFixed(2)} €</td>
-                    <td className="text-danger">-{stat.expense.toFixed(2)} €</td>
-                    <td className={stat.balance >= 0 ? "text-success fw-bold" : "text-danger fw-bold"}>{stat.balance.toFixed(2)} €</td>
+                    <td className="text-success">+{stat.income.toFixed(2)} ï¿½</td>
+                    <td className="text-danger">-{stat.expense.toFixed(2)} ï¿½</td>
+                    <td className={stat.balance >= 0 ? "text-success fw-bold" : "text-danger fw-bold"}>{stat.balance.toFixed(2)} ï¿½</td>
                   </tr>
                 ))}
               </tbody>
@@ -347,7 +347,7 @@ const DashboardPage: React.FC = () => {
   const renderYearsList = () => (
     <div>
       <button className="btn btn-secondary mb-4" onClick={() => updateDashboardView('HOME')}>? Retour</button>
-      <h3>Années Comptables</h3>
+      <h3>Annï¿½es Comptables</h3>
       <div className="row">
         <div className="col-md-8 d-flex flex-wrap gap-3">
           {years.map(y => (
@@ -358,7 +358,7 @@ const DashboardPage: React.FC = () => {
         </div>
         <div className="col-md-4">
           <div className="card shadow-sm p-3">
-            <h5>Ajouter une année</h5>
+            <h5>Ajouter une annï¿½e</h5>
             <form onSubmit={handleCreateYear} className="input-group">
               <input type="number" className="form-control" value={newYearInput} onChange={e => setNewYearInput(e.target.value)} required />
               <button className="btn btn-success" type="submit">Ajouter</button>
@@ -374,19 +374,19 @@ const DashboardPage: React.FC = () => {
       <div className="d-flex justify-content-between align-items-center mb-4">
         <button className="btn btn-secondary" onClick={() => updateDashboardView('YEARS_LIST', null)}>? Retour</button>
         <h2>Gestion {selectedYear}</h2>
-        <div className="bg-warning px-3 py-2 rounded fw-bold">Impayés : {unpaidTotal.toFixed(2)} €</div>
+        <div className="bg-warning px-3 py-2 rounded fw-bold">Impayï¿½s : {unpaidTotal.toFixed(2)} ï¿½</div>
       </div>
 
       <div className="card shadow-sm mb-4 bg-light">
         <div className="card-body d-flex gap-3">
           <select className="form-select w-auto" value={selectedMonth || ''} onChange={e => updateDashboardView('YEAR_DETAIL', selectedYear, e.target.value ? parseInt(e.target.value, 10) : null)}>
             <option value="">Tous les mois</option>
-            {['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'].map((m, i) => (
+            {['Janvier', 'Fï¿½vrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Aoï¿½t', 'Septembre', 'Octobre', 'Novembre', 'Dï¿½cembre'].map((m, i) => (
               <option key={i+1} value={i+1}>{m}</option>
             ))}
           </select>
           <input type="text" className="form-control" placeholder="Rechercher..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
-          <button className="btn btn-success" onClick={() => setShowForm('INCOME')}>+ Entrée</button>
+          <button className="btn btn-success" onClick={() => setShowForm('INCOME')}>+ Entrï¿½e</button>
           <button className="btn btn-danger" onClick={() => setShowForm('EXPENSE')}>- Sortie</button>
         </div>
       </div>
@@ -394,11 +394,11 @@ const DashboardPage: React.FC = () => {
       {showForm !== 'NONE' && (
         <div className="card shadow-sm mb-4">
           <div className="card-body">
-            <h5>Nouveau {showForm === 'INCOME' ? 'Revenu' : 'Dépense'}</h5>
+            <h5>Nouveau {showForm === 'INCOME' ? 'Revenu' : 'Dï¿½pense'}</h5>
             <form onSubmit={handleAddTransaction} className="row g-3">
               <div className="col-md-3"><input type="date" className="form-control" required value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} /></div>
               <div className="col-md-3"><input type="number" step="0.01" className="form-control" placeholder="Montant" required value={formData.amount} onChange={e => setFormData({...formData, amount: e.target.value})} /></div>
-              {showForm === 'INCOME' && <div className="col-md-3"><input type="text" className="form-control" placeholder="Référence" value={formData.reference} onChange={e => setFormData({...formData, reference: e.target.value})} /></div>}
+              {showForm === 'INCOME' && <div className="col-md-3"><input type="text" className="form-control" placeholder="Rï¿½fï¿½rence" value={formData.reference} onChange={e => setFormData({...formData, reference: e.target.value})} /></div>}
               <div className="col-md-3"><input type="text" className="form-control" placeholder="Commentaire" value={formData.comment} onChange={e => setFormData({...formData, comment: e.target.value})} /></div>
               <div className="col-12 text-end">
                 <button type="button" className="btn btn-link" onClick={() => setShowForm('NONE')}>Annuler</button>
@@ -418,14 +418,14 @@ const DashboardPage: React.FC = () => {
             {currentYearTransactions.map(tx => (
               <tr key={tx.id} className={tx.type === 'INCOME' ? 'dashboard-row-income' : 'dashboard-row-expense'}>
                 <td>{new Date(tx.date).toLocaleDateString('fr-FR')}</td>
-                <td className={tx.type === 'INCOME' ? 'text-success fw-bold' : 'text-danger fw-bold'}>{tx.amount.toFixed(2)} €</td>
+                <td className={tx.type === 'INCOME' ? 'text-success fw-bold' : 'text-danger fw-bold'}>{tx.amount.toFixed(2)} ï¿½</td>
                 <td>{tx.reference || '-'}</td>
                 <td>
                   {tx.type === 'INCOME' ? (
                     <button className={`btn btn-sm ${tx.status === 'PAID' ? 'btn-success' : 'btn-warning'}`} onClick={() => handleToggleStatus(tx.id)}>
-                      {tx.status === 'PAID' ? 'Payé' : 'En attente'}
+                      {tx.status === 'PAID' ? 'Payï¿½' : 'En attente'}
                     </button>
-                  ) : <span className="badge bg-secondary">Réglé</span>}
+                  ) : <span className="badge bg-secondary">Rï¿½glï¿½</span>}
                 </td>
                 <td>
                   <button className="btn btn-sm btn-outline-secondary me-2" onClick={() => handleEdit(tx.id)}>Modifier</button>
@@ -443,7 +443,7 @@ const DashboardPage: React.FC = () => {
     <div className="container-fluid py-2">
       {txToDelete && (
         <div className="alert alert-warning d-flex justify-content-between align-items-center">
-          <span>Voulez-vous vraiment supprimer cet élément ?</span>
+          <span>Voulez-vous vraiment supprimer cet ï¿½lï¿½ment ?</span>
           <div>
             <button className="btn btn-danger btn-sm me-2" onClick={confirmDeleteTx}>Oui, supprimer</button>
             <button className="btn btn-secondary btn-sm" onClick={() => setTxToDelete(null)}>Annuler</button>
@@ -452,7 +452,7 @@ const DashboardPage: React.FC = () => {
       )}
       {showEditAlert && (
         <div className="alert alert-info">
-          Mode édition (à implémenter en base).
+          Mode ï¿½dition (ï¿½ implï¿½menter en base).
         </div>
       )}
       {view === 'HOME' && renderHome()}

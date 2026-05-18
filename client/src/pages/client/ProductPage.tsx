@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+ï»¿import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../../styles/shop.css';
 
@@ -19,14 +19,14 @@ const ProductPage = () => {
   const categories = [
     { value: 'all', label: 'Tous les produits' },
     { value: 'Soins et Massages', label: 'Soins et Massages' },
-    { value: 'Équipement Sportif', label: 'Équipement Sportif' },
+    { value: 'Ã‰quipement Sportif', label: 'Ã‰quipement Sportif' },
     { value: 'Accessoires', label: 'Accessoires' },
-    { value: 'Vêtements', label: 'Vêtements' },
+    { value: 'VÃªtements', label: 'VÃªtements' },
     { value: 'Nutrition', label: 'Nutrition' },
   ];
 
   useEffect(() => {
-    fetch('http://m1-4.ephec-ti.be:5000/api/products')
+    fetch('http://localhost:3000/api/products')
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) setProducts(data);
@@ -43,7 +43,7 @@ const ProductPage = () => {
   const updateQuantity = (productId: number, delta: number) => {
     setCart(prev => {
       const currentQty = prev[productId] || 0;
-      const newQty = Math.max(0, currentQty + delta); // Empêche d'aller en dessous de 0
+      const newQty = Math.max(0, currentQty + delta); // EmpÃªche d'aller en dessous de 0
       const newCart = { ...prev };
       if (newQty === 0) {
         delete newCart[productId];
@@ -73,7 +73,7 @@ const ProductPage = () => {
 
   return (
     <div className="pb-5">
-      <h1 className="mb-4">Nos Produits et Matériel</h1>
+      <h1 className="mb-4">Nos Produits et MatÃ©riel</h1>
 
       <div className="row g-4">
         
@@ -84,7 +84,7 @@ const ProductPage = () => {
               <h5 className="card-title text-primary border-bottom pb-2 mb-3">Filtres</h5>
 
               <div className="mb-3">
-                <label className="form-label text-muted fw-bold">Catégories</label>
+                <label className="form-label text-muted fw-bold">CatÃ©gories</label>
                 {categories.map(category => (
                   <div className="form-check mb-2" key={category.value}>
                     <input
@@ -126,9 +126,9 @@ const ProductPage = () => {
                       </p>
                       <div className="mt-auto">
                         <div className="d-flex justify-content-between align-items-center mb-2">
-                          <span className="fs-5 fw-bold text-primary">{product.price.toFixed(2)} €</span>
+                          <span className="fs-5 fw-bold text-primary">{product.price.toFixed(2)} â‚¬</span>
                         </div>
-                        {/* Contrôles de quantité */}
+                        {/* ContrÃ´les de quantitÃ© */}
                         {qty > 0 ? (
                           <div className="d-flex justify-content-between align-items-center bg-light rounded px-2 py-1">
                             <button onClick={() => updateQuantity(product.id, -1)} className="btn btn-sm btn-outline-secondary border-0 fw-bold fs-5">-</button>
@@ -169,11 +169,11 @@ const ProductPage = () => {
                       <div key={id} className="mb-3 pb-2 border-bottom border-white">
                         <div className="d-flex justify-content-between align-items-center">
                           <div className="fw-bold fs-6">{product.name}</div>
-                          <div className="fw-bold">{(product.price * qty).toFixed(2)} €</div>
+                          <div className="fw-bold">{(product.price * qty).toFixed(2)} â‚¬</div>
                         </div>
                         
                         <div className="d-flex justify-content-between align-items-center mt-1">
-                          <span className="text-muted small">{product.price.toFixed(2)} € / u</span>
+                          <span className="text-muted small">{product.price.toFixed(2)} â‚¬ / u</span>
                           
                           <div className="input-group input-group-sm qty-input-group">
                             <button onClick={() => updateQuantity(product.id, -1)} className="btn btn-outline-secondary" type="button">-</button>
@@ -192,16 +192,16 @@ const ProductPage = () => {
 
                   <div className="d-flex justify-content-between mb-2 text-muted small mt-4">
                     <span>Sous-total</span>
-                    <span>{subtotal.toFixed(2)} €</span>
+                    <span>{subtotal.toFixed(2)} â‚¬</span>
                   </div>
                   <div className="d-flex justify-content-between mb-3 text-muted small border-bottom border-secondary pb-2">
                     <span>TVA (21%)</span>
-                    <span>{tax.toFixed(2)} €</span>
+                    <span>{tax.toFixed(2)} â‚¬</span>
                   </div>
                   
                   <div className="d-flex justify-content-between mb-4">
                     <strong className="fs-5">Total</strong>
-                    <strong className="fs-5 text-primary">{total.toFixed(2)} €</strong>
+                    <strong className="fs-5 text-primary">{total.toFixed(2)} â‚¬</strong>
                   </div>
                   
                   <Link to="/client/panier" className="btn btn-primary w-100 mb-2">Finaliser la commande</Link>

@@ -1,16 +1,16 @@
-import { Link } from 'react-router-dom';
+ï»¿import { Link } from 'react-router-dom';
 import '../styles/HomePage.css';
 
 const HomePage = () => {
   return (
     <div>
-      {/* Section Héro */}
+      {/* Section HÃ©ro */}
       <div className="rounded-3 hero-section">
         <div className="container-fluid hero-content">
-          <h1 className="hero-title">Bienvenue chez votre kinésithérapeute</h1>
+          <h1 className="hero-title">Bienvenue chez votre kinÃ©sithÃ©rapeute</h1>
           <p className="col-md-8 hero-subtitle">
-            "Prenez soin de vous en toute liberté. De la prise de rendez-vous en ligne au suivi personnalisé de votre rééducation, 
-            accédez à tout notre univers en un instant."
+            "Prenez soin de vous en toute libertÃ©. De la prise de rendez-vous en ligne au suivi personnalisÃ© de votre rÃ©Ã©ducation, 
+            accÃ©dez Ã  tout notre univers en un instant."
           </p>
           <div className="hero-buttons">
             <Link to="/client/rendez-vous" className="btn btn-primary btn-lg me-3">Prendre rendez-vous</Link>
@@ -22,13 +22,13 @@ const HomePage = () => {
       {/* Section Explications */}
       <div className="row mb-5 mt-5">
         <div className="col-12 text-center mb-4">
-          <h2>À propos du cabinet</h2>
+          <h2>Ã€ propos du cabinet</h2>
         </div>
         <div className="col-md-8 offset-md-2 text-center text-muted">
           <p className="lead">
-            "Spécialiste de la kinésithérapie globale et de la thérapie manuelle, je mets mon expertise au service de votre santé. Mon approche repose sur 
-            un diagnostic précis et un accompagnement personnalisé, visant à restaurer votre mobilité et à soulager vos douleurs durablement. Chaque séance 
-            est conçue pour répondre à vos besoins spécifiques, dans un cadre bienveillant et moderne."
+            "SpÃ©cialiste de la kinÃ©sithÃ©rapie globale et de la thÃ©rapie manuelle, je mets mon expertise au service de votre santÃ©. Mon approche repose sur 
+            un diagnostic prÃ©cis et un accompagnement personnalisÃ©, visant Ã  restaurer votre mobilitÃ© et Ã  soulager vos douleurs durablement. Chaque sÃ©ance 
+            est conÃ§ue pour rÃ©pondre Ã  vos besoins spÃ©cifiques, dans un cadre bienveillant et moderne."
           </p>
         </div>
       </div>
@@ -46,8 +46,8 @@ const HomePage = () => {
                 <li className="d-flex justify-content-between mb-2"><strong>Mercredi :</strong> <span>09:00 - 15:00</span></li>
                 <li className="d-flex justify-content-between mb-2"><strong>Jeudi :</strong> <span>09:00 - 15:00</span></li>
                 <li className="d-flex justify-content-between mb-2"><strong>Vendredi :</strong> <span>09:00 - 15:00</span></li>
-                <li className="d-flex justify-content-between mb-2"><strong>Samedi :</strong> <span>Fermé</span></li>
-                <li className="d-flex justify-content-between mb-2"><strong>Dimanche :</strong> <span>Fermé</span></li>
+                <li className="d-flex justify-content-between mb-2"><strong>Samedi :</strong> <span>FermÃ©</span></li>
+                <li className="d-flex justify-content-between mb-2"><strong>Dimanche :</strong> <span>FermÃ©</span></li>
               </ul>
             </div>
           </div>
@@ -59,7 +59,7 @@ const HomePage = () => {
             <div className="card-body">
               <h3 className="card-title h5 text-primary mb-3">Contact</h3>
               <div className="mt-3 text-muted">
-                <p className="mb-2"><strong>Téléphone :</strong> <br/> [XXXX XX XX XX]</p>
+                <p className="mb-2"><strong>TÃ©lÃ©phone :</strong> <br/> [XXXX XX XX XX]</p>
                 <p className="mb-2"><strong>Email :</strong> <br/> [votre.email@kine.be]</p>
               </div>
             </div>
@@ -70,7 +70,7 @@ const HomePage = () => {
         <div className="col-md-4">
           <div className="card h-100 shadow-sm border-0 bg-white">
             <div className="card-body d-flex flex-column">
-              <h3 className="card-title h5 text-primary mb-3">Plan d'accès</h3>
+              <h3 className="card-title h5 text-primary mb-3">Plan d'accÃ¨s</h3>
               <p className="mb-2 text-muted fw-bold">Av. du Ciseau 15, 1348 Ottignies-Louvain-la-Neuve</p>
               <div className="bg-light text-muted d-flex align-items-center justify-content-center flex-grow-1 rounded border overflow-hidden">
                 <iframe 
