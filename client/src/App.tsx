@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
@@ -16,8 +16,45 @@ import './styles/App.css';
 
 function App() {
 
-  const [isAdmin] = useState(true); 
+  const [isAdmin, setIsAdmin] = useState(false); 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  // Vérification de la session au chargement de l'application
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/api/auth/me', {
+          credentials: 'include'
+        });
+        
+        if (response.ok) {
+          const userData = await response.json();
+          setIsAuthenticated(true);
+          // Supposons que le rôle est renvoyé dans les données utilisateur
+          if (userData.user_metadata?.role === 'admin' || userData.role === 'admin') {
+            setIsAdmin(true);
+          }
+        } else {
+          setIsAuthenticated(false);
+          setIsAdmin(false);
+        }
+      } catch (error) {
+        console.error('Erreur de vérification de session', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    checkAuth();
+  }, []);
+
+  // Handler de déconnexion pour ProfilePage ou Navbar s'ils l'appelaient
+  // La mise à jour d'état depuis LoginPage/ProfilePage devrait aussi ajuster isAdmin,
+  // ou l'on peut refaire un appel si l'état local ne suffit pas, mais une propagation via props est souvent utile.
+
+  if (loading) {
+    return <div>Chargement...</div>;
+  }
 
   return (
     <Router>
@@ -25,7 +62,7 @@ function App() {
       <main className="container-fluid px-4 mt-4">
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<LoginPage setIsAuthenticated={setIsAuthenticated} />} />
+          <Route path="/login" element={<LoginPage setIsAuthenticated={setIsAuthenticated} setIsAdmin={setIsAdmin} />} />
           <Route path="/register" element={<RegisterPage setIsAuthenticated={setIsAuthenticated} />} />
           <Route path="/admin" element={<AdminDashboardPage />} />
           <Route path="/admin/produits" element={<AdminProductsPage />} />
@@ -36,7 +73,7 @@ function App() {
           <Route path="/client/panier" element={<ClientCartPage />} />
           
           {/* Ta route de profil, bien à sa place avec le bon chemin de ton projet */}
-          <Route path="/profil" element={<ProfilePage setIsAuthenticated={setIsAuthenticated} />} />
+          <Route path="/profil" element={<ProfilePage setIsAuthenticated={setIsAuthenticated} setIsAdmin={setIsAdmin} />} />
         </Routes>
       </main>
     </Router>

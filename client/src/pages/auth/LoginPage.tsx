@@ -3,9 +3,10 @@ import { Link, useNavigate } from "react-router-dom";
 
 interface LoginPageProps {
   setIsAuthenticated: (val: boolean) => void;
+  setIsAdmin: (val: boolean) => void;
 }
 
-const LoginPage = ({ setIsAuthenticated }: LoginPageProps) => {
+const LoginPage = ({ setIsAuthenticated, setIsAdmin }: LoginPageProps) => {
   const navigate = useNavigate();
   
   const [email, setEmail] = useState("");
@@ -32,6 +33,11 @@ const LoginPage = ({ setIsAuthenticated }: LoginPageProps) => {
 
       if (res.ok) {
         setIsAuthenticated(true);
+        if (data.user?.user_metadata?.role === 'admin' || data.user?.role === 'admin' || data.role === 'admin') {
+          setIsAdmin(true);
+        } else {
+          setIsAdmin(false);
+        }
         navigate("/profil"); 
       } else {
         alert(data.error || "Identifiants incorrects");

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 interface AppointmentType {
   id: number;
   user_id: string; // Pour s'assurer du filtrage par compte
+  log_id?: string;
   date: string;
   time: string;
   status: string;
@@ -12,17 +13,22 @@ interface AppointmentType {
 
 interface OrderType {
   id: number;
-  created_at: string;
+  created_at?: string;
+  order_date?: string;
+  date?: string;
+  log_id?: string;
   total_price: number;
+  total?: number;
   status: string;
   // Ajoute d'autres champs si ton API renvoie des détails (ex: items)
 }
 
 interface ProfilePageProps {
   setIsAuthenticated: (val: boolean) => void;
+  setIsAdmin?: (val: boolean) => void;
 }
 
-const ProfilePage = ({ setIsAuthenticated }: ProfilePageProps) => {
+const ProfilePage = ({ setIsAuthenticated, setIsAdmin }: ProfilePageProps) => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'infos' | 'history' | 'appointments'>('infos');
   const [isEditing, setIsEditing] = useState(false);
@@ -39,6 +45,17 @@ const ProfilePage = ({ setIsAuthenticated }: ProfilePageProps) => {
     phone: '',
     adresse: ''
   });
+
+  const formatDate = (value?: string) => {
+    if (!value) return 'Date inconnue';
+
+    const parsedDate = new Date(value);
+    if (Number.isNaN(parsedDate.getTime())) {
+      return value;
+    }
+
+    return parsedDate.toLocaleDateString('fr-FR');
+  };
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -67,8 +84,7 @@ const ProfilePage = ({ setIsAuthenticated }: ProfilePageProps) => {
           });
           if (resAppts.ok) {
             const apptsData = await resAppts.json();
-            // FILTRAGE STRICT : On ne garde que si app.user_id (ou id_user) correspond à userData.id
-            const myAppts = apptsData.filter((app: any) => app.user_id === userData.id || app.id_user === userData.id);
+            const myAppts = apptsData.filter((app: any) => app.log_id === userData.id || app.user_id === userData.id || app.id_user === userData.id);
             setAppointments(myAppts);
           }
 
@@ -78,8 +94,7 @@ const ProfilePage = ({ setIsAuthenticated }: ProfilePageProps) => {
           });
           if (resOrders.ok) {
             const ordersData = await resOrders.json();
-            // FILTRAGE STRICT : On ne garde que si order.user_id (ou id_user) correspond à userData.id
-            const myOrders = ordersData.filter((order: any) => order.user_id === userData.id || order.id_user === userData.id);
+            const myOrders = ordersData.filter((order: any) => order.log_id === userData.id || order.user_id === userData.id || order.id_user === userData.id);
             setOrders(myOrders);
           }
 
@@ -101,8 +116,29 @@ const ProfilePage = ({ setIsAuthenticated }: ProfilePageProps) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSave = () => {
-    setIsEditing(false);
+  const handleSave = async () => {
+    try {
+      const res = await fetch('http://localhost:3000/api/auth/profile', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          prenom: formData.prenom,
+          nom: formData.nom,
+          phone: formData.phone,
+          adresse: formData.adresse
+        })
+      });
+
+      if (res.ok) {
+        setIsEditing(false);
+      } else {
+        alert("Erreur lors de la mise à jour du profil.");
+      }
+    } catch (err) {
+      console.error("Erreur mise à jour", err);
+      alert("Impossible de joindre le serveur.");
+    }
   };
 
   const handleLogout = async (e: React.MouseEvent) => {
@@ -110,6 +146,7 @@ const ProfilePage = ({ setIsAuthenticated }: ProfilePageProps) => {
     try {
       await fetch('http://localhost:3000/api/auth/logout', { method: 'POST', credentials: 'include' });
       setIsAuthenticated(false);
+      if (setIsAdmin) setIsAdmin(false);
       navigate('/');
     } catch (err) {
       console.error("Erreur déconnexion", err);
@@ -213,7 +250,7 @@ const ProfilePage = ({ setIsAuthenticated }: ProfilePageProps) => {
                           <div>
                             <h6 className="mb-1">Consultation Cabinet</h6>
                             <small className="text-muted">
-                              <i className="bi bi-clock me-1"></i> Le {new Date(app.date).toLocaleDateString('fr-FR')} à {app.time.substring(0, 5)}
+                              <i className="bi bi-clock me-1"></i> Le {formatDate(app.date)} à {app.time.substring(0, 5)}
                             </small>
                             {app.notes && <p className="mb-0 mt-1 small text-secondary"><i>Motif : {app.notes}</i></p>}
                           </div>
@@ -248,8 +285,8 @@ const ProfilePage = ({ setIsAuthenticated }: ProfilePageProps) => {
                           {orders.map((order) => (
                             <tr key={order.id}>
                               <td className="fw-bold">#{order.id}</td>
-                              <td>{new Date(order.created_at).toLocaleDateString('fr-FR')}</td>
-                              <td>{order.total_price} €</td>
+                              <td>{formatDate(order.order_date || order.created_at || order.date)}</td>
+                              <td>{(order.total_price ?? order.total ?? 0).toFixed(2)} €</td>
                               <td>
                                 <span className={`badge rounded-pill ${order.status === 'completed' ? 'bg-success' : 'bg-warning'}`}>
                                   {order.status === 'completed' ? 'Livré' : order.status}

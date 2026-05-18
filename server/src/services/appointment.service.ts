@@ -15,7 +15,12 @@ export const getAppointments = async (userId?: string) => {
   const { data, error } = await query;
 
   if (error) throw error;
-  return data;
+  
+  // Mapper 'note' vers 'notes' pour la compatibilité avec le frontend
+  return data.map(app => ({
+    ...app,
+    notes: app.note || app.notes // au cas où
+  }));
 };
 
 export const createAppointment = async (appointment: any) => {
@@ -33,7 +38,7 @@ export const createAppointment = async (appointment: any) => {
       date,
       time,
       status,
-      notes: notes,
+      note: notes,
       log_id
     }])
     .select()

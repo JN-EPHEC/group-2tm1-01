@@ -13,6 +13,17 @@ interface Order {
 const AdminOrdersPage: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
 
+  const formatDate = (value?: string) => {
+    if (!value) return 'Date inconnue';
+
+    const parsedDate = new Date(value);
+    if (Number.isNaN(parsedDate.getTime())) {
+      return value;
+    }
+
+    return parsedDate.toLocaleDateString('fr-FR');
+  };
+
   useEffect(() => {
     fetch('http://localhost:3000/api/orders', { credentials: 'include' }) // 👈 Ajout de credentials obligatoire pour l'admin !
       .then(res => res.json())
@@ -23,7 +34,7 @@ const AdminOrdersPage: React.FC = () => {
             id: d.id,
             userId: d.log_id || d.userId,
             customerName: d.profiles ? `${d.profiles.first_name} ${d.profiles.last_name}` : "Client inconnu",
-            date: new Date(d.created_at || d.date).toLocaleDateString('fr-FR'),
+            date: formatDate(d.order_date || d.created_at || d.date),
             total: Number(d.total_price || d.total || 0),
             status: d.status,
             // Si le backend inclut la jointure order_items :

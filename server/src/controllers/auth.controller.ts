@@ -68,6 +68,12 @@ export const login = async (
       throw new Error("Session introuvable");
     }
 
+    const { data: profileData } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", data.user?.id)
+      .single();
+
     const accessToken = data.session.access_token;
     const refreshToken = data.session.refresh_token;
 
@@ -85,7 +91,7 @@ export const login = async (
       maxAge: 1000 * 60 * 60 * 24 * 7, // 7 jours
     });
 
-    res.json({ user: data.user });
+    res.json({ user: { ...data.user, role: profileData?.role || "client" } });
 
   } catch (err: any) {
 
@@ -169,7 +175,7 @@ export const me = async (req: Request, res: Response) => {
     // 🔥 Correction : On va chercher le prénom, nom, téléphone et adresse complémentaires dans la table profiles
     const { data: profileData, error: profileError } = await supabase
       .from("profiles")
-      .select("first_name, last_name, phone, address")
+      .select("first_name, last_name, phone, address, role")
       .eq("id", data.user.id)
       .single();
 
@@ -177,14 +183,49 @@ export const me = async (req: Request, res: Response) => {
       id: data.user.id,
       email: data.user.email,
       created_at: data.user.created_at,
+      role: profileData?.role || "client",
       user_metadata: {
         prenom: profileData?.first_name || "",
         nom: profileData?.last_name || "",
         phone: profileData?.phone || "",
-        adresse: profileData?.address || ""
+        adresse: profileData?.address || "",
+        role: profileData?.role || "client"
       }
     });
 
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const updateProfile = async (req: Request, res: Response) => {
+  try {
+    const token = req.cookies.access_token;
+    if (!token) {
+      return res.status(401).json({ error: "Non authentifié" });
+    }
+    const { data, error } = await supabase.auth.getUser(token);
+    if (error || !data.user) {
+      return res.status(401).json({ error: "Token invalide" });
+    }
+
+    const { prenom, nom, phone, adresse } = req.body;
+
+    const { error: updateError } = await supabase
+      .from("profiles")
+      .update({
+        first_name: prenom,
+        last_name: nom,
+        phone: phone,
+        address: adresse
+      })
+      .eq("id", data.user.id);
+
+    if (updateError) {
+      throw new Error(updateError.message);
+    }
+
+    res.json({ message: "Profil mis à jour" });
   } catch (err: any) {
     res.status(500).json({ error: err.message });
   }

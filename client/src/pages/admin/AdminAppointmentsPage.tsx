@@ -20,7 +20,6 @@ const AdminAppointmentsPage: React.FC = () => {
       .then(data => {
         if (Array.isArray(data)) {
           const formattedAppts = data.map((a: any) => {
-            // 🔥 Sécurisation de la date : Extrait uniquement 'YYYY-MM-DD' si Supabase renvoie un ISO complet
             const cleanDate = a.date && a.date.includes('T') ? a.date.split('T')[0] : a.date;
 
             return {

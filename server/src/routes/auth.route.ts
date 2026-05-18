@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import {register, login, me, logout, refreshSession} from "../controllers/auth.controller.js";
+import {register, login, me, logout, refreshSession, updateProfile} from "../controllers/auth.controller.js";
 import {protect,} from "../middlewares/auth.middleware.js";
 
 const router = Router();
@@ -130,6 +130,23 @@ router.get(
   "/me",
   protect,
   me
+);
+
+/**
+ * @swagger
+ * /api/auth/profile:
+ *   put:
+ *     summary: Mise à jour du profil utilisateur
+ *     tags: [Auth]
+ *
+ *     responses:
+ *       200:
+ *         description: Profil mis à jour
+ */
+router.put(
+  "/profile",
+  protect,
+  updateProfile
 );
 
 /**

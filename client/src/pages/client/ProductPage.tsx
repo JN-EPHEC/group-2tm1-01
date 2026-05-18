@@ -8,11 +8,22 @@ interface Product {
   imgIcon: string;
   desc: string;
   price: number;
+  category?: string;
 }
 
 const ProductPage = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [cart, setCart] = useState<{ [id: number]: number }>({});
+  const [selectedCategory, setSelectedCategory] = useState('all');
+
+  const categories = [
+    { value: 'all', label: 'Tous les produits' },
+    { value: 'Soins et Massages', label: 'Soins et Massages' },
+    { value: 'Équipement Sportif', label: 'Équipement Sportif' },
+    { value: 'Accessoires', label: 'Accessoires' },
+    { value: 'Vêtements', label: 'Vêtements' },
+    { value: 'Nutrition', label: 'Nutrition' },
+  ];
 
   useEffect(() => {
     fetch('http://localhost:3000/api/products')
@@ -56,6 +67,9 @@ const ProductPage = () => {
   const total = subtotal + tax;
 
   const totalItems = Object.values(cart).reduce((sum, qty) => sum + qty, 0);
+  const filteredProducts = selectedCategory === 'all'
+    ? products
+    : products.filter(product => product.category === selectedCategory);
 
   return (
     <div className="pb-5">
@@ -71,18 +85,21 @@ const ProductPage = () => {
 
               <div className="mb-3">
                 <label className="form-label text-muted fw-bold">Catégories</label>
-                <div className="form-check mb-2">
-                  <input className="form-check-input" type="radio" name="category" id="cat-all" defaultChecked />
-                  <label className="form-check-label" htmlFor="cat-all">Tous les produits</label>
-                </div>
-                <div className="form-check mb-2">
-                  <input className="form-check-input" type="radio" name="category" id="cat-cremes" />
-                  <label className="form-check-label" htmlFor="cat-cremes">Crèmes et Gels</label>
-                </div>
-                <div className="form-check mb-2">
-                  <input className="form-check-input" type="radio" name="category" id="cat-mat" />
-                  <label className="form-check-label" htmlFor="cat-mat">Matériel</label>
-                </div>
+                {categories.map(category => (
+                  <div className="form-check mb-2" key={category.value}>
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      name="category"
+                      id={`cat-${category.value}`}
+                      checked={selectedCategory === category.value}
+                      onChange={() => setSelectedCategory(category.value)}
+                    />
+                    <label className="form-check-label" htmlFor={`cat-${category.value}`}>
+                      {category.label}
+                    </label>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -91,7 +108,7 @@ const ProductPage = () => {
         {/* Zone des produits */}
         <div className="col-lg-7 col-md-9">
           <div className="row g-4">
-            {products.map(product => {
+            {filteredProducts.map(product => {
               const qty = cart[product.id] || 0;
               return (
                 <div className="col-xl-4 col-sm-6" key={product.id}>
@@ -100,6 +117,9 @@ const ProductPage = () => {
                       {product.imgIcon} [Img]
                     </div>
                     <div className="card-body d-flex flex-column">
+                      {product.category && (
+                        <small className="text-uppercase text-muted fw-bold mb-2">{product.category}</small>
+                      )}
                       <h6 className="card-title fw-bold">{product.name}</h6>
                       <p className="card-text text-muted small mb-2">
                         {product.desc}

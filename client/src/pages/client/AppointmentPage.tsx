@@ -86,10 +86,12 @@ const AppointmentPage = ({ isAuthenticated }: AppointmentPageProps) => {
         // Redirection vers le profil
         navigate('/profil');
       } else {
+        const errorData = await response.json().catch(() => ({}));
+        console.error("Détails erreur serveur:", errorData);
         if (response.status === 401) {
           setError("Vous devez être connecté pour prendre un rendez-vous.");
         } else {
-          setError("Erreur lors de la création du rendez-vous");
+          setError(errorData.error || "Erreur lors de la création du rendez-vous");
         }
       }
     } catch (error) {

@@ -1,12 +1,24 @@
 import type { Request, Response } from "express";
 import * as orderService from "../services/order.service";
 import type { AuthRequest } from "../middlewares/auth.middleware";
+import { supabase } from "../config/supabase";
 
 export const getOrders = async (req: AuthRequest, res: Response) => {
   try {
     const userId = req.user?.id;
+    let includeAll = false;
 
-    const orders = await orderService.getOrders(userId);
+    if (userId) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", userId)
+        .single();
+
+      includeAll = profile?.role === "admin";
+    }
+
+    const orders = await orderService.getOrders(includeAll ? undefined : userId);
     
     res.json(orders);
   } catch (err: any) {
