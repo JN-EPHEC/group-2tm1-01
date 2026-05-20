@@ -14,6 +14,11 @@ const RegisterPage = ({ setIsAuthenticated }: RegisterPageProps) => {
     const formData = new FormData(e.target as HTMLFormElement);
     const data = Object.fromEntries(formData.entries());
 
+    if (data.password !== data.confirmPassword) {
+      setError("Les mots de passe ne correspondent pas.");
+      return;
+    }
+
     try {
       const res = await fetch('https://m1-4.ephec-ti.be:5173/api/auth/register', {
         method: 'POST',

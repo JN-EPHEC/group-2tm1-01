@@ -12,6 +12,7 @@ import AdminAppointmentsPage from './pages/admin/AdminAppointmentsPage';
 import ClientAppointmentPage from './pages/client/AppointmentPage';
 import ClientProductPage from './pages/client/ProductPage';
 import ClientCartPage from './pages/client/CartPage';
+import { ProtectedRoute, AdminRoute } from './components/ProtectedRoute';
 import './styles/App.css';
 
 function App() {
@@ -52,10 +53,6 @@ function App() {
   // La mise à jour d'état depuis LoginPage/ProfilePage devrait aussi ajuster isAdmin,
   // ou l'on peut refaire un appel si l'état local ne suffit pas, mais une propagation via props est souvent utile.
 
-  if (loading) {
-    return <div>Chargement...</div>;
-  }
-
   return (
     <Router>
       <Navbar isAdmin={isAdmin} isAuthenticated={isAuthenticated} />
@@ -64,16 +61,16 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage setIsAuthenticated={setIsAuthenticated} setIsAdmin={setIsAdmin} />} />
           <Route path="/register" element={<RegisterPage setIsAuthenticated={setIsAuthenticated} />} />
-          <Route path="/admin" element={<AdminDashboardPage />} />
-          <Route path="/admin/produits" element={<AdminProductsPage />} />
-          <Route path="/admin/commandes" element={<AdminOrdersPage />} />
-          <Route path="/admin/rendez-vous" element={<AdminAppointmentsPage />} />
-          <Route path="/client/rendez-vous" element={<ClientAppointmentPage isAuthenticated={isAuthenticated} />} />
+          <Route path="/admin" element={<AdminRoute isAuthenticated={isAuthenticated} loading={loading} isAdmin={isAdmin}><AdminDashboardPage /></AdminRoute>} />
+          <Route path="/admin/produits" element={<AdminRoute isAuthenticated={isAuthenticated} loading={loading} isAdmin={isAdmin}><AdminProductsPage /></AdminRoute>} />
+          <Route path="/admin/commandes" element={<AdminRoute isAuthenticated={isAuthenticated} loading={loading} isAdmin={isAdmin}><AdminOrdersPage /></AdminRoute>} />
+          <Route path="/admin/rendez-vous" element={<AdminRoute isAuthenticated={isAuthenticated} loading={loading} isAdmin={isAdmin}><AdminAppointmentsPage /></AdminRoute>} />
+          <Route path="/client/rendez-vous" element={<ProtectedRoute isAuthenticated={isAuthenticated} loading={loading}><ClientAppointmentPage isAuthenticated={isAuthenticated} /></ProtectedRoute>} />
           <Route path="/client/produits" element={<ClientProductPage />} />
           <Route path="/client/panier" element={<ClientCartPage />} />
           
           {/* Ta route de profil, bien à sa place avec le bon chemin de ton projet */}
-          <Route path="/profil" element={<ProfilePage setIsAuthenticated={setIsAuthenticated} setIsAdmin={setIsAdmin} />} />
+          <Route path="/profil" element={<ProtectedRoute isAuthenticated={isAuthenticated} loading={loading}><ProfilePage setIsAuthenticated={setIsAuthenticated} setIsAdmin={setIsAdmin} /></ProtectedRoute>} />
         </Routes>
       </main>
     </Router>
