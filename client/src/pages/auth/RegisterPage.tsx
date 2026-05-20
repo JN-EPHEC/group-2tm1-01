@@ -15,7 +15,13 @@ const RegisterPage = ({ setIsAuthenticated }: RegisterPageProps) => {
     const data = Object.fromEntries(formData.entries());
 
     if (data.password !== data.confirmPassword) {
-      setError("Les mots de passe ne correspondent pas.");
+      setError("Erreur : Le mot de passe de confirmation est différent du mot de passe saisi.");
+      return;
+    }
+
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W\_]).{8,20}$/;
+    if (!passwordRegex.test(data.password as string)) {
+      setError("Erreur : Votre mot de passe ne respecte pas les restrictions de sécurité.");
       return;
     }
 
@@ -78,6 +84,9 @@ const RegisterPage = ({ setIsAuthenticated }: RegisterPageProps) => {
                 <div className="col-md-6">
                   <label htmlFor="password" className="form-label">Mot de passe</label>
                   <input type="password" className="form-control" name="password" id="password" required />
+                  <div className="form-text">
+                    8 à 20 caractères, 1 majuscule, 1 minuscule, 1 chiffre et 1 caractère spécial.
+                  </div>
                 </div>
                 <div className="col-md-6">
                   <label htmlFor="confirmPassword" className="form-label">Confirmer le mot de passe</label>

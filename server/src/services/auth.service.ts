@@ -14,7 +14,7 @@ export const registerUser = async (
     throw new Error(error.message);
   }
 
-  return data;
+  return { user: data.user, session: data.session };
 };
 
 export const loginUser = async (

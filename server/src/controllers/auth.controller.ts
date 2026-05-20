@@ -119,7 +119,7 @@ export const login = async (
       .from("profiles")
       .select("role")
       .eq("id", data.user?.id)
-      .single();
+      .maybeSingle();
 
     const accessToken = data.session.access_token;
     const refreshToken = data.session.refresh_token;
@@ -224,7 +224,7 @@ export const me = async (req: Request, res: Response) => {
       .from("profiles")
       .select("first_name, last_name, phone, address, role")
       .eq("id", data.user.id)
-      .single();
+      .maybeSingle();
 
     res.json({
       id: data.user.id,
