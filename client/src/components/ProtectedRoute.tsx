@@ -1,9 +1,10 @@
+import React from 'react';
 import { Navigate } from 'react-router-dom';
 
 interface ProtectedRouteProps {
   isAuthenticated: boolean;
   loading: boolean;
-  children: JSX.Element;
+  children: React.ReactNode;
 }
 
 export const ProtectedRoute = ({ isAuthenticated, loading, children }: ProtectedRouteProps) => {
@@ -20,7 +21,7 @@ interface AdminRouteProps {
   isAuthenticated: boolean;
   isAdmin: boolean;
   loading: boolean;
-  children: JSX.Element;
+  children: React.ReactNode;
 }
 
 export const AdminRoute = ({ isAuthenticated, isAdmin, loading, children }: AdminRouteProps) => {
