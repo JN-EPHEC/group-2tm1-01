@@ -1,5 +1,4 @@
-﻿
-import { Link, NavLink } from 'react-router-dom';
+﻿import { Link, NavLink } from 'react-router-dom';
 import '../styles/Navbar.css';
 
 interface NavbarProps {
@@ -43,10 +42,10 @@ const Navbar: React.FC<NavbarProps> = ({ isAdmin, isAuthenticated }) => {
                   Admin
                 </a>
                 <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <li><NavLink className="dropdown-item" to="/admin">Dashboard</NavLink></li>
-                  <li><NavLink className="dropdown-item" to="/admin/revenus">Revenus</NavLink></li>
-                  <li><NavLink className="dropdown-item" to="/admin/depenses">Dépenses</NavLink></li>
-                  <li><NavLink className="dropdown-item" to="/admin/produits">Gérer les Produits</NavLink></li>
+                  <li><NavLink className="dropdown-item" to="/admin" end>Dashboard</NavLink></li>
+                  <li><NavLink className="dropdown-item" to="/admin/produits">Gestion Produits</NavLink></li>
+                  <li><NavLink className="dropdown-item" to="/admin/commandes">Commandes Clients</NavLink></li>
+                  <li><NavLink className="dropdown-item" to="/admin/rendez-vous">Gestion Rendez-vous</NavLink></li>
                 </ul>
               </li>
             )}

@@ -1,6 +1,5 @@
-﻿import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-// Remplacement de BarChart par AreaChart et ajout des composants nécessaires
 import { 
   AreaChart, 
   Area, 
@@ -68,41 +67,30 @@ const DashboardPage: React.FC = () => {
   const [endDate, setEndDate] = useState('');
   const [showChart, setShowChart] = useState(false);
   
-// --- À REMPLACER DANS DashboardPage.tsx ---
+  // --- FETCH TRANSACTIONS API ---
 
-const [transactions, setTransactions] = useState<Transaction[]>(() => {
-  const mockData: Transaction[] = [];
-  const year = 2026;
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
 
-  // Génère des données pour chaque mois de l'année
-  for (let month = 1; month <= 12; month++) {
-    // Revenus aléatoires (entre 2000€ et 4500€)
-    mockData.push({
-      id: `in-${month}`,
-      year,
-      month,
-      type: 'INCOME',
-      date: `${year}-${String(month).padStart(2, '0')}-05`,
-      amount: Math.floor(Math.random() * 2500) + 2000,
-      reference: `ATT-${year}-${month}`,
-      status: 'PAID',
-      comment: 'Consultations mensuelles'
-    });
-
-    // Dépenses aléatoires (entre 800€ et 1800€)
-    mockData.push({
-      id: `ex-${month}`,
-      year,
-      month,
-      type: 'EXPENSE',
-      date: `${year}-${String(month).padStart(2, '0')}-15`,
-      amount: Math.floor(Math.random() * 1000) + 800,
-      status: 'PAID',
-      comment: 'Charges et matériel'
-    });
-  }
-  return mockData;
-});
+  useEffect(() => {
+    fetch('https://m1-4.ephec-ti.be:5173/api/transactions')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          // Mapping pour ajouter year et month depuis date
+          const formattedTxs = data.map(tx => {
+            const d = new Date(tx.date || new Date());
+            return {
+              ...tx,
+              year: d.getFullYear(),
+              month: d.getMonth() + 1,
+              reference: tx.comment || '', // On utilise comment comme reference
+            };
+          });
+          setTransactions(formattedTxs);
+        }
+      })
+      .catch(err => console.error("Erreur de chargement des transactions", err));
+  }, []);
 
   // Form States
   const [showForm, setShowForm] = useState<'NONE' | 'INCOME' | 'EXPENSE'>('NONE');
@@ -126,44 +114,86 @@ const [transactions, setTransactions] = useState<Transaction[]>(() => {
     }
   };
 
-  const handleAddTransaction = (e: React.FormEvent) => {
+  const handleAddTransaction = async (e: React.FormEvent) => {
     e.preventDefault();
-    const dateObj = new Date(formData.date);
     
-    const newTx: Transaction = {
-      id: Date.now().toString(),
-      year: dateObj.getFullYear(),
-      month: dateObj.getMonth() + 1,
+    // Objet envoyé à l'API (strictement les colonnes existantes dans la base de données)
+    const newTxToSubmit = {
       type: showForm === 'INCOME' ? 'INCOME' : 'EXPENSE',
       date: formData.date,
       amount: parseFloat(formData.amount),
-      reference: showForm === 'INCOME' ? formData.reference : undefined,
       status: showForm === 'INCOME' ? 'PENDING' : 'PAID',
-      comment: formData.comment
+      comment: formData.comment || formData.reference // On sauvegarde reference dans comment
     };
 
-    setTransactions([...transactions, newTx]);
-    setShowForm('NONE');
-    setFormData({ date: '', amount: '', reference: '', comment: '' });
+    try {
+      const res = await fetch('https://m1-4.ephec-ti.be:5173/api/transactions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newTxToSubmit)
+      });
+      const savedTx = await res.json();
+      
+      // Adaptation pour l'état React interne
+      const dateObj = new Date(savedTx.date || formData.date);
+      const adaptedTx = {
+        ...savedTx,
+        year: dateObj.getFullYear(),
+        month: dateObj.getMonth() + 1,
+        reference: savedTx.comment || formData.reference,
+      };
+
+      setTransactions([adaptedTx, ...transactions]);
+      setShowForm('NONE');
+      setFormData({ date: '', amount: '', reference: '', comment: '' });
+    } catch (err) {
+      console.error(err);
+    }
   };
 
+  const [txToDelete, setTxToDelete] = useState<string | null>(null);
+  const [showEditAlert, setShowEditAlert] = useState<boolean>(false);
+
   const handleDelete = (id: string) => {
-    if (window.confirm('Voulez-vous supprimer cet élément ?')) {
-      setTransactions(transactions.filter(t => t.id !== id));
+    setTxToDelete(id);
+  };
+
+  const confirmDeleteTx = async () => {
+    if (txToDelete) {
+      try {
+        await fetch(`https://m1-4.ephec-ti.be:5173/api/transactions/${txToDelete}`, { 
+          method: 'DELETE',
+          credentials: 'include'
+        });
+        setTransactions(transactions.filter(t => t.id !== txToDelete));
+        setTxToDelete(null);
+      } catch (err) {
+        console.error(err);
+      }
     }
   };
 
   const handleEdit = (_id: string) => {
-    alert('Mode édition (à implémenter).');
+    setShowEditAlert(true);
+    setTimeout(() => setShowEditAlert(false), 3000);
   };
 
-  const handleToggleStatus = (id: string) => {
-    setTransactions(transactions.map(t => {
-      if (t.id === id && t.type === 'INCOME') {
-        return { ...t, status: t.status === 'PAID' ? 'PENDING' : 'PAID' };
-      }
-      return t;
-    }));
+  const handleToggleStatus = async (id: string) => {
+    const txToUpdate = transactions.find(t => t.id === id);
+    if (!txToUpdate || txToUpdate.type !== 'INCOME') return;
+
+    const newStatus = txToUpdate.status === 'PAID' ? 'PENDING' : 'PAID';
+    try {
+      await fetch(`https://m1-4.ephec-ti.be:5173/api/transactions/${id}/status`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ status: newStatus })
+      });
+      setTransactions(transactions.map(t => t.id === id ? { ...t, status: newStatus } : t));
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   // --- CALCULS ---
@@ -230,7 +260,7 @@ const [transactions, setTransactions] = useState<Transaction[]>(() => {
 
     return (
       <div>
-        <button className="btn btn-secondary mb-4" onClick={() => updateDashboardView('HOME')}>← Retour Accueil</button>
+        <button className="btn btn-secondary mb-4" onClick={() => updateDashboardView('HOME')}>? Retour Accueil</button>
         <h3 className="mb-4">Récapitulatif global</h3>
 
         <div className="card shadow-sm mb-4 bg-light border-0">
@@ -253,12 +283,13 @@ const [transactions, setTransactions] = useState<Transaction[]>(() => {
             </div>
           </div>
         </div>
+        
         {showChart && (
           <div className="card shadow-sm mb-4 border-0">
             <div className="card-body">
               <h5 className="card-title fw-bold mb-4">Flux Financiers</h5>
               <div style={{ width: '100%', height: 400 }}>
-                <ResponsiveContainer>
+                <ResponsiveContainer width="100%" height={400}>
                   <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                     <defs>
                       <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
@@ -314,7 +345,7 @@ const [transactions, setTransactions] = useState<Transaction[]>(() => {
 
   const renderYearsList = () => (
     <div>
-      <button className="btn btn-secondary mb-4" onClick={() => updateDashboardView('HOME')}>← Retour</button>
+      <button className="btn btn-secondary mb-4" onClick={() => updateDashboardView('HOME')}>? Retour</button>
       <h3>Années Comptables</h3>
       <div className="row">
         <div className="col-md-8 d-flex flex-wrap gap-3">
@@ -340,7 +371,7 @@ const [transactions, setTransactions] = useState<Transaction[]>(() => {
   const renderYearDetail = () => (
     <div>
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <button className="btn btn-secondary" onClick={() => updateDashboardView('YEARS_LIST', null)}>← Retour</button>
+        <button className="btn btn-secondary" onClick={() => updateDashboardView('YEARS_LIST', null)}>? Retour</button>
         <h2>Gestion {selectedYear}</h2>
         <div className="bg-warning px-3 py-2 rounded fw-bold">Impayés : {unpaidTotal.toFixed(2)} €</div>
       </div>
@@ -409,6 +440,20 @@ const [transactions, setTransactions] = useState<Transaction[]>(() => {
 
   return (
     <div className="container-fluid py-2">
+      {txToDelete && (
+        <div className="alert alert-warning d-flex justify-content-between align-items-center">
+          <span>Voulez-vous vraiment supprimer cet élément ?</span>
+          <div>
+            <button className="btn btn-danger btn-sm me-2" onClick={confirmDeleteTx}>Oui, supprimer</button>
+            <button className="btn btn-secondary btn-sm" onClick={() => setTxToDelete(null)}>Annuler</button>
+          </div>
+        </div>
+      )}
+      {showEditAlert && (
+        <div className="alert alert-info">
+          Mode édition (à implémenter en base).
+        </div>
+      )}
       {view === 'HOME' && renderHome()}
       {view === 'SUMMARY' && renderSummary()}
       {view === 'YEARS_LIST' && renderYearsList()}
