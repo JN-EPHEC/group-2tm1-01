@@ -41,11 +41,13 @@ const HomePage = () => {
             <div className="card-body">
               <h3 className="card-title h5 text-primary mb-3">Horaires d'ouverture</h3>
               <ul className="list-unstyled mt-3 text-muted">
-                <li className="d-flex justify-content-between mb-2"><strong>Lundi :</strong> <span>[08:00 - 18:00]</span></li>
-                <li className="d-flex justify-content-between mb-2"><strong>Mardi :</strong> <span>[08:00 - 18:00]</span></li>
-                <li className="d-flex justify-content-between mb-2"><strong>Mercredi :</strong> <span>[08:00 - 12:00]</span></li>
-                <li className="d-flex justify-content-between mb-2"><strong>Jeudi :</strong> <span>[08:00 - 19:00]</span></li>
-                <li className="d-flex justify-content-between mb-2"><strong>Vendredi :</strong> <span>[08:00 - 17:00]</span></li>
+                <li className="d-flex justify-content-between mb-2"><strong>Lundi :</strong> <span>09:00 - 15:00</span></li>
+                <li className="d-flex justify-content-between mb-2"><strong>Mardi :</strong> <span>09:00 - 15:00</span></li>
+                <li className="d-flex justify-content-between mb-2"><strong>Mercredi :</strong> <span>09:00 - 15:00</span></li>
+                <li className="d-flex justify-content-between mb-2"><strong>Jeudi :</strong> <span>09:00 - 15:00</span></li>
+                <li className="d-flex justify-content-between mb-2"><strong>Vendredi :</strong> <span>09:00 - 15:00</span></li>
+                <li className="d-flex justify-content-between mb-2"><strong>Samedi :</strong> <span>Fermé</span></li>
+                <li className="d-flex justify-content-between mb-2"><strong>Dimanche :</strong> <span>Fermé</span></li>
               </ul>
             </div>
           </div>
@@ -69,9 +71,17 @@ const HomePage = () => {
           <div className="card h-100 shadow-sm border-0 bg-white">
             <div className="card-body d-flex flex-column">
               <h3 className="card-title h5 text-primary mb-3">Plan d'accès</h3>
-              <p className="mb-2 text-muted fw-bold">[adresse]</p>
-              <div className="bg-light text-muted d-flex align-items-center justify-content-center flex-grow-1 rounded border map-placeholder">
-                [Zone d'intégration carte Google Maps]
+              <p className="mb-2 text-muted fw-bold">Av. du Ciseau 15, 1348 Ottignies-Louvain-la-Neuve</p>
+              <div className="bg-light text-muted d-flex align-items-center justify-content-center flex-grow-1 rounded border overflow-hidden">
+                <iframe 
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2999.7902186181477!2d4.609672076839341!3d50.665893271827755!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47c17e714a286ae1%3A0x35298406dfffc99a!2sAv.%20du%20Ciseau%2015%2C%201348%20Ottignies-Louvain-la-Neuve!5e1!3m2!1sfr!2sbe!4v1778937939554!5m2!1sfr!2sbe" 
+                  width="100%" 
+                  height="100%" 
+                  style={{border: 0, minHeight: "200px"}} 
+                  allowFullScreen={true} 
+                  loading="lazy" 
+                  referrerPolicy="no-referrer-when-downgrade">
+                </iframe>
               </div>
             </div>
           </div>

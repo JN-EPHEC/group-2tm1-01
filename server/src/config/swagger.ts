@@ -1,14 +1,30 @@
 // Dans src/config/swagger.ts
 import swaggerJsdoc from "swagger-jsdoc";
-const swaggerOptions = {
+import swaggerUi from "swagger-ui-express";
+
+const options = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "Mon API Géniale",
+      title: "API Kiné",
       version: "1.0.0",
+      description:
+        "Documentation API du projet kiné",
     },
+    servers: [
+      {
+        url: "http://localhost:3000",
+      },
+    ],
   },
-  // Chemin vers les fichiers contenant les annotations
+
   apis: ["./src/routes/*.ts"],
 };
-export const swaggerSpec = swaggerJsdoc(swaggerOptions);
+
+const swaggerSpec =
+  swaggerJsdoc(options);
+
+export {
+  swaggerUi,
+  swaggerSpec,
+};
