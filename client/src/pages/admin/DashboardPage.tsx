@@ -72,7 +72,7 @@ const DashboardPage: React.FC = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
   useEffect(() => {
-    fetch('http://m1-4.ephec-ti.be:5000/api/transactions')
+    fetch('https://m1-4.ephec-ti.be:5173/api/transactions')
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
@@ -127,7 +127,7 @@ const DashboardPage: React.FC = () => {
     };
 
     try {
-      const res = await fetch('http://m1-4.ephec-ti.be:5000/api/transactions', {
+      const res = await fetch('https://m1-4.ephec-ti.be:5173/api/transactions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newTxToSubmit)
@@ -161,7 +161,7 @@ const DashboardPage: React.FC = () => {
   const confirmDeleteTx = async () => {
     if (txToDelete) {
       try {
-        await fetch(`http://m1-4.ephec-ti.be:5000/api/transactions/${txToDelete}`, { 
+        await fetch(`https://m1-4.ephec-ti.be:5173/api/transactions/${txToDelete}`, { 
           method: 'DELETE',
           credentials: 'include'
         });
@@ -184,7 +184,7 @@ const DashboardPage: React.FC = () => {
 
     const newStatus = txToUpdate.status === 'PAID' ? 'PENDING' : 'PAID';
     try {
-      await fetch(`http://m1-4.ephec-ti.be:5000/api/transactions/${id}/status`, {
+      await fetch(`https://m1-4.ephec-ti.be:5173/api/transactions/${id}/status`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

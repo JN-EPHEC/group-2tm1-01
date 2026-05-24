@@ -16,7 +16,7 @@ const LoginPage = ({ setIsAuthenticated, setIsAdmin }: LoginPageProps) => {
     e.preventDefault(); // Empêche le rechargement brut de la page vers l'API
 
     try {
-      const res = await fetch("http://m1-4.ephec-ti.be:5000/api/auth/login", {
+      const res = await fetch("https://m1-4.ephec-ti.be:5173/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

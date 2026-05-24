@@ -25,7 +25,7 @@ const AdminOrdersPage: React.FC = () => {
   };
 
   useEffect(() => {
-    fetch('http://m1-4.ephec-ti.be:5000/api/orders', { credentials: 'include' }) // 👈 Ajout de credentials obligatoire pour l'admin !
+    fetch('https://m1-4.ephec-ti.be:5173/api/orders', { credentials: 'include' }) // 👈 Ajout de credentials obligatoire pour l'admin !
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
@@ -49,7 +49,7 @@ const AdminOrdersPage: React.FC = () => {
   }, []);
 
   const handleStatusChange = (id: number, newStatus: Order['status']) => {
-    fetch(`http://m1-4.ephec-ti.be:5000/api/orders/${id}/status`, {
+    fetch(`https://m1-4.ephec-ti.be:5173/api/orders/${id}/status`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status: newStatus })
