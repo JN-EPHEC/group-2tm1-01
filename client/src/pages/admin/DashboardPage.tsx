@@ -260,7 +260,7 @@ const DashboardPage: React.FC = () => {
 
     return (
       <div>
-        <button className="btn btn-secondary mb-4" onClick={() => updateDashboardView('HOME')}>? Retour Accueil</button>
+        <button className="btn btn-secondary mb-4" onClick={() => updateDashboardView('HOME')}>Retour Accueil</button>
         <h3 className="mb-4">Récapitulatif global</h3>
 
         <div className="card shadow-sm mb-4 bg-light border-0">
@@ -345,7 +345,7 @@ const DashboardPage: React.FC = () => {
 
   const renderYearsList = () => (
     <div>
-      <button className="btn btn-secondary mb-4" onClick={() => updateDashboardView('HOME')}>? Retour</button>
+      <button className="btn btn-secondary mb-4" onClick={() => updateDashboardView('HOME')}>Retour</button>
       <h3>Années Comptables</h3>
       <div className="row">
         <div className="col-md-8 d-flex flex-wrap gap-3">
@@ -371,7 +371,7 @@ const DashboardPage: React.FC = () => {
   const renderYearDetail = () => (
     <div>
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <button className="btn btn-secondary" onClick={() => updateDashboardView('YEARS_LIST', null)}>? Retour</button>
+        <button className="btn btn-secondary" onClick={() => updateDashboardView('YEARS_LIST', null)}>Retour</button>
         <h2>Gestion {selectedYear}</h2>
         <div className="bg-warning px-3 py-2 rounded fw-bold">Impayés : {unpaidTotal.toFixed(2)} €</div>
       </div>
