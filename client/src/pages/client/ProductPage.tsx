@@ -36,7 +36,12 @@ const ProductPage = () => {
     // Charger le panier depuis le localStorage
     const savedCart = localStorage.getItem('cart');
     if (savedCart) {
-      setCart(JSON.parse(savedCart));
+      try {
+        setCart(JSON.parse(savedCart));
+      } catch (err) {
+        console.error("Panier corrompu, on le réinitialise", err);
+        localStorage.removeItem('cart');
+      }
     }
   }, []);
 
