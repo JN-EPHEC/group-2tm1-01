@@ -61,7 +61,7 @@ const ProfilePage = ({ setIsAuthenticated, setIsAdmin }: ProfilePageProps) => {
     const fetchProfileData = async () => {
       try {
         // 1. Récupération de l'utilisateur connecté
-        const response = await fetch('https://m1-4.ephec-ti.be:5173/api/auth/me', {
+        const response = await fetch('http://m1-4.ephec-ti.be:5000/api/auth/me', {
           credentials: 'include'
         });
         
@@ -79,7 +79,7 @@ const ProfilePage = ({ setIsAuthenticated, setIsAdmin }: ProfilePageProps) => {
           setProfileImage(`https://ui-avatars.com/api/?name=${displayName}&background=0D8ABC&color=fff&size=150`);
 
           // 2. Récupération et filtrage des Rendez-vous de CET utilisateur uniquement
-          const resAppts = await fetch('https://m1-4.ephec-ti.be:5173/api/appointments', {
+          const resAppts = await fetch('http://m1-4.ephec-ti.be:5000/api/appointments', {
             credentials: 'include'
           });
           if (resAppts.ok) {
@@ -89,7 +89,7 @@ const ProfilePage = ({ setIsAuthenticated, setIsAdmin }: ProfilePageProps) => {
           }
 
           // 3. Récupération et filtrage des Commandes de CET utilisateur uniquement (IDs 8 et 9)
-          const resOrders = await fetch('https://m1-4.ephec-ti.be:5173/api/orders', {
+          const resOrders = await fetch('http://m1-4.ephec-ti.be:5000/api/orders', {
             credentials: 'include'
           });
           if (resOrders.ok) {
@@ -118,7 +118,7 @@ const ProfilePage = ({ setIsAuthenticated, setIsAdmin }: ProfilePageProps) => {
 
   const handleSave = async () => {
     try {
-      const res = await fetch('https://m1-4.ephec-ti.be:5173/api/auth/profile', {
+      const res = await fetch('http://m1-4.ephec-ti.be:5000/api/auth/profile', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -144,7 +144,7 @@ const ProfilePage = ({ setIsAuthenticated, setIsAdmin }: ProfilePageProps) => {
   const handleLogout = async (e: React.MouseEvent) => {
     e.preventDefault();
     try {
-      await fetch('https://m1-4.ephec-ti.be:5173/api/auth/logout', { method: 'POST', credentials: 'include' });
+      await fetch('http://m1-4.ephec-ti.be:5000/api/auth/logout', { method: 'POST', credentials: 'include' });
       setIsAuthenticated(false);
       if (setIsAdmin) setIsAdmin(false);
       navigate('/');

@@ -31,7 +31,7 @@ const CartPage = () => {
 
   // 1. Charger les produits du backend ET le panier du local storage
   useEffect(() => {
-    fetch('https://m1-4.ephec-ti.be:5173/api/products')
+    fetch('http://m1-4.ephec-ti.be:5000/api/products')
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) setProducts(data);
@@ -112,7 +112,7 @@ const CartPage = () => {
     setLoading(true);
 
     try {
-      const response = await fetch('https://m1-4.ephec-ti.be:5173/api/orders', {
+      const response = await fetch('http://m1-4.ephec-ti.be:5000/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include', // Transmet la session de l'utilisateur connecté

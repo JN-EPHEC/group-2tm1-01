@@ -26,7 +26,7 @@ const ProductPage = () => {
   ];
 
   useEffect(() => {
-    fetch('https://m1-4.ephec-ti.be:5173/api/products')
+    fetch('http://m1-4.ephec-ti.be:5000/api/products')
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) setProducts(data);

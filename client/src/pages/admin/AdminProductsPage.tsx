@@ -14,7 +14,7 @@ const AdminProductsPage: React.FC = () => {
   const [formData, setFormData] = useState<Partial<Product>>({ name: '', price: 0, description: '', category: '' });
 
   useEffect(() => {
-    fetch('https://m1-4.ephec-ti.be:5173/api/products')
+    fetch('http://m1-4.ephec-ti.be:5000/api/products')
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
@@ -33,7 +33,7 @@ const AdminProductsPage: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (isEditing) {
-      fetch(`https://m1-4.ephec-ti.be:5173/api/products/${formData.id}`, {
+      fetch(`http://m1-4.ephec-ti.be:5000/api/products/${formData.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -50,7 +50,7 @@ const AdminProductsPage: React.FC = () => {
       })
       .catch(err => alert(err.message));
     } else {
-      fetch(`https://m1-4.ephec-ti.be:5173/api/products`, {
+      fetch(`http://m1-4.ephec-ti.be:5000/api/products`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -82,7 +82,7 @@ const AdminProductsPage: React.FC = () => {
 
   const confirmDelete = () => {
     if (productToDelete !== null) {
-      fetch(`https://m1-4.ephec-ti.be:5173/api/products/${productToDelete}`, {
+      fetch(`http://m1-4.ephec-ti.be:5000/api/products/${productToDelete}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include'

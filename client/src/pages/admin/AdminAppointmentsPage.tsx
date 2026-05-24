@@ -15,7 +15,7 @@ const AdminAppointmentsPage: React.FC = () => {
   const [selectedAppt, setSelectedAppt] = useState<AppointmentType | null>(null);
 
   useEffect(() => {
-    fetch('https://m1-4.ephec-ti.be:5173/api/appointments', { credentials: 'include' })
+    fetch('http://m1-4.ephec-ti.be:5000/api/appointments', { credentials: 'include' })
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
@@ -38,7 +38,7 @@ const AdminAppointmentsPage: React.FC = () => {
   }, [currentMonth]);
 
   const handleStatusChange = (id: number, newStatus: AppointmentType['status']) => {
-    fetch(`https://m1-4.ephec-ti.be:5173/api/appointments/${id}/status`, {
+    fetch(`http://m1-4.ephec-ti.be:5000/api/appointments/${id}/status`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status: newStatus })
