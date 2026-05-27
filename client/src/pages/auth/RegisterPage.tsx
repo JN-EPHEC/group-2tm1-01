@@ -53,11 +53,11 @@ const RegisterPage = ({ setIsAuthenticated }: RegisterPageProps) => {
   };
 
   return (
-    <div className="row justify-content-center mt-5 mb-5">
-      <div className="col-md-8">
-        <div className="card shadow-sm border-0">
-          <div className="card-body p-4">
-            <h2 className="card-title text-center text-primary mb-4">Créer un compte</h2>
+    <div className="row justify-content-center mt-5 mb-5 px-3">
+      <div className="col-md-8 col-lg-6">
+        <div className="card shadow border-0" style={{ backgroundColor: '#f8f9fa' }}>
+          <div className="card-body p-4 p-md-5">
+            <h2 className="card-title text-center text-primary mb-4 fw-bold">Créer un compte</h2>
             {error && <div className="alert alert-danger">{error}</div>}
             <form onSubmit={handleRegister}>
               <div className="row g-3">

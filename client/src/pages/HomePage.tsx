@@ -8,13 +8,13 @@ const HomePage = () => {
       <div className="rounded-3 hero-section">
         <div className="container-fluid hero-content">
           <h1 className="hero-title">Bienvenue chez votre kinésithérapeute</h1>
-          <p className="col-md-8 hero-subtitle">
+          <p className="col-12 col-md-8 hero-subtitle mx-auto">
             "Prenez soin de vous en toute liberté. De la prise de rendez-vous en ligne au suivi personnalisé de votre rééducation, 
             accédez à tout notre univers en un instant."
           </p>
-          <div className="hero-buttons">
-            <Link to="/client/rendez-vous" className="btn btn-primary btn-lg me-3">Prendre rendez-vous</Link>
-            <Link to="/client/produits" className="btn btn-outline-primary btn-lg">Voir la boutique</Link>
+          <div className="hero-buttons d-flex flex-column flex-sm-row justify-content-center gap-3">
+            <Link to="/client/rendez-vous" className="btn btn-primary btn-lg">Prendre rendez-vous</Link>
+            <Link to="/client/produits" className="btn btn-primary btn-lg">Voir la boutique</Link>
           </div>
         </div>
       </div>
