@@ -20,7 +20,7 @@ interface OrderType {
   total_price: number;
   total?: number;
   status: string;
-  // Ajoute d'autres champs si ton API renvoie des détails (ex: items)
+  order_items?: any[];
 }
 
 interface ProfilePageProps {
@@ -277,23 +277,30 @@ const ProfilePage = ({ setIsAuthenticated, setIsAdmin }: ProfilePageProps) => {
                           <tr>
                             <th>N° Commande</th>
                             <th>Date</th>
+                            <th>Articles</th>
                             <th>Total</th>
                             <th>Statut</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {orders.map((order) => (
-                            <tr key={order.id}>
-                              <td className="fw-bold">#{order.id}</td>
-                              <td>{formatDate(order.order_date || order.created_at || order.date)}</td>
-                              <td>{(order.total_price ?? order.total ?? 0).toFixed(2)} €</td>
-                              <td>
-                                <span className={`badge rounded-pill ${order.status === 'completed' ? 'bg-success' : 'bg-warning'}`}>
-                                  {order.status === 'completed' ? 'Livré' : order.status}
-                                </span>
-                              </td>
-                            </tr>
-                          ))}
+                          {orders.map((order) => {
+                            const itemsText = order.order_items && Array.isArray(order.order_items) && order.order_items.length > 0
+                              ? order.order_items.map((item: any) => `${item.quantity}x ${item.products?.name || 'Produit'}`).join(', ')
+                              : "Aucun article";
+                            return (
+                              <tr key={order.id}>
+                                <td className="fw-bold">#{order.id}</td>
+                                <td>{formatDate(order.order_date || order.created_at || order.date)}</td>
+                                <td className="small text-muted">{itemsText}</td>
+                                <td>{(order.total_price ?? order.total ?? 0).toFixed(2)} €</td>
+                                <td>
+                                  <span className={`badge rounded-pill ${order.status === 'completed' ? 'bg-success' : 'bg-warning'}`}>
+                                    {order.status === 'completed' ? 'Livré' : order.status}
+                                  </span>
+                                </td>
+                              </tr>
+                            );
+                          })}
                         </tbody>
                       </table>
                     </div>

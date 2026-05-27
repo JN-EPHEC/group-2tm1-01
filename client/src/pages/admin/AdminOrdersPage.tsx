@@ -38,7 +38,7 @@ const AdminOrdersPage: React.FC = () => {
             total: Number(d.total_price || d.total || 0),
             status: d.status,
             // Si le backend inclut la jointure order_items :
-            items: d.order_items && Array.isArray(d.order_items) 
+            items: d.order_items && Array.isArray(d.order_items) && d.order_items.length > 0
               ? d.order_items.map((item: any) => `${item.quantity}x ${item.products?.name || 'Produit'}`).join(', ')
               : "Aucun article" 
           }));
