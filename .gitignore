@@ -7,3 +7,5 @@ dist/
 client/dist/
 server/dist/
 server/.env
+vps/server/dist/
+vps/client/dist/
