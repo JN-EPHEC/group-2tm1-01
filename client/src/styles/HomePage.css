@@ -1,5 +1,5 @@
 .hero-section {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('/img/pexels-yankrukov-5793895.png');
+  background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('/img/pexels-yankrukov-5793895.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -22,6 +22,9 @@
   font-size: calc(1.525rem + 3.3vw); /* ou par exemple: 3.5rem */
   font-weight: 700;
   line-height: 1.2;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
 
 .hero-subtitle {

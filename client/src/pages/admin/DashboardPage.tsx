@@ -321,7 +321,7 @@ const DashboardPage: React.FC = () => {
         )}
 
         <div className="card shadow-sm">
-          <div className="card-body">
+            <div className="card-body overflow-auto">
             <table className="table table-hover">
               <thead className="table-light">
                 <tr><th>Année</th><th>Entrées</th><th>Sorties</th><th>Bilan</th></tr>

@@ -80,7 +80,7 @@ const AdminOrdersPage: React.FC = () => {
       <p className="text-muted">Gérez les commandes et marquez celles qui sont prêtes à être récupérées.</p>
       
       <div className="card mt-4">
-        <div className="card-body">
+        <div className="card-body overflow-auto">
           <table className="table table-striped table-hover align-middle">
             <thead>
               <tr>

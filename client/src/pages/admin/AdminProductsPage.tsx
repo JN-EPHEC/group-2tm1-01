@@ -158,7 +158,7 @@ const AdminProductsPage: React.FC = () => {
         </div>
         <div className="col-md-8">
           <div className="card">
-            <div className="card-body">
+              <div className="card-body overflow-auto">
               <table className="table table-striped table-hover">
                 <thead>
                   <tr>
