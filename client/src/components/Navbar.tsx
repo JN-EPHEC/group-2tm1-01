@@ -18,6 +18,10 @@ const Navbar: React.FC<NavbarProps> = ({ isAdmin, isAuthenticated }) => {
               src="/img/logo.png" 
               alt="Logo" 
               className="navbar-logo-img"
+              width="70"
+              height="70"
+              loading="lazy"
+              decoding="async"
             />
           </div>
           Kiné-Web
