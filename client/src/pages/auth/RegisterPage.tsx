@@ -97,8 +97,8 @@ const RegisterPage = ({ setIsAuthenticated }: RegisterPageProps) => {
               <div className="d-grid mt-4">
                 <button type="submit" className="btn btn-primary btn-lg">S'inscrire</button>
               </div>
-              <p className="mt-4 text-center">
-                Déjà un compte ? <Link to="/login" className="text-decoration-none fw-bold">Connectez-vous</Link>
+              <p className="mt-4 text-center text-dark">
+                Déjà un compte ? <Link to="/login" className="text-decoration-none fw-bold text-primary">Connectez-vous</Link>
               </p>
             </form>
           </div>

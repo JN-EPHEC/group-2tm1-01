@@ -79,11 +79,11 @@ const AdminAppointmentsPage: React.FC = () => {
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2>Agenda des Rendez-vous</h2>
         <div className="d-flex align-items-center gap-3">
-          <button className="btn btn-outline-primary" onClick={prevMonth}>&laquo; Précédent</button>
+          <button className="btn btn-outline-dark" onClick={prevMonth}>&laquo; Précédent</button>
           <h4 className="m-0" style={{ minWidth: '200px', textAlign: 'center' }}>
             {monthNames[month]} {year}
           </h4>
-          <button className="btn btn-outline-primary" onClick={nextMonth}>Suivant &raquo;</button>
+          <button className="btn btn-outline-dark" onClick={nextMonth}>Suivant &raquo;</button>
         </div>
       </div>
 
@@ -114,7 +114,7 @@ const AdminAppointmentsPage: React.FC = () => {
               return (
                 <div key={day} className={`col border-bottom border-end p-2 ${isToday ? 'bg-primary bg-opacity-10' : ''}`} style={{ minHeight: '120px', minWidth: '14%' }}>
                   <div className="d-flex justify-content-between">
-                    <span className={`fw-bold ${isToday ? 'text-primary' : ''}`}>{day}</span>
+                    <span className={`fw-bold ${isToday ? 'text-dark' : ''}`}>{day}</span>
                     {dayAppts.length > 0 && <span className="badge bg-secondary rounded-pill">{dayAppts.length}</span>}
                   </div>
                   

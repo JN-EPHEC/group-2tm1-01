@@ -171,7 +171,7 @@ const ProfilePage = ({ setIsAuthenticated, setIsAdmin }: ProfilePageProps) => {
                   <img src={profileImage} alt="Profile" className="rounded-circle img-thumbnail" style={{ width: '120px', height: '120px', objectFit: 'cover' }} />
                 )}
               </div>
-              <h5 className="card-title">{formData.prenom} {formData.nom}</h5>
+              <h2 className="card-title h5">{formData.prenom} {formData.nom}</h2>
               
               <div className="list-group list-group-flush text-start mt-4">
                 <button className={`list-group-item list-group-item-action ${activeTab === 'infos' ? 'active' : ''}`} onClick={() => setActiveTab('infos')}>
@@ -203,24 +203,24 @@ const ProfilePage = ({ setIsAuthenticated, setIsAdmin }: ProfilePageProps) => {
                   <form>
                     <div className="row g-3">
                       <div className="col-md-6">
-                        <label className="form-label">Prénom</label>
-                        <input type="text" name="prenom" className="form-control" value={formData.prenom} onChange={handleInput} readOnly={!isEditing} />
+                        <label htmlFor="profilePrenom" className="form-label">Prénom</label>
+                        <input id="profilePrenom" type="text" name="prenom" className="form-control" value={formData.prenom} onChange={handleInput} readOnly={!isEditing} />
                       </div>
                       <div className="col-md-6">
-                        <label className="form-label">Nom</label>
-                        <input type="text" name="nom" className="form-control" value={formData.nom} onChange={handleInput} readOnly={!isEditing} />
+                        <label htmlFor="profileNom" className="form-label">Nom</label>
+                        <input id="profileNom" type="text" name="nom" className="form-control" value={formData.nom} onChange={handleInput} readOnly={!isEditing} />
                       </div>
                       <div className="col-md-6">
-                        <label className="form-label">Email</label>
-                        <input type="email" name="email" className="form-control" value={formData.email} disabled />
+                        <label htmlFor="profileEmail" className="form-label">Email</label>
+                        <input id="profileEmail" type="email" name="email" className="form-control" value={formData.email} disabled />
                       </div>
                       <div className="col-md-6">
-                        <label className="form-label">Téléphone</label>
-                        <input type="text" name="phone" className="form-control" value={formData.phone} onChange={handleInput} readOnly={!isEditing} />
+                        <label htmlFor="profilePhone" className="form-label">Téléphone</label>
+                        <input id="profilePhone" type="text" name="phone" className="form-control" value={formData.phone} onChange={handleInput} readOnly={!isEditing} />
                       </div>
                       <div className="col-12">
-                        <label className="form-label">Adresse complète</label>
-                        <input type="text" name="adresse" className="form-control" value={formData.adresse} onChange={handleInput} readOnly={!isEditing} />
+                        <label htmlFor="profileAdresse" className="form-label">Adresse complète</label>
+                        <input id="profileAdresse" type="text" name="adresse" className="form-control" value={formData.adresse} onChange={handleInput} readOnly={!isEditing} />
                       </div>
                       <div className="col-12 mt-4 text-end">
                         {!isEditing ? (

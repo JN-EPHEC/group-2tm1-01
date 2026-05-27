@@ -103,7 +103,9 @@ const AdminOrdersPage: React.FC = () => {
                   <td>{o.total.toFixed(2)} €</td>
                   <td>{getStatusBadge(o.status)}</td>
                   <td>
+                    <label htmlFor={`statusSelect-${o.id}`} className="visually-hidden">Changer le statut</label>
                     <select 
+                      id={`statusSelect-${o.id}`}
                       className="form-select form-select-sm" 
                       value={o.status}
                       onChange={(e) => handleStatusChange(o.id, e.target.value as Order['status'])}

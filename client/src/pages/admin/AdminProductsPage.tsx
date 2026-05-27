@@ -117,16 +117,17 @@ const AdminProductsPage: React.FC = () => {
             <div className="card-body">
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
-                  <label className="form-label">Nom</label>
-                  <input type="text" className="form-control" name="name" value={formData.name || ''} onChange={handleInputChange} required />
+                  <label htmlFor="prodName" className="form-label">Nom</label>
+                  <input id="prodName" type="text" className="form-control" name="name" value={formData.name || ''} onChange={handleInputChange} required />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Prix (€)</label>
-                  <input type="number" step="0.01" className="form-control" name="price" value={formData.price || 0} onChange={handleInputChange} required />
+                  <label htmlFor="prodPrice" className="form-label">Prix (€)</label>
+                  <input id="prodPrice" type="number" step="0.01" className="form-control" name="price" value={formData.price || 0} onChange={handleInputChange} required />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Catégorie</label>
+                  <label htmlFor="prodCategory" className="form-label">Catégorie</label>
                   <select 
+                    id="prodCategory"
                     className="form-select" 
                     name="category" 
                     value={formData.category || ''} 
@@ -142,8 +143,8 @@ const AdminProductsPage: React.FC = () => {
                   </select>
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Description</label>
-                  <textarea className="form-control" name="description" value={formData.description || ''} onChange={handleInputChange} rows={3}></textarea>
+                  <label htmlFor="prodDesc" className="form-label">Description</label>
+                  <textarea id="prodDesc" className="form-control" name="description" value={formData.description || ''} onChange={handleInputChange} rows={3}></textarea>
                 </div>
                 <button type="submit" className="btn btn-primary w-100">{isEditing ? 'Mettre à jour' : 'Ajouter'}</button>
                 {isEditing && (
