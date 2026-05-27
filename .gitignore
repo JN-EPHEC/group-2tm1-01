@@ -3,3 +3,4 @@ database.sqlite
 .env*
 /client.env*
 server/config/config.json
+dist/
