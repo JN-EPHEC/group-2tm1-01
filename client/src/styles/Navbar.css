@@ -25,9 +25,9 @@
 
 /* Style de la page active courante */
 .custom-navbar .nav-link.active {
-  color: #ffffff !important;
+  color: #003666 !important;
   font-weight: bold;
-  border-bottom: 2px solid #ffffff; 
+  border-bottom: 2px solid #003666; 
 }
 
 /* Modifie la couleur de l'icône menu */
