@@ -260,18 +260,18 @@ const DashboardPage: React.FC = () => {
 
     return (
       <div>
-        <button className="btn btn-secondary mb-4" onClick={() => updateDashboardView('HOME')}>? Retour Accueil</button>
+        <button className="btn btn-secondary mb-4" onClick={() => updateDashboardView('HOME')}>Retour Accueil</button>
         <h3 className="mb-4">Récapitulatif global</h3>
 
         <div className="card shadow-sm mb-4 bg-light border-0">
           <div className="card-body d-flex flex-wrap gap-3 align-items-end">
             <div>
-              <label className="form-label text-muted small mb-1">Date de début</label>
-              <input type="date" className="form-control" value={startDate} onChange={e => setStartDate(e.target.value)} />
+              <label htmlFor="dashboardStartDate" className="form-label text-muted small mb-1">Date de début</label>
+              <input id="dashboardStartDate" type="date" className="form-control" value={startDate} onChange={e => setStartDate(e.target.value)} />
             </div>
             <div>
-              <label className="form-label text-muted small mb-1">Date de fin</label>
-              <input type="date" className="form-control" value={endDate} onChange={e => setEndDate(e.target.value)} />
+              <label htmlFor="dashboardEndDate" className="form-label text-muted small mb-1">Date de fin</label>
+              <input id="dashboardEndDate" type="date" className="form-control" value={endDate} onChange={e => setEndDate(e.target.value)} />
             </div>
             <div>
               <button 
@@ -321,7 +321,7 @@ const DashboardPage: React.FC = () => {
         )}
 
         <div className="card shadow-sm">
-          <div className="card-body">
+            <div className="card-body overflow-auto">
             <table className="table table-hover">
               <thead className="table-light">
                 <tr><th>Année</th><th>Entrées</th><th>Sorties</th><th>Bilan</th></tr>
@@ -345,7 +345,7 @@ const DashboardPage: React.FC = () => {
 
   const renderYearsList = () => (
     <div>
-      <button className="btn btn-secondary mb-4" onClick={() => updateDashboardView('HOME')}>? Retour</button>
+      <button className="btn btn-secondary mb-4" onClick={() => updateDashboardView('HOME')}>Retour</button>
       <h3>Années Comptables</h3>
       <div className="row">
         <div className="col-md-8 d-flex flex-wrap gap-3">
@@ -371,20 +371,22 @@ const DashboardPage: React.FC = () => {
   const renderYearDetail = () => (
     <div>
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <button className="btn btn-secondary" onClick={() => updateDashboardView('YEARS_LIST', null)}>? Retour</button>
+        <button className="btn btn-secondary" onClick={() => updateDashboardView('YEARS_LIST', null)}>Retour</button>
         <h2>Gestion {selectedYear}</h2>
         <div className="bg-warning px-3 py-2 rounded fw-bold">Impayés : {unpaidTotal.toFixed(2)} €</div>
       </div>
 
       <div className="card shadow-sm mb-4 bg-light">
         <div className="card-body d-flex gap-3">
-          <select className="form-select w-auto" value={selectedMonth || ''} onChange={e => updateDashboardView('YEAR_DETAIL', selectedYear, e.target.value ? parseInt(e.target.value, 10) : null)}>
+          <label htmlFor="monthSelect" className="visually-hidden">Sélectionner un mois</label>
+          <select id="monthSelect" className="form-select w-auto" value={selectedMonth || ''} onChange={e => updateDashboardView('YEAR_DETAIL', selectedYear, e.target.value ? parseInt(e.target.value, 10) : null)}>
             <option value="">Tous les mois</option>
             {['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'].map((m, i) => (
               <option key={i+1} value={i+1}>{m}</option>
             ))}
           </select>
-          <input type="text" className="form-control" placeholder="Rechercher..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
+          <label htmlFor="searchQuery" className="visually-hidden">Rechercher</label>
+          <input id="searchQuery" type="text" className="form-control" placeholder="Rechercher..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
           <button className="btn btn-success" onClick={() => setShowForm('INCOME')}>+ Entrée</button>
           <button className="btn btn-danger" onClick={() => setShowForm('EXPENSE')}>- Sortie</button>
         </div>
@@ -395,10 +397,22 @@ const DashboardPage: React.FC = () => {
           <div className="card-body">
             <h5>Nouveau {showForm === 'INCOME' ? 'Revenu' : 'Dépense'}</h5>
             <form onSubmit={handleAddTransaction} className="row g-3">
-              <div className="col-md-3"><input type="date" className="form-control" required value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} /></div>
-              <div className="col-md-3"><input type="number" step="0.01" className="form-control" placeholder="Montant" required value={formData.amount} onChange={e => setFormData({...formData, amount: e.target.value})} /></div>
-              {showForm === 'INCOME' && <div className="col-md-3"><input type="text" className="form-control" placeholder="Référence" value={formData.reference} onChange={e => setFormData({...formData, reference: e.target.value})} /></div>}
-              <div className="col-md-3"><input type="text" className="form-control" placeholder="Commentaire" value={formData.comment} onChange={e => setFormData({...formData, comment: e.target.value})} /></div>
+              <div className="col-md-3">
+                <label htmlFor="txDate" className="visually-hidden">Date</label>
+                <input id="txDate" type="date" title="Date" className="form-control" required value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} />
+              </div>
+              <div className="col-md-3">
+                <label htmlFor="txAmount" className="visually-hidden">Montant</label>
+                <input id="txAmount" type="number" step="0.01" title="Montant" className="form-control" placeholder="Montant" required value={formData.amount} onChange={e => setFormData({...formData, amount: e.target.value})} />
+              </div>
+              {showForm === 'INCOME' && <div className="col-md-3">
+                <label htmlFor="txRef" className="visually-hidden">Référence</label>
+                <input id="txRef" type="text" className="form-control" title="Référence" placeholder="Référence" value={formData.reference} onChange={e => setFormData({...formData, reference: e.target.value})} />
+              </div>}
+              <div className="col-md-3">
+                <label htmlFor="txComment" className="visually-hidden">Commentaire</label>
+                <input id="txComment" type="text" className="form-control" title="Commentaire" placeholder="Commentaire" value={formData.comment} onChange={e => setFormData({...formData, comment: e.target.value})} />
+              </div>
               <div className="col-12 text-end">
                 <button type="button" className="btn btn-link" onClick={() => setShowForm('NONE')}>Annuler</button>
                 <button type="submit" className="btn btn-primary">Enregistrer</button>

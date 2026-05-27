@@ -58,8 +58,9 @@ const LoginPage = ({ setIsAuthenticated, setIsAdmin }: LoginPageProps) => {
             <form onSubmit={handleLogin}>
               {/* EMAIL */}
               <div className="mb-3">
-                <label className="form-label">Adresse Email</label>
+                <label htmlFor="loginEmail" className="form-label">Adresse Email</label>
                 <input
+                  id="loginEmail"
                   type="email"
                   className="form-control"
                   value={email}
@@ -71,8 +72,9 @@ const LoginPage = ({ setIsAuthenticated, setIsAdmin }: LoginPageProps) => {
 
               {/* PASSWORD */}
               <div className="mb-3">
-                <label className="form-label">Mot de passe</label>
+                <label htmlFor="loginPassword" className="form-label">Mot de passe</label>
                 <input
+                  id="loginPassword"
                   type="password"
                   className="form-control"
                   value={password}

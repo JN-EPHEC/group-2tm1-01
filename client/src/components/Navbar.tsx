@@ -18,6 +18,10 @@ const Navbar: React.FC<NavbarProps> = ({ isAdmin, isAuthenticated }) => {
               src="/img/logo.png" 
               alt="Logo" 
               className="navbar-logo-img"
+              width="70"
+              height="70"
+              loading="lazy"
+              decoding="async"
             />
           </div>
           Kiné-Web
@@ -62,7 +66,7 @@ const Navbar: React.FC<NavbarProps> = ({ isAdmin, isAuthenticated }) => {
               </>
             ) : (
               <li className="nav-item">
-                <NavLink className="nav-link fw-bold text-primary" to="/profil">
+                <NavLink className="nav-link fw-bold" to="/profil">
                   <i className="bi bi-person-circle me-1"></i>
                   Mon Profil
                 </NavLink>

@@ -76,20 +76,20 @@ const AdminAppointmentsPage: React.FC = () => {
 
   return (
     <div className="container-fluid py-4">
-      <div className="d-flex justify-content-between align-items-center mb-4">
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
         <h2>Agenda des Rendez-vous</h2>
         <div className="d-flex align-items-center gap-3">
-          <button className="btn btn-outline-primary" onClick={prevMonth}>&laquo; Précédent</button>
+          <button className="btn btn-outline-dark" onClick={prevMonth}>&laquo; Précédent</button>
           <h4 className="m-0" style={{ minWidth: '200px', textAlign: 'center' }}>
             {monthNames[month]} {year}
           </h4>
-          <button className="btn btn-outline-primary" onClick={nextMonth}>Suivant &raquo;</button>
+          <button className="btn btn-outline-dark" onClick={nextMonth}>Suivant &raquo;</button>
         </div>
       </div>
 
       <div className="card shadow-sm">
-        <div className="card-body p-0">
-          <div className="row g-0">
+        <div className="card-body p-0 overflow-auto">
+          <div className="row g-0 flex-nowrap" style={{ minWidth: "1000px" }}>
             {dayNames.map(day => (
               <div key={day} className="col text-center py-2 bg-light border-bottom border-end fw-bold">
                 {day}
@@ -97,7 +97,7 @@ const AdminAppointmentsPage: React.FC = () => {
             ))}
           </div>
 
-          <div className="row g-0">
+          <div className="row g-0 flex-nowrap" style={{ minWidth: "1000px" }}>
             {blanks.map(blank => (
               <div key={`blank-${blank}`} className="col border-bottom border-end bg-light opacity-50" style={{ minHeight: '120px' }}></div>
             ))}
@@ -114,7 +114,7 @@ const AdminAppointmentsPage: React.FC = () => {
               return (
                 <div key={day} className={`col border-bottom border-end p-2 ${isToday ? 'bg-primary bg-opacity-10' : ''}`} style={{ minHeight: '120px', minWidth: '14%' }}>
                   <div className="d-flex justify-content-between">
-                    <span className={`fw-bold ${isToday ? 'text-primary' : ''}`}>{day}</span>
+                    <span className={`fw-bold ${isToday ? 'text-dark' : ''}`}>{day}</span>
                     {dayAppts.length > 0 && <span className="badge bg-secondary rounded-pill">{dayAppts.length}</span>}
                   </div>
                   

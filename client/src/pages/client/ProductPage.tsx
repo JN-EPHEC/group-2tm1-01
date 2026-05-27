@@ -26,7 +26,7 @@ const ProductPage = () => {
   ];
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/products')
+    fetch('https://m1-4.ephec-ti.be:5173/api/products')
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) setProducts(data);
@@ -36,7 +36,12 @@ const ProductPage = () => {
     // Charger le panier depuis le localStorage
     const savedCart = localStorage.getItem('cart');
     if (savedCart) {
-      setCart(JSON.parse(savedCart));
+      try {
+        setCart(JSON.parse(savedCart));
+      } catch (err) {
+        console.error("Panier corrompu, on le réinitialise", err);
+        localStorage.removeItem('cart');
+      }
     }
   }, []);
 
@@ -81,7 +86,7 @@ const ProductPage = () => {
         <div className="col-lg-2 col-md-3">
           <div className="card shadow-sm border-0 sticky-top sticky-sidebar">
             <div className="card-body">
-              <h5 className="card-title text-primary border-bottom pb-2 mb-3">Filtres</h5>
+              <h2 className="card-title h5 text-primary border-bottom pb-2 mb-3">Filtres</h2>
 
               <div className="mb-3">
                 <label className="form-label text-muted fw-bold">Catégories</label>
