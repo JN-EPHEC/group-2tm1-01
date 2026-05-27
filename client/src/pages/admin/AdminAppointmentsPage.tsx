@@ -76,7 +76,7 @@ const AdminAppointmentsPage: React.FC = () => {
 
   return (
     <div className="container-fluid py-4">
-      <div className="d-flex justify-content-between align-items-center mb-4">
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
         <h2>Agenda des Rendez-vous</h2>
         <div className="d-flex align-items-center gap-3">
           <button className="btn btn-outline-dark" onClick={prevMonth}>&laquo; Précédent</button>
@@ -88,8 +88,8 @@ const AdminAppointmentsPage: React.FC = () => {
       </div>
 
       <div className="card shadow-sm">
-        <div className="card-body p-0">
-          <div className="row g-0">
+        <div className="card-body p-0 overflow-auto">
+          <div className="row g-0 flex-nowrap" style={{ minWidth: "1000px" }}>
             {dayNames.map(day => (
               <div key={day} className="col text-center py-2 bg-light border-bottom border-end fw-bold">
                 {day}
@@ -97,7 +97,7 @@ const AdminAppointmentsPage: React.FC = () => {
             ))}
           </div>
 
-          <div className="row g-0">
+          <div className="row g-0 flex-nowrap" style={{ minWidth: "1000px" }}>
             {blanks.map(blank => (
               <div key={`blank-${blank}`} className="col border-bottom border-end bg-light opacity-50" style={{ minHeight: '120px' }}></div>
             ))}
