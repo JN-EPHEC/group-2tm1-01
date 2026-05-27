@@ -1,0 +1,4 @@
+zone "m1-4.ephec-ti.be" {
+    type master;
+    file "/var/lib/bind/db.m1-4.ephec-ti.be"; 
+};
