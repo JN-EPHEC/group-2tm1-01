@@ -1,0 +1,32 @@
+.dashboard-search-input {
+  max-width: 400px;
+}
+
+.dashboard-row-income {
+  background-color: rgba(25, 135, 84, 0.05) !important;
+}
+
+.dashboard-row-expense {
+  background-color: rgba(220, 53, 69, 0.05) !important;
+}
+
+.dashboard-comment-cell {
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+/* Styles pour le graphique AreaChart */
+.recharts-cartesian-grid-horizontal line {
+  stroke: #f0f0f0;
+}
+
+.recharts-default-tooltip {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(4px);
+  border: none !important;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}

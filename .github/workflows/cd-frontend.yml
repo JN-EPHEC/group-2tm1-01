@@ -14,7 +14,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "18.x"
+          node-version: "22.x"
 
       - name: Install dependencies and Build
         working-directory: ./client
@@ -30,7 +30,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 54321
           source: "client/dist/*"
-          target: "/home/etudiant/temp_dev3"
+          target: "/home/etudiant/temp_app"
           strip_components: 2
 
       - name: Final Move and Permissions
@@ -41,6 +41,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 54321
           script: |
-            rm -rf /var/www/html/dev3/*
-            mv /home/etudiant/temp_dev3/* /var/www/html/dev3/
-            chmod -R 755 /var/www/html/dev3
+            rm -rf /var/www/html/*
+            mv /home/etudiant/temp_app/* /var/www/html/
+            chmod -R 755 /var/www/html

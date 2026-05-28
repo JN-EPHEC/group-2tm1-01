@@ -1,27 +1,98 @@
-﻿
-import { Link } from 'react-router-dom';
+﻿import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
-const LoginPage = () => {
+interface LoginPageProps {
+  setIsAuthenticated: (val: boolean) => void;
+  setIsAdmin: (val: boolean) => void;
+}
+
+const LoginPage = ({ setIsAuthenticated, setIsAdmin }: LoginPageProps) => {
+  const navigate = useNavigate();
+  
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault(); // Empêche le rechargement brut de la page vers l'API
+
+    try {
+      const res = await fetch("https://m1-4.ephec-ti.be:5173/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // Important pour les sessions / cookies
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+
+      const data = await res.json();
+      console.log("LOGIN RESPONSE:", data);
+
+      if (res.ok) {
+        setIsAuthenticated(true);
+        if (data.user?.user_metadata?.role === 'admin' || data.user?.role === 'admin' || data.role === 'admin') {
+          setIsAdmin(true);
+        } else {
+          setIsAdmin(false);
+        }
+        navigate("/profil"); 
+      } else {
+        alert(data.error || "Identifiants incorrects");
+      }
+    } catch (err) {
+      console.error("Erreur de connexion:", err);
+      alert("Impossible de joindre le serveur.");
+    }
+  };
+
   return (
     <div className="row justify-content-center mt-5">
       <div className="col-md-6">
-        <div className="card">
+        <div className="card shadow-sm border-0">
           <div className="card-body">
             <h1 className="card-title text-center mb-4">Connexion</h1>
-            <form>
+
+            <form onSubmit={handleLogin}>
+              {/* EMAIL */}
               <div className="mb-3">
-                <label htmlFor="email" className="form-label">Adresse Email</label>
-                <input type="email" className="form-control" id="email" placeholder="nom@exemple.com" />
+                <label htmlFor="loginEmail" className="form-label">Adresse Email</label>
+                <input
+                  id="loginEmail"
+                  type="email"
+                  className="form-control"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="nom@exemple.com"
+                  required
+                />
               </div>
+
+              {/* PASSWORD */}
               <div className="mb-3">
-                <label htmlFor="password" className="form-label">Mot de passe</label>
-                <input type="password" className="form-control" id="password" />
+                <label htmlFor="loginPassword" className="form-label">Mot de passe</label>
+                <input
+                  id="loginPassword"
+                  type="password"
+                  className="form-control"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
               </div>
+
+              {/* BUTTON */}
               <div className="d-grid">
-                <button type="submit" className="btn btn-primary">Se connecter</button>
+                <button type="submit" className="btn btn-primary">
+                  Se connecter
+                </button>
               </div>
+
               <p className="mt-3 text-center">
-                Pas encore de compte ? <Link to="/register">Inscrivez-vous</Link>
+                Pas encore de compte ?{" "}
+                <Link to="/register">Inscrivez-vous</Link>
               </p>
             </form>
           </div>
