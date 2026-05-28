@@ -210,13 +210,13 @@ export const me = async (req: Request, res: Response) => {
     const token = req.cookies.access_token;
 
     if (!token) {
-      return res.status(401).json({ error: "Non authentifié" });
+      return res.status(200).json({ isAuthenticated: false });
     }
 
     const { data, error } = await supabase.auth.getUser(token);
 
     if (error || !data.user) {
-      return res.status(401).json({ error: "Token invalide" });
+      return res.status(200).json({ isAuthenticated: false });
     }
 
     // 🔥 Correction : On va chercher le prénom, nom, téléphone et adresse complémentaires dans la table profiles
@@ -249,11 +249,11 @@ export const updateProfile = async (req: Request, res: Response) => {
   try {
     const token = req.cookies.access_token;
     if (!token) {
-      return res.status(401).json({ error: "Non authentifié" });
+      return res.status(200).json({ isAuthenticated: false });
     }
     const { data, error } = await supabase.auth.getUser(token);
     if (error || !data.user) {
-      return res.status(401).json({ error: "Token invalide" });
+      return res.status(200).json({ isAuthenticated: false });
     }
 
     const { prenom, nom, phone, adresse } = req.body;

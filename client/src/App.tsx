@@ -33,10 +33,16 @@ function App() {
         
         if (response.ok) {
           const userData = await response.json();
-          setIsAuthenticated(true);
-          // Supposons que le rôle est renvoyé dans les données utilisateur
-          if (userData.user_metadata?.role === 'admin' || userData.role === 'admin') {
-            setIsAdmin(true);
+          
+          if (userData.isAuthenticated === false) {
+            setIsAuthenticated(false);
+            setIsAdmin(false);
+          } else {
+            setIsAuthenticated(true);
+            // Supposons que le rôle est renvoyé dans les données utilisateur
+            if (userData.user_metadata?.role === 'admin' || userData.role === 'admin') {
+              setIsAdmin(true);
+            }
           }
         } else {
           setIsAuthenticated(false);
