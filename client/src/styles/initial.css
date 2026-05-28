@@ -1,0 +1,26 @@
+.initial-hero-section {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('/img/pexels-yankrukov-5793895.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 3rem;
+  margin-bottom: 2rem;
+  border-radius: 0.3rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.initial-hero-content {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+  color: white;
+  text-align: center;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.initial-hero-title {
+  font-size: calc(1.525rem + 3.3vw);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
