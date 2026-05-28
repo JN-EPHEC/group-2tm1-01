@@ -30,7 +30,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 54321
           source: "client/dist/*"
-          target: "/home/etudiant/temp_app"
+          target: "/home/projet/temp_app"
           strip_components: 2
 
       - name: Final Move and Permissions
@@ -42,5 +42,5 @@ jobs:
           port: 54321
           script: |
             rm -rf /var/www/html/*
-            mv /home/etudiant/temp_app/* /var/www/html/
+            mv /home/projet/temp_app/* /var/www/html/
             chmod -R 755 /var/www/html
