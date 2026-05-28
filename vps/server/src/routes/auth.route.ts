@@ -128,7 +128,6 @@ router.post("/refresh", refreshSession);
  */
 router.get(
   "/me",
-  protect,
   me
 );
 
@@ -166,3 +165,4 @@ router.post(
 );
 
 export default router;
+

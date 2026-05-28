@@ -24,7 +24,6 @@ export const protect = async (req: AuthRequest, res: Response, next: NextFunctio
       return res.status(401).json({ error: "Non autorisé" });
     }
 
-    // 🔥 équivalent de req.user = decoded JWT
     req.user = {
       id: data.user.id,
       email: data.user.email,

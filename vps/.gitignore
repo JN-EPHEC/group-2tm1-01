@@ -1,4 +1,6 @@
 .env
 server/.env
 node_modules/
-.env
+dist/
+client/dist/
+server/dist/
