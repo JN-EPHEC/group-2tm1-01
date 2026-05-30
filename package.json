@@ -17,9 +17,10 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.105.3",
-    "cors": "^2.8.6",
     "@types/react": "^19.2.14",
+    "argon2": "^0.44.0",
     "concurrently": "^9.2.1",
+    "cors": "^2.8.6",
     "recharts": "^3.8.1",
     "sequelize": "^6.37.8",
     "sqlite3": "^6.0.1",

@@ -1,7 +1,7 @@
 import type {Request, Response,} from "express";
 import {registerUser, loginUser} from "../services/auth.service";
 import { supabase } from "../config/supabase";
-import bcryptjs from "bcryptjs";
+import * as argon2 from "argon2";
 
 export const register = async (req: Request, res: Response) => {
   try {
@@ -28,8 +28,7 @@ export const register = async (req: Request, res: Response) => {
       throw new Error("Utilisateur non créé");
     }
 
-    const salt = await bcryptjs.genSalt(10);
-    const hashedPassword = await bcryptjs.hash(password, salt);
+    const hashedPassword = await argon2.hash(password);
 
     const { error: dbError } = await supabase
       .from("profiles")

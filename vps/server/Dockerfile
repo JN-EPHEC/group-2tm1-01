@@ -6,8 +6,8 @@ COPY package*.json ./
 COPY tsconfig*.json ./
 
 # Installation des dépendances
-RUN npm install ws swagger-jsdoc swagger-ui-express cookie-parser bcryptjs
-RUN npm install --save-dev @types/ws @types/swagger-jsdoc @types/swagger-ui-express @types/cookie-parser @types/bcryptjs
+RUN npm install ws swagger-jsdoc swagger-ui-express cookie-parser argon2
+RUN npm install --save-dev @types/ws @types/swagger-jsdoc @types/swagger-ui-express @types/cookie-parser
 RUN npm install
 
 # Copie du reste du code source
