@@ -89,17 +89,15 @@ const AdminAppointmentsPage: React.FC = () => {
 
       <div className="card shadow-sm">
         <div className="card-body p-0 overflow-auto">
-          <div className="row g-0 flex-nowrap" style={{ minWidth: "1000px" }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', minWidth: '900px' }}>
             {dayNames.map(day => (
-              <div key={day} className="col text-center py-2 bg-light border-bottom border-end fw-bold">
+              <div key={day} className="text-center py-2 bg-light border-bottom border-end fw-bold">
                 {day}
               </div>
             ))}
-          </div>
 
-          <div className="row g-0 flex-nowrap" style={{ minWidth: "1000px" }}>
             {blanks.map(blank => (
-              <div key={`blank-${blank}`} className="col border-bottom border-end bg-light opacity-50" style={{ minHeight: '120px' }}></div>
+              <div key={`blank-${blank}`} className="border-bottom border-end bg-light opacity-50" style={{ minHeight: '120px' }}></div>
             ))}
 
             {days.map(day => {
@@ -112,7 +110,7 @@ const AdminAppointmentsPage: React.FC = () => {
               const isToday = dateStr === new Date().toISOString().split('T')[0];
 
               return (
-                <div key={day} className={`col border-bottom border-end p-2 ${isToday ? 'bg-primary bg-opacity-10' : ''}`} style={{ minHeight: '120px', minWidth: '14%' }}>
+                <div key={day} className={`border-bottom border-end p-2 ${isToday ? 'bg-primary bg-opacity-10' : ''}`} style={{ minHeight: '120px' }}>
                   <div className="d-flex justify-content-between">
                     <span className={`fw-bold ${isToday ? 'text-dark' : ''}`}>{day}</span>
                     {dayAppts.length > 0 && <span className="badge bg-secondary rounded-pill">{dayAppts.length}</span>}
@@ -130,10 +128,11 @@ const AdminAppointmentsPage: React.FC = () => {
                           key={appt.id} 
                           className={`p-1 rounded small lh-sm shadow-sm ${badgeColor}`}
                           title={appt.notes || 'Pas de notes'}
-                          style={{ fontSize: '0.75rem', cursor: 'pointer' }}
+                          style={{ fontSize: '0.8rem', cursor: 'pointer' }}
                           onClick={() => setSelectedAppt(appt)}
                         >
-                          <strong>{appt.time}</strong> {appt.customerName}
+                          <strong>{appt.time}</strong> <span className="d-none d-sm-inline">{appt.customerName}</span>
+                          <span className="d-inline d-sm-none">{appt.customerName.substring(0, 8)}...</span>
                         </div>
                       );
                     })}
@@ -143,7 +142,7 @@ const AdminAppointmentsPage: React.FC = () => {
             })}
             
             {Array.from({ length: (7 - ((blanks.length + days.length) % 7)) % 7 }).map((_, i) => (
-              <div key={`end-blank-${i}`} className="col border-bottom border-end bg-light opacity-50" style={{ minHeight: '120px', minWidth: '14%' }}></div>
+              <div key={`end-blank-${i}`} className="border-bottom border-end bg-light opacity-50" style={{ minHeight: '120px' }}></div>
             ))}
           </div>
         </div>
