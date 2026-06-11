@@ -1,7 +1,7 @@
 # DEVIII_projet
 ## KineApp – Plateforme de Gestion de Cabinet de Kinésithérapie
 
-L'IA a été utilisée pour la correction des orthpgraphe et pour certains parties.
+L'IA a été utilisée pour la correction d'orthographe et pour certaines parties.
 
 **Projet Dev3 – Application Web** **Année académique :** 2025‑2026  
 **Établissement :** EPHEC – Louvain‑la‑Neuve  
@@ -30,7 +30,7 @@ L'IA a été utilisée pour la correction des orthpgraphe et pour certains parti
 
 ## 2. Description du Projet
 
-Ce site est une plateforme demandée par une client pour la gestion en tant que kinésithérapeuthe mais aussi pour un confort numérique des patients.
+Ce site est une plateforme demandée par une cliente pour la gestion en tant que kinésithérapeuthe mais aussi pour un confort numérique des patients.
 
 Elle répond à plusieurs besoins concrets du secteur médical et des patients :
 * Consulter les créneaux disponibles et prendre rendez-vous en ligne ;
@@ -41,7 +41,7 @@ Elle répond à plusieurs besoins concrets du secteur médical et des patients :
 
 ---
 
-## . Fonctionnalités Principales
+## 3. Fonctionnalités Principales
 
 ### Gestion des Rendez-vous
 * Prise de rendez-vous dynamique par les patients selon les disponibilités du praticien.
@@ -53,8 +53,8 @@ Elle répond à plusieurs besoins concrets du secteur médical et des patients :
 * Statistiques financières claires (revenus générés par semaine/mois).
 * Gestion du catalogue de produits et du matériel de rééducation.
 
-### Plateform pour les patients
-* Prendre des rendez-vous celon les créneaux disponible.
+### Plateforme pour les patients
+* Prendre des rendez-vous selon les créneaux disponible.
 * Acheter des produits et se faire livrer chez soi.
 
 ---
