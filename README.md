@@ -1,8 +1,7 @@
 # DEVIII_projet
-#KineApp – Plateforme de Gestion de Cabinet de Kinésithérapie
+## KineApp – Plateforme de Gestion de Cabinet de Kinésithérapie
 
-L'IA a été utilisée pour la correction des orthpgraphe et pour certains parties.
-
+## L'IA a été utilisée pour la correction des orthpgraphe et pour certains parties.
 **Projet Dev3 – Application Web** **Année académique :** 2025‑2026  
 **Établissement :** EPHEC – Louvain‑la‑Neuve  
 
