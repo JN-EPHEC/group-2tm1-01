@@ -5,7 +5,7 @@ L'IA a été utilisée pour la correction des orthpgraphe et pour certains parti
 **Projet Dev3 – Application Web** **Année académique :** 2025‑2026  
 **Établissement :** EPHEC – Louvain‑la‑Neuve  
 
-## 👥 Membres du groupe
+## Membres du groupe
 * **Wu Jiale**
 * **Eloin Bastien**
 *  **Somers Victor**
